@@ -172,6 +172,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Bin\LLRDgen.exe" />
+    <None Include="README.md" />
     <None Include="Test.gram" />
     <None Include="Test2.gram" />
   </ItemGroup>

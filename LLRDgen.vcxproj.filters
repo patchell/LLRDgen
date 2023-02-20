@@ -17,6 +17,10 @@
       <UniqueIdentifier>{ceea5c9e-c75a-41f0-9925-61bf87f4263b}</UniqueIdentifier>
       <Extensions>exe</Extensions>
     </Filter>
+    <Filter Include="Readme">
+      <UniqueIdentifier>{56240677-2b12-481f-84ba-16c9605628e7}</UniqueIdentifier>
+      <Extensions>md</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bin.cpp">
@@ -139,6 +143,9 @@
     </None>
     <None Include="Bin\LLRDgen.exe">
       <Filter>Bin</Filter>
+    </None>
+    <None Include="README.md">
+      <Filter>Readme</Filter>
     </None>
   </ItemGroup>
 </Project>

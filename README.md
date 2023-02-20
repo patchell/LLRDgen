@@ -1,5 +1,11 @@
 Readme.nd
 
+Feb 20, 2023
+	Something got goofed up.  This time with the project file.  So once 
+again, I start over.  Well, not completely.
+Created a new project and copied in the files.  Still, I hate it when 
+this happens.
+
 Feb 10, 2023
 I think I have Follow sets working.  One Issue with
 left for test2.gram, 'Assignment' shows up with no
