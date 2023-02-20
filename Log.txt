@@ -1,0 +1,777 @@
+Add ϵ to set ϵ First Set'ϵ First Set' { 'ϵ' }
+???????? $ Nullable Set(0)
+Add IDENT to set IDENT First Set'IDENT First Set' { 'IDENT' }
+Add IDENT to set Terminals'Terminals' { 'IDENT' }
+Add + to set + First Set'+ First Set' { '+' }
+Add + to set Terminals'Terminals' { 'IDENT','+' }
+Add * to set * First Set'* First Set' { '*' }
+Add * to set Terminals'Terminals' { 'IDENT','+','*' }
+Add ( to set ( First Set'( First Set' { '(' }
+Add ( to set Terminals'Terminals' { 'IDENT','+','*','(' }
+Add ) to set ) First Set') First Set' { ')' }
+Add ) to set Terminals'Terminals' { 'IDENT','+','*','(',')' }
+**************** SymbolTable *****************
+CBin::(  No Data
+CBin::)  No Data
+CBin::IDENT  No Data
+CBin::*  No Data
+CBin::+  No Data
+^^^^^^^^^^^^^^^ SymbolTable ^^^^^^^^^^^^^^^^^^^^^^
+Add $ to set grammar Follow Set'grammar Follow Set' { '$' }
+Add grammar to set Non Terminals'Non Terminals' { 'grammar' }
+grammar:  Token:NONTERMINAL Value:265 NULLABLE(0) START(1)
+	First Set'grammar First Set' { }
+
+	Follw Set'grammar Follow Set' { '$' }
+
+Add expr to set Non Terminals'Non Terminals' { 'grammar','expr' }
+Add expr_1 to set Non Terminals'Non Terminals' { 'grammar','expr','expr_1' }
+Parser:NT:+
+Add term to set Non Terminals'Non Terminals' { 'grammar','expr','expr_1','term' }
+Add term_1 to set Non Terminals'Non Terminals' { 'grammar','expr','expr_1','term','term_1' }
+Parser:NT:*
+Add factor to set Non Terminals'Non Terminals' { 'grammar','expr','expr_1','term','term_1','factor' }
+Parser:NT:IDENT
+Parser:NT:(
+Parser:NT:)
+*************  Print Out Grammar Structure************
+grammar
+->  expr
+term
+->  factor  term_1
+expr_1
+->  +  term  expr_1
+->  ϵ
+expr
+->  term  expr_1
+factor
+->  IDENT
+->  (  expr  )
+term_1
+->  *  factor  term_1
+->  ϵ
+Add $ to set Terminals'Terminals' { 'IDENT','+','*','(',')','$' }
+'Terminals' { 'IDENT','+','*','(',')','$' }
+********** Non Terminals Set **********
+'Non Terminals' { 'grammar','expr','expr_1','term','term_1','factor' }
+*********** Build Nullable Set **********
+----- Generate Nullables-------
+grammar->
+expr->
+expr_1->
+expr_1->
+Add expr_1 to set Nullables'Nullables' { 'expr_1' }
+term->
+term_1->
+term_1->
+Add term_1 to set Nullables'Nullables' { 'expr_1','term_1' }
+factor->
+factor->
+************ Nullable Iteration 1 *********
+grammar->
+expr->
+expr_1->
+expr_1->
+term->
+term_1->
+term_1->
+factor->
+factor->
+************ Nullable Iteration 2 *********
+----- Done Generate Nullables-------
+'Nullables' { 'expr_1','term_1' }
+
+'Non Terminals' { 'grammar','expr','expr_1','term','term_1','factor' }
+
+****************Create NOT nullable set ************************
+Add grammar to set NOT_Nullables'NOT_Nullables' { 'grammar' }
+Add term to set NOT_Nullables'NOT_Nullables' { 'grammar','term' }
+Add expr to set NOT_Nullables'NOT_Nullables' { 'grammar','term','expr' }
+Add factor to set NOT_Nullables'NOT_Nullables' { 'grammar','term','expr','factor' }
+----- Calc First Sets------
+******* Create First Set Ver 2 ********
+###### First Set Iteration #1
+----------------------
+FIRST(grammar)
+grammar	->  expr
+		Does Set expr First Set Not Contain ϵ
+Add First(expr)'expr First Set' { }'grammar First Set' { } U 'expr First Set' { }
+'grammar First Set' { }
+
+----------------------
+FIRST(expr)
+expr	->  term  expr_1
+		Does Set term First Set Not Contain ϵ
+Add First(term)'term First Set' { }'expr First Set' { } U 'term First Set' { }
+'expr First Set' { }
+
+----------------------
+FIRST(expr_1)
+expr_1	->  +  term  expr_1
+		Does Set + First Set Not Contain ϵ
+			Compare ϵ To +
+Add First(+)'+ First Set' { '+' }'expr_1 First Set' { } U '+ First Set' { '+' }
+Add + to set expr_1 First Set'expr_1 First Set' { '+' }
+'expr_1 First Set' { '+' }
+
+expr_1	->  ϵ
+'expr_1 First Set' { '+' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ to set expr_1 First Set'expr_1 First Set' { '+','ϵ' }
+Add ϵ'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'expr_1 First Set' { '+','ϵ' }
+
+----------------------
+FIRST(term)
+term	->  factor  term_1
+		Does Set factor First Set Not Contain ϵ
+Add First(factor)'factor First Set' { }'term First Set' { } U 'factor First Set' { }
+'term First Set' { }
+
+----------------------
+FIRST(term_1)
+term_1	->  *  factor  term_1
+		Does Set * First Set Not Contain ϵ
+			Compare ϵ To *
+Add First(*)'* First Set' { '*' }'term_1 First Set' { } U '* First Set' { '*' }
+Add * to set term_1 First Set'term_1 First Set' { '*' }
+'term_1 First Set' { '*' }
+
+term_1	->  ϵ
+'term_1 First Set' { '*' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ to set term_1 First Set'term_1 First Set' { '*','ϵ' }
+Add ϵ'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'term_1 First Set' { '*','ϵ' }
+
+----------------------
+FIRST(factor)
+factor	->  IDENT
+		Does Set IDENT First Set Not Contain ϵ
+			Compare ϵ To IDENT
+Add First(IDENT)'IDENT First Set' { 'IDENT' }'factor First Set' { } U 'IDENT First Set' { 'IDENT' }
+Add IDENT to set factor First Set'factor First Set' { 'IDENT' }
+'factor First Set' { 'IDENT' }
+
+factor	->  (  expr  )
+		Does Set ( First Set Not Contain ϵ
+			Compare ϵ To (
+Add First(()'( First Set' { '(' }'factor First Set' { 'IDENT' } U '( First Set' { '(' }
+Add ( to set factor First Set'factor First Set' { 'IDENT','(' }
+'factor First Set' { 'IDENT','(' }
+
+###### Iteration #2  DONE!
+###### First Set Iteration #2
+----------------------
+FIRST(grammar)
+grammar	->  expr
+		Does Set expr First Set Not Contain ϵ
+Add First(expr)'expr First Set' { }'grammar First Set' { } U 'expr First Set' { }
+'grammar First Set' { }
+
+----------------------
+FIRST(expr)
+expr	->  term  expr_1
+		Does Set term First Set Not Contain ϵ
+Add First(term)'term First Set' { }'expr First Set' { } U 'term First Set' { }
+'expr First Set' { }
+
+----------------------
+FIRST(expr_1)
+expr_1	->  +  term  expr_1
+		Does Set + First Set Not Contain ϵ
+			Compare ϵ To +
+Add First(+)'+ First Set' { '+' }'expr_1 First Set' { '+','ϵ' } U '+ First Set' { '+' }
+'expr_1 First Set' { '+','ϵ' }
+
+expr_1	->  ϵ
+'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'expr_1 First Set' { '+','ϵ' }
+
+----------------------
+FIRST(term)
+term	->  factor  term_1
+		Does Set factor First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(factor)'factor First Set' { 'IDENT','(' }'term First Set' { } U 'factor First Set' { 'IDENT','(' }
+Add IDENT to set term First Set'term First Set' { 'IDENT' }
+Add ( to set term First Set'term First Set' { 'IDENT','(' }
+'term First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(term_1)
+term_1	->  *  factor  term_1
+		Does Set * First Set Not Contain ϵ
+			Compare ϵ To *
+Add First(*)'* First Set' { '*' }'term_1 First Set' { '*','ϵ' } U '* First Set' { '*' }
+'term_1 First Set' { '*','ϵ' }
+
+term_1	->  ϵ
+'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'term_1 First Set' { '*','ϵ' }
+
+----------------------
+FIRST(factor)
+factor	->  IDENT
+		Does Set IDENT First Set Not Contain ϵ
+			Compare ϵ To IDENT
+Add First(IDENT)'IDENT First Set' { 'IDENT' }'factor First Set' { 'IDENT','(' } U 'IDENT First Set' { 'IDENT' }
+'factor First Set' { 'IDENT','(' }
+
+factor	->  (  expr  )
+		Does Set ( First Set Not Contain ϵ
+			Compare ϵ To (
+Add First(()'( First Set' { '(' }'factor First Set' { 'IDENT','(' } U '( First Set' { '(' }
+'factor First Set' { 'IDENT','(' }
+
+###### Iteration #3  DONE!
+###### First Set Iteration #3
+----------------------
+FIRST(grammar)
+grammar	->  expr
+		Does Set expr First Set Not Contain ϵ
+Add First(expr)'expr First Set' { }'grammar First Set' { } U 'expr First Set' { }
+'grammar First Set' { }
+
+----------------------
+FIRST(expr)
+expr	->  term  expr_1
+		Does Set term First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(term)'term First Set' { 'IDENT','(' }'expr First Set' { } U 'term First Set' { 'IDENT','(' }
+Add IDENT to set expr First Set'expr First Set' { 'IDENT' }
+Add ( to set expr First Set'expr First Set' { 'IDENT','(' }
+'expr First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(expr_1)
+expr_1	->  +  term  expr_1
+		Does Set + First Set Not Contain ϵ
+			Compare ϵ To +
+Add First(+)'+ First Set' { '+' }'expr_1 First Set' { '+','ϵ' } U '+ First Set' { '+' }
+'expr_1 First Set' { '+','ϵ' }
+
+expr_1	->  ϵ
+'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'expr_1 First Set' { '+','ϵ' }
+
+----------------------
+FIRST(term)
+term	->  factor  term_1
+		Does Set factor First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(factor)'factor First Set' { 'IDENT','(' }'term First Set' { 'IDENT','(' } U 'factor First Set' { 'IDENT','(' }
+'term First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(term_1)
+term_1	->  *  factor  term_1
+		Does Set * First Set Not Contain ϵ
+			Compare ϵ To *
+Add First(*)'* First Set' { '*' }'term_1 First Set' { '*','ϵ' } U '* First Set' { '*' }
+'term_1 First Set' { '*','ϵ' }
+
+term_1	->  ϵ
+'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'term_1 First Set' { '*','ϵ' }
+
+----------------------
+FIRST(factor)
+factor	->  IDENT
+		Does Set IDENT First Set Not Contain ϵ
+			Compare ϵ To IDENT
+Add First(IDENT)'IDENT First Set' { 'IDENT' }'factor First Set' { 'IDENT','(' } U 'IDENT First Set' { 'IDENT' }
+'factor First Set' { 'IDENT','(' }
+
+factor	->  (  expr  )
+		Does Set ( First Set Not Contain ϵ
+			Compare ϵ To (
+Add First(()'( First Set' { '(' }'factor First Set' { 'IDENT','(' } U '( First Set' { '(' }
+'factor First Set' { 'IDENT','(' }
+
+###### Iteration #4  DONE!
+###### First Set Iteration #4
+----------------------
+FIRST(grammar)
+grammar	->  expr
+		Does Set expr First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(expr)'expr First Set' { 'IDENT','(' }'grammar First Set' { } U 'expr First Set' { 'IDENT','(' }
+Add IDENT to set grammar First Set'grammar First Set' { 'IDENT' }
+Add ( to set grammar First Set'grammar First Set' { 'IDENT','(' }
+'grammar First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(expr)
+expr	->  term  expr_1
+		Does Set term First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(term)'term First Set' { 'IDENT','(' }'expr First Set' { 'IDENT','(' } U 'term First Set' { 'IDENT','(' }
+'expr First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(expr_1)
+expr_1	->  +  term  expr_1
+		Does Set + First Set Not Contain ϵ
+			Compare ϵ To +
+Add First(+)'+ First Set' { '+' }'expr_1 First Set' { '+','ϵ' } U '+ First Set' { '+' }
+'expr_1 First Set' { '+','ϵ' }
+
+expr_1	->  ϵ
+'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'expr_1 First Set' { '+','ϵ' }
+
+----------------------
+FIRST(term)
+term	->  factor  term_1
+		Does Set factor First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(factor)'factor First Set' { 'IDENT','(' }'term First Set' { 'IDENT','(' } U 'factor First Set' { 'IDENT','(' }
+'term First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(term_1)
+term_1	->  *  factor  term_1
+		Does Set * First Set Not Contain ϵ
+			Compare ϵ To *
+Add First(*)'* First Set' { '*' }'term_1 First Set' { '*','ϵ' } U '* First Set' { '*' }
+'term_1 First Set' { '*','ϵ' }
+
+term_1	->  ϵ
+'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'term_1 First Set' { '*','ϵ' }
+
+----------------------
+FIRST(factor)
+factor	->  IDENT
+		Does Set IDENT First Set Not Contain ϵ
+			Compare ϵ To IDENT
+Add First(IDENT)'IDENT First Set' { 'IDENT' }'factor First Set' { 'IDENT','(' } U 'IDENT First Set' { 'IDENT' }
+'factor First Set' { 'IDENT','(' }
+
+factor	->  (  expr  )
+		Does Set ( First Set Not Contain ϵ
+			Compare ϵ To (
+Add First(()'( First Set' { '(' }'factor First Set' { 'IDENT','(' } U '( First Set' { '(' }
+'factor First Set' { 'IDENT','(' }
+
+###### Iteration #5  DONE!
+###### First Set Iteration #5
+----------------------
+FIRST(grammar)
+grammar	->  expr
+		Does Set expr First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(expr)'expr First Set' { 'IDENT','(' }'grammar First Set' { 'IDENT','(' } U 'expr First Set' { 'IDENT','(' }
+'grammar First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(expr)
+expr	->  term  expr_1
+		Does Set term First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(term)'term First Set' { 'IDENT','(' }'expr First Set' { 'IDENT','(' } U 'term First Set' { 'IDENT','(' }
+'expr First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(expr_1)
+expr_1	->  +  term  expr_1
+		Does Set + First Set Not Contain ϵ
+			Compare ϵ To +
+Add First(+)'+ First Set' { '+' }'expr_1 First Set' { '+','ϵ' } U '+ First Set' { '+' }
+'expr_1 First Set' { '+','ϵ' }
+
+expr_1	->  ϵ
+'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'expr_1 First Set' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'expr_1 First Set' { '+','ϵ' }
+
+----------------------
+FIRST(term)
+term	->  factor  term_1
+		Does Set factor First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(factor)'factor First Set' { 'IDENT','(' }'term First Set' { 'IDENT','(' } U 'factor First Set' { 'IDENT','(' }
+'term First Set' { 'IDENT','(' }
+
+----------------------
+FIRST(term_1)
+term_1	->  *  factor  term_1
+		Does Set * First Set Not Contain ϵ
+			Compare ϵ To *
+Add First(*)'* First Set' { '*' }'term_1 First Set' { '*','ϵ' } U '* First Set' { '*' }
+'term_1 First Set' { '*','ϵ' }
+
+term_1	->  ϵ
+'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ'term_1 First Set' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+'term_1 First Set' { '*','ϵ' }
+
+----------------------
+FIRST(factor)
+factor	->  IDENT
+		Does Set IDENT First Set Not Contain ϵ
+			Compare ϵ To IDENT
+Add First(IDENT)'IDENT First Set' { 'IDENT' }'factor First Set' { 'IDENT','(' } U 'IDENT First Set' { 'IDENT' }
+'factor First Set' { 'IDENT','(' }
+
+factor	->  (  expr  )
+		Does Set ( First Set Not Contain ϵ
+			Compare ϵ To (
+Add First(()'( First Set' { '(' }'factor First Set' { 'IDENT','(' } U '( First Set' { '(' }
+'factor First Set' { 'IDENT','(' }
+
+###### Iteration #6  DONE!
+'grammar First Set' { 'IDENT','(' }
+
+'term First Set' { 'IDENT','(' }
+
+'expr_1 First Set' { '+','ϵ' }
+
+'expr First Set' { 'IDENT','(' }
+
+'factor First Set' { 'IDENT','(' }
+
+'term_1 First Set' { '*','ϵ' }
+
+
+----- Calc Follow Sets------
+######### Follow Set Itteration #1
+------------Looking For grammar ---------------
+------------Looking For expr ---------------
+Rule 3:grammar->  expr
+'expr Follow Set' { } U 'grammar Follow Set' { '$' }
+Add $ to set expr Follow Set'expr Follow Set' { '$' }
+	factor->  (  expr  )
+Is ϵ in ') First Set' { ')' }
+
+FALSE
+Rule 2 3:factor->  (  expr  )
+Add ) to set expr Follow Set'expr Follow Set' { '$',')' }
+') Follow Set' { } U 'factor Follow Set' { }
+------------Looking For expr_1 ---------------
+------------Looking For term ---------------
+	expr->  term  expr_1
+Is ϵ in 'expr_1 First Set' { '+','ϵ' }
+
+TRUE
+Rule 2 3 4:expr->  term  expr_1
+Add + to set term Follow Set'term Follow Set' { '+' }
+'expr_1 Follow Set' { } U 'expr Follow Set' { '$',')' }
+Add $ to set expr_1 Follow Set'expr_1 Follow Set' { '$' }
+Add ) to set expr_1 Follow Set'expr_1 Follow Set' { '$',')' }
+'term Follow Set' { '+' } U 'expr Follow Set' { '$',')' }
+Add $ to set term Follow Set'term Follow Set' { '+','$' }
+Add ) to set term Follow Set'term Follow Set' { '+','$',')' }
+	expr_1->  +  term  expr_1
+Is ϵ in 'expr_1 First Set' { '+','ϵ' }
+
+TRUE
+Rule 2 3 4:expr_1->  +  term  expr_1
+'expr_1 Follow Set' { '$',')' } U 'expr_1 Follow Set' { '$',')' }
+'term Follow Set' { '+','$',')' } U 'expr_1 Follow Set' { '$',')' }
+------------Looking For term_1 ---------------
+------------Looking For factor ---------------
+	term->  factor  term_1
+Is ϵ in 'term_1 First Set' { '*','ϵ' }
+
+TRUE
+Rule 2 3 4:term->  factor  term_1
+Add * to set factor Follow Set'factor Follow Set' { '*' }
+'term_1 Follow Set' { } U 'term Follow Set' { '+','$',')' }
+Add + to set term_1 Follow Set'term_1 Follow Set' { '+' }
+Add $ to set term_1 Follow Set'term_1 Follow Set' { '+','$' }
+Add ) to set term_1 Follow Set'term_1 Follow Set' { '+','$',')' }
+'factor Follow Set' { '*' } U 'term Follow Set' { '+','$',')' }
+Add + to set factor Follow Set'factor Follow Set' { '*','+' }
+Add $ to set factor Follow Set'factor Follow Set' { '*','+','$' }
+Add ) to set factor Follow Set'factor Follow Set' { '*','+','$',')' }
+	term_1->  *  factor  term_1
+Is ϵ in 'term_1 First Set' { '*','ϵ' }
+
+TRUE
+Rule 2 3 4:term_1->  *  factor  term_1
+'term_1 Follow Set' { '+','$',')' } U 'term_1 Follow Set' { '+','$',')' }
+'factor Follow Set' { '*','+','$',')' } U 'term_1 Follow Set' { '+','$',')' }
+######### Follow Set Itteration #2
+------------Looking For grammar ---------------
+------------Looking For expr ---------------
+Rule 3:grammar->  expr
+'expr Follow Set' { '$',')' } U 'grammar Follow Set' { '$' }
+	factor->  (  expr  )
+Is ϵ in ') First Set' { ')' }
+
+FALSE
+Rule 2 3:factor->  (  expr  )
+') Follow Set' { } U 'factor Follow Set' { '*','+','$',')' }
+Add * to set ) Follow Set') Follow Set' { '*' }
+Add + to set ) Follow Set') Follow Set' { '*','+' }
+Add $ to set ) Follow Set') Follow Set' { '*','+','$' }
+Add ) to set ) Follow Set') Follow Set' { '*','+','$',')' }
+------------Looking For expr_1 ---------------
+------------Looking For term ---------------
+	expr->  term  expr_1
+Is ϵ in 'expr_1 First Set' { '+','ϵ' }
+
+TRUE
+Rule 2 3 4:expr->  term  expr_1
+'expr_1 Follow Set' { '$',')' } U 'expr Follow Set' { '$',')' }
+'term Follow Set' { '+','$',')' } U 'expr Follow Set' { '$',')' }
+	expr_1->  +  term  expr_1
+Is ϵ in 'expr_1 First Set' { '+','ϵ' }
+
+TRUE
+Rule 2 3 4:expr_1->  +  term  expr_1
+'expr_1 Follow Set' { '$',')' } U 'expr_1 Follow Set' { '$',')' }
+'term Follow Set' { '+','$',')' } U 'expr_1 Follow Set' { '$',')' }
+------------Looking For term_1 ---------------
+------------Looking For factor ---------------
+	term->  factor  term_1
+Is ϵ in 'term_1 First Set' { '*','ϵ' }
+
+TRUE
+Rule 2 3 4:term->  factor  term_1
+'term_1 Follow Set' { '+','$',')' } U 'term Follow Set' { '+','$',')' }
+'factor Follow Set' { '*','+','$',')' } U 'term Follow Set' { '+','$',')' }
+	term_1->  *  factor  term_1
+Is ϵ in 'term_1 First Set' { '*','ϵ' }
+
+TRUE
+Rule 2 3 4:term_1->  *  factor  term_1
+'term_1 Follow Set' { '+','$',')' } U 'term_1 Follow Set' { '+','$',')' }
+'factor Follow Set' { '*','+','$',')' } U 'term_1 Follow Set' { '+','$',')' }
+######### Follow Set Itteration #3
+------------Looking For grammar ---------------
+------------Looking For expr ---------------
+Rule 3:grammar->  expr
+'expr Follow Set' { '$',')' } U 'grammar Follow Set' { '$' }
+	factor->  (  expr  )
+Is ϵ in ') First Set' { ')' }
+
+FALSE
+Rule 2 3:factor->  (  expr  )
+') Follow Set' { '*','+','$',')' } U 'factor Follow Set' { '*','+','$',')' }
+------------Looking For expr_1 ---------------
+------------Looking For term ---------------
+	expr->  term  expr_1
+Is ϵ in 'expr_1 First Set' { '+','ϵ' }
+
+TRUE
+Rule 2 3 4:expr->  term  expr_1
+'expr_1 Follow Set' { '$',')' } U 'expr Follow Set' { '$',')' }
+'term Follow Set' { '+','$',')' } U 'expr Follow Set' { '$',')' }
+	expr_1->  +  term  expr_1
+Is ϵ in 'expr_1 First Set' { '+','ϵ' }
+
+TRUE
+Rule 2 3 4:expr_1->  +  term  expr_1
+'expr_1 Follow Set' { '$',')' } U 'expr_1 Follow Set' { '$',')' }
+'term Follow Set' { '+','$',')' } U 'expr_1 Follow Set' { '$',')' }
+------------Looking For term_1 ---------------
+------------Looking For factor ---------------
+	term->  factor  term_1
+Is ϵ in 'term_1 First Set' { '*','ϵ' }
+
+TRUE
+Rule 2 3 4:term->  factor  term_1
+'term_1 Follow Set' { '+','$',')' } U 'term Follow Set' { '+','$',')' }
+'factor Follow Set' { '*','+','$',')' } U 'term Follow Set' { '+','$',')' }
+	term_1->  *  factor  term_1
+Is ϵ in 'term_1 First Set' { '*','ϵ' }
+
+TRUE
+Rule 2 3 4:term_1->  *  factor  term_1
+'term_1 Follow Set' { '+','$',')' } U 'term_1 Follow Set' { '+','$',')' }
+'factor Follow Set' { '*','+','$',')' } U 'term_1 Follow Set' { '+','$',')' }
+------------ Follow Sets ---------------
+'grammar Follow Set' { '$' }
+
+'term Follow Set' { '+','$',')' }
+
+'expr_1 Follow Set' { '$',')' }
+
+'expr Follow Set' { '$',')' }
+
+'factor Follow Set' { '*','+','$',')' }
+
+'term_1 Follow Set' { '+','$',')' }
+
+
+---------------- Create Parse Table --------------
+------- grammar --------
+******** Rule 1 ********
+--------  grammar->  expr--------
+		Does Set expr First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(expr)'expr First Set' { 'IDENT','(' }'TempFirstY' { } U 'expr First Set' { 'IDENT','(' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+Add ( to set TempFirstY'TempFirstY' { 'IDENT','(' }
+******* IDENT ******
+^^^^^^^ IDENT ^^^^^^^
+******* ( ******
+^^^^^^^ ( ^^^^^^^
+'grammar Follow Set' { '$' }
+'Terminals' { 'IDENT','+','*','(',')','$' }
+******** Rule 2 ********
+--------  grammar->  expr--------
+		Does Set expr First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(expr)'expr First Set' { 'IDENT','(' }'TempFirstY' { } U 'expr First Set' { 'IDENT','(' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+Add ( to set TempFirstY'TempFirstY' { 'IDENT','(' }
+------- expr --------
+******** Rule 1 ********
+--------  expr->  term  expr_1--------
+		Does Set term First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(term)'term First Set' { 'IDENT','(' }'TempFirstY' { } U 'term First Set' { 'IDENT','(' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+Add ( to set TempFirstY'TempFirstY' { 'IDENT','(' }
+******* IDENT ******
+^^^^^^^ IDENT ^^^^^^^
+******* ( ******
+^^^^^^^ ( ^^^^^^^
+'expr Follow Set' { '$',')' }
+'Terminals' { 'IDENT','+','*','(',')','$' }
+******** Rule 2 ********
+--------  expr->  term  expr_1--------
+		Does Set term First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(term)'term First Set' { 'IDENT','(' }'TempFirstY' { } U 'term First Set' { 'IDENT','(' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+Add ( to set TempFirstY'TempFirstY' { 'IDENT','(' }
+------- expr_1 --------
+******** Rule 1 ********
+--------  expr_1->  +  term  expr_1--------
+		Does Set + First Set Not Contain ϵ
+			Compare ϵ To +
+Add First(+)'+ First Set' { '+' }'TempFirstY' { } U '+ First Set' { '+' }
+Add + to set TempFirstY'TempFirstY' { '+' }
+******* + ******
+^^^^^^^ + ^^^^^^^
+--------  expr_1->  ϵ--------
+'TempFirstY' { } U 'ϵ First Set' { 'ϵ' }
+Add ϵ to set TempFirstY'TempFirstY' { 'ϵ' }
+Add ϵ'TempFirstY' { 'ϵ' } U 'ϵ First Set' { 'ϵ' }
+******* ϵ ******
+^^^^^^^ ϵ ^^^^^^^
+'expr_1 Follow Set' { '$',')' }
+'Terminals' { 'IDENT','+','*','(',')','$' }
+******** Rule 2 ********
+--------  expr_1->  +  term  expr_1--------
+		Does Set + First Set Not Contain ϵ
+			Compare ϵ To +
+Add First(+)'+ First Set' { '+' }'TempFirstY' { } U '+ First Set' { '+' }
+Add + to set TempFirstY'TempFirstY' { '+' }
+--------  expr_1->  ϵ--------
+'TempFirstY' { '+' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ to set TempFirstY'TempFirstY' { '+','ϵ' }
+Add ϵ'TempFirstY' { '+','ϵ' } U 'ϵ First Set' { 'ϵ' }
+------- term --------
+******** Rule 1 ********
+--------  term->  factor  term_1--------
+		Does Set factor First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(factor)'factor First Set' { 'IDENT','(' }'TempFirstY' { } U 'factor First Set' { 'IDENT','(' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+Add ( to set TempFirstY'TempFirstY' { 'IDENT','(' }
+******* IDENT ******
+^^^^^^^ IDENT ^^^^^^^
+******* ( ******
+^^^^^^^ ( ^^^^^^^
+'term Follow Set' { '+','$',')' }
+'Terminals' { 'IDENT','+','*','(',')','$' }
+******** Rule 2 ********
+--------  term->  factor  term_1--------
+		Does Set factor First Set Not Contain ϵ
+			Compare ϵ To IDENT
+			Compare ϵ To (
+Add First(factor)'factor First Set' { 'IDENT','(' }'TempFirstY' { } U 'factor First Set' { 'IDENT','(' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+Add ( to set TempFirstY'TempFirstY' { 'IDENT','(' }
+------- term_1 --------
+******** Rule 1 ********
+--------  term_1->  *  factor  term_1--------
+		Does Set * First Set Not Contain ϵ
+			Compare ϵ To *
+Add First(*)'* First Set' { '*' }'TempFirstY' { } U '* First Set' { '*' }
+Add * to set TempFirstY'TempFirstY' { '*' }
+******* * ******
+^^^^^^^ * ^^^^^^^
+--------  term_1->  ϵ--------
+'TempFirstY' { } U 'ϵ First Set' { 'ϵ' }
+Add ϵ to set TempFirstY'TempFirstY' { 'ϵ' }
+Add ϵ'TempFirstY' { 'ϵ' } U 'ϵ First Set' { 'ϵ' }
+******* ϵ ******
+^^^^^^^ ϵ ^^^^^^^
+'term_1 Follow Set' { '+','$',')' }
+'Terminals' { 'IDENT','+','*','(',')','$' }
+******** Rule 2 ********
+--------  term_1->  *  factor  term_1--------
+		Does Set * First Set Not Contain ϵ
+			Compare ϵ To *
+Add First(*)'* First Set' { '*' }'TempFirstY' { } U '* First Set' { '*' }
+Add * to set TempFirstY'TempFirstY' { '*' }
+--------  term_1->  ϵ--------
+'TempFirstY' { '*' } U 'ϵ First Set' { 'ϵ' }
+Add ϵ to set TempFirstY'TempFirstY' { '*','ϵ' }
+Add ϵ'TempFirstY' { '*','ϵ' } U 'ϵ First Set' { 'ϵ' }
+------- factor --------
+******** Rule 1 ********
+--------  factor->  IDENT--------
+		Does Set IDENT First Set Not Contain ϵ
+			Compare ϵ To IDENT
+Add First(IDENT)'IDENT First Set' { 'IDENT' }'TempFirstY' { } U 'IDENT First Set' { 'IDENT' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+******* IDENT ******
+^^^^^^^ IDENT ^^^^^^^
+--------  factor->  (  expr  )--------
+		Does Set ( First Set Not Contain ϵ
+			Compare ϵ To (
+Add First(()'( First Set' { '(' }'TempFirstY' { } U '( First Set' { '(' }
+Add ( to set TempFirstY'TempFirstY' { '(' }
+******* ( ******
+^^^^^^^ ( ^^^^^^^
+'factor Follow Set' { '*','+','$',')' }
+'Terminals' { 'IDENT','+','*','(',')','$' }
+******** Rule 2 ********
+--------  factor->  IDENT--------
+		Does Set IDENT First Set Not Contain ϵ
+			Compare ϵ To IDENT
+Add First(IDENT)'IDENT First Set' { 'IDENT' }'TempFirstY' { } U 'IDENT First Set' { 'IDENT' }
+Add IDENT to set TempFirstY'TempFirstY' { 'IDENT' }
+--------  factor->  (  expr  )--------
+		Does Set ( First Set Not Contain ϵ
+			Compare ϵ To (
+Add First(()'( First Set' { '(' }'TempFirstY' { 'IDENT' } U '( First Set' { '(' }
+Add ( to set TempFirstY'TempFirstY' { 'IDENT','(' }
+( 0, 0)   grammar->  expr
+( 0, 3)   grammar->  expr
+( 1, 0)   expr->  term  expr_1
+( 1, 3)   expr->  term  expr_1
+( 2, 0)   expr_1->  ϵ
+( 2, 1)   expr_1->  +  term  expr_1
+( 3, 0)   term->  factor  term_1
+( 3, 3)   term->  factor  term_1
+( 4, 0)   term_1->  ϵ
+( 4, 2)   term_1->  *  factor  term_1
+( 5, 0)   factor->  IDENT
+( 5, 3)   factor->  (  expr  )

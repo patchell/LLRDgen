@@ -1,0 +1,45 @@
+TERMINALS
+	"IDENT" = 256,
+	"+",
+	"-",
+	"*",
+	"/",
+	".",
+	"(",
+	")",
+	"=",
+	";"
+END_TERMINALS
+
+GRAMMAR
+grammar -> statements;
+
+statements -> statement statements_1
+            ;
+
+statements_1	-> ';' statement statements_1
+				-> .
+				;
+
+statement	-> IDENT Assignment
+          ;
+
+Assignment	-> '=' expr;
+
+expr	-> term expr_1;
+expr_1	-> '+' term expr_1
+		-> '-' term expr_1
+		-> .
+		;
+
+term	-> factor term_1;
+term_1	-> '*' factor term_1
+		-> '/' factor term_1
+		-> .
+		;
+
+factor -> IDENT
+       -> '(' expr ')'
+       ;
+
+END_GRAMMAR

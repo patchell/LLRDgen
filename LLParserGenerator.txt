@@ -1,0 +1,27 @@
+
+//	LLgrammar	-> Terminals Grammar eof
+//				-> eof
+
+//	Terminals		-> TERMINALS TerminalList END_TERMINALS
+//	TerminalList	-> Terminal TerminalList_1
+//	TerminalList_1	-> ',' Terminal TerminalList_1
+//					-> .
+
+//	Terminal	-> IDENT
+
+//	Grammar		-> GRAMMAR ProductionList END_GRAMMAR
+
+//	ProductionList	-> Production ProductionList_1
+//	ProductionList_1-> ';' Production ProductionList_1
+//					->  .
+
+//	Production		-> LHSide RHSide
+
+//	LHSide	-> NONTERMINAL
+
+//	RHSide	-> REPLACEDBYH TermNonTermList RHSide
+//			-> .
+
+//	TermNonTermList	-> TERMINAL TermNonTermList
+//					-> NONTERMINAL TermNonTermList
+//					-> .

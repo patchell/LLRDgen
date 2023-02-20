@@ -1,0 +1,34 @@
+------------ First Sets ---------------
+
+'grammar' { 'IDENT','(' }
+'expr' { 'IDENT','(' }
+'expr_1' { '+','ϵ' }
+'term' { 'IDENT','(' }
+'term_1' { '*','ϵ' }
+'factor' { 'IDENT','(' }
+
+------------ First Demo --------------
+ First(G) = { (, i, }                                                                                                    First(G) = { (, i, }
+ First(E) = { (, i, }
+ First(R) = { +, #, }
+ First(T) = { (, i, }
+ First(Y) = { *, #, }
+ First(F) = { (, i, }
+
+------------ Follow Sets ---------------
+'grammar' { '$' } y
+'expr' { '$',')' } y
+'expr_1' { '$',')' } y
+'term' { '+','$',')' } y
+'term_1' { '+','$',')' } y
+'factor' { '*','+','$',')' y}
+
+
+--------------- Follow Demo --------------------------------
+
+ Follow(G) = { $,  }
+ Follow(E) = { $, ),  }
+ Follow(R) = { $, ),  }
+ Follow(T) = { +, $, ),  }
+ Follow(Y) = { +, $, ),  }
+ Follow(F) = { *, +, $, ),  }

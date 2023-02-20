@@ -1,0 +1,5 @@
+The following rules are used to create the parse table:
+
+For each production A->a of the grammar:
+1. For each terminal a in FIRST(A), Add A->a to M(A,a).
+2. If e is in FIRST(a), then for each Terminal b in FOLLOW(A), add A->a into M(a,$) as well.
