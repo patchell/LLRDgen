@@ -1,5 +1,14 @@
 Readme.nd
 
+Feb 23, 2023
+	The parse table looks like it is being
+	generated correctly.  It at least works with
+	the simple example that is always used in
+	compiler books (In my case, The Dragon Book 2nd edition).
+	Next up, generate code.
+	By the way, that part is going to be very
+	minimal.
+
 Feb 20, 2023
 	Something got goofed up.  This time with the project file.  So once 
 again, I start over.  Well, not completely.
