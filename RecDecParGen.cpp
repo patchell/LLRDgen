@@ -70,6 +70,7 @@ BOOL CRecDecParGen::Run()
 	fprintf(LogFile(), "---------------- Create Parse Table --------------\n");
 	GetParseTable()->Create(GetTerminalSet(), GetNonTerminalSet());
 	GetParseTable()->FillTable();
+	fprintf(LogFile(), "Table Entries = %d\n", CParseTableEntry::GetNumEntries());
 	return 0;
 }
 

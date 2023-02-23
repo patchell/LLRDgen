@@ -87,6 +87,11 @@ BOOL CSet::Union(CSet* pSetB, CSet& SetC)
 	rV1 = SetC.Copy(this);
 	rV2 = SetC.Copy(pSetB);
 	bChanged = rV1 || rV2;
+	SetC.Print(LogFile(), FALSE, FALSE, 0);
+	fprintf(LogFile(), " <= ");
+	Print(LogFile(), FALSE, FALSE, 0);
+	fprintf(LogFile(), " U ");
+	pSetB->Print(LogFile(), FALSE, TRUE);
 	return bChanged;
 }
 
@@ -101,8 +106,11 @@ BOOL CSet::Union(CSet* pSetA)
 
 	Print(LogFile(), FALSE,FALSE,0);
 	fprintf(LogFile(), " U ");
-	pSetA->Print(LogFile(),FALSE,TRUE,0);
+	pSetA->Print(LogFile(),FALSE,FALSE,0);
 	bChanged = Copy(pSetA);
+	fprintf(LogFile(), " => ");
+	Print(LogFile(), FALSE, TRUE, 0);
+
 	return bChanged;
 }
 
@@ -161,9 +169,7 @@ BOOL CSet::Contains(CSymbol* pSym)
 	CSetMember* pMemBr;
 	BOOL rV = FALSE;
 
-	fprintf(LogFile(), "Is %s in ", pSym->GetName());
-	Print(LogFile());
-	fprintf(LogFile(), "\n");
+	fprintf(LogFile(), "Is %s in Set %s\n", pSym->GetName(), GetName());
 	pMemBr = GetHead();
 	while (pMemBr && !rV)
 	{
@@ -182,21 +188,28 @@ BOOL CSet::DoesNotContain(CSymbol* pSym)
 	BOOL rV = TRUE;
 
 	pMemBr = GetHead();
-	fprintf(LogFile(), "\t\tDoes Set %s Not Contain %s\n", 
-		GetName(),
-		pSym->GetName()
-	);
+	if (LogFile())
+	{
+		fprintf(LogFile(), "Is \'%s\' Not Contained in \'%s\'\n",
+			pSym->GetName(),
+			GetName()
+		);
+	}
 	while (pMemBr && rV)
 	{
-		fprintf(LogFile(), "\t\t\tCompare %s To %s\n",
-			pSym->GetName(),
-			pMemBr->GetSetMemberLexeme()->GetLexemeSymbol()->GetName()
-		);
+		if (LogFile())
+		{
+			fprintf(LogFile(), "\t\t\tCompare \'%s\' To \'%s\'\n",
+				pSym->GetName(),
+				pMemBr->GetSetMemberLexeme()->GetName()
+			);
+		}
 		if (pSym == pMemBr->GetSetMemberLexeme()->GetLexemeSymbol())
 			rV = FALSE;
 		else
 			pMemBr = pMemBr->GetNext();
 	}
+	fprintf(LogFile(), "%s\n", rV ? "TRUE" : "FALSE");
 	return rV;
 }
 
@@ -218,15 +231,6 @@ BOOL CSet::AddToSet(CSetMember* pNewMember)
 			SetHead(pNewMember);
 		}
 		++m_nNumberOfMembers;
-		const char* NameOfSet = GetName();
-		char* MemberName = pNewMember->GetSetMemberSymbol()->GetName();
-		FILE* LF = LogFile();
-
-		fprintf(LF, "Add %s to set %s",
-			MemberName,
-			NameOfSet
-		);
-		Print(LF, FALSE, TRUE, 0);
 	}
 	return rV;
 }
@@ -285,7 +289,7 @@ void CSet::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 			DelemiterChar = ',';
 		else
 			DelemiterChar = ' ';
-		pMember->Print(pOut, DelemiterChar);
+		pMember->Print(pOut, DelemiterChar, FALSE, FALSE,0);
 		pMember = pMember->GetNext();
 	}
 	fprintf(pOut, " }");

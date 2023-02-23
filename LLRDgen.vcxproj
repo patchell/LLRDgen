@@ -176,6 +176,9 @@
     <None Include="Test.gram" />
     <None Include="Test2.gram" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="Log.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

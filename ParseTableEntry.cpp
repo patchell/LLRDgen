@@ -17,19 +17,38 @@ BOOL CParseTableEntry::Create()
 	return rV;
 }
 
+BOOL CParseTableEntry::DoesNotContains(CRule* pRule)
+{
+	BOOL bNotThere = TRUE;
+	CParseTableEntryMember* pETM;
+
+	pETM = GetHead();
+	while (pETM && bNotThere)
+	{
+		if (pETM->GetProduction() == pRule)
+			bNotThere = FALSE;
+		pETM = pETM->GetNext();
+	}
+	return bNotThere;
+}
+
 void CParseTableEntry::AddMember(CParseTableEntryMember* pPTE)
 {
-	m_nMembers++;
-	if (GetTail())
+	if (DoesNotContains(pPTE->GetProduction()))
 	{
-		GetTail()->SetNext(pPTE);
-		pPTE->SetPrev(GetTail());
-		SetTail(pPTE);
-	}
-	else
-	{
-		SetTail(pPTE);
-		SetHead(pPTE);
+		m_nMembers++;
+		m_nEntries++;
+		if (GetTail())
+		{
+			GetTail()->SetNext(pPTE);
+			pPTE->SetPrev(GetTail());
+			SetTail(pPTE);
+		}
+		else
+		{
+			SetTail(pPTE);
+			SetHead(pPTE);
+		}
 	}
 }
 

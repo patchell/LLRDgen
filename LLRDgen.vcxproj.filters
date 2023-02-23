@@ -21,6 +21,10 @@
       <UniqueIdentifier>{56240677-2b12-481f-84ba-16c9605628e7}</UniqueIdentifier>
       <Extensions>md</Extensions>
     </Filter>
+    <Filter Include="LogFile">
+      <UniqueIdentifier>{c06701ea-de25-4f50-a76c-78c999d3e6a7}</UniqueIdentifier>
+      <Extensions>txt</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Bin.cpp">
@@ -147,5 +151,10 @@
     <None Include="README.md">
       <Filter>Readme</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="Log.txt">
+      <Filter>LogFile</Filter>
+    </Text>
   </ItemGroup>
 </Project>

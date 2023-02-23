@@ -58,13 +58,10 @@ BOOL CRule::FIRST(CLexeme *pY1, CSet& FirstSet)
 	if (pY1->IsEmpty())	//Rule 2.
 	{
 		bChanged = FirstSet.Union(CLexer::GetEmpty()->GetFirstSet());
-		fprintf(LogFile(), "Add %s", pY1->GetName());
 	}
 	else if (pY1->GetFirstSet()->DoesNotContain(CLexer::GetEmpty()))
 	{
 		//Rule 4.1
-		fprintf(LogFile(), "Add First(%s)", pY1->GetName());
-		pY1->GetFirstSet()->Print(LogFile(),FALSE,FALSE,0);
 		bChanged = FirstSet.Union(pY1->GetFirstSet());
 	}
 	else

@@ -17,6 +17,7 @@ public:
 	BOOL Rule1(CLexeme *pY);
 	BOOL Rule2(CLexeme* pY);
 	int GetTerminalIndex(CLexeme* pLex);
+	int GetTerminalIndex(CSymbol* pSym);
 	int GetNonTerminalIndex(CSymbol* pSym);
 	int CheckForConflicts();
 	void SetTerminalSet(CSet* pTrml) { m_pTerminalSet = pTrml; }

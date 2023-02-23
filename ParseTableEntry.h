@@ -7,6 +7,7 @@ class CParseTableEntry
 	CParseTableEntryMember* m_pHead;
 	CParseTableEntryMember* m_pTail;
 	int m_nMembers;
+	inline static int m_nEntries = 0;
 public:
 	CParseTableEntry();
 	virtual ~CParseTableEntry();
@@ -18,6 +19,8 @@ public:
 		m_pRowName = pRowName;
 	}
 	int GetNumMembers() { return m_nMembers; }
+	static int GetNumEntries() { return m_nEntries; }
+	BOOL DoesNotContains(CRule* pRule);
 	//--------------------------------------------
 	// Manage Entry Members
 	//--------------------------------------------
