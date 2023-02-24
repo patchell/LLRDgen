@@ -175,6 +175,7 @@
     <None Include="README.md" />
     <None Include="Test.gram" />
     <None Include="Test2.gram" />
+    <None Include="test3.gram" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log.txt" />

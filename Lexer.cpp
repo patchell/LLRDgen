@@ -159,7 +159,6 @@ CLexer::Token CLexer::Lex()
 				{
 					c = LexGet();
 				} while (c != '\n');
-				Loop = FALSE;
 			}
 			else
 				LexUnGet(c);

@@ -1,3 +1,9 @@
+//-------------------------------
+// Standard Example that shows
+// up in just about any text book
+// On the subject of Compilers
+//-------------------------------
+
 TERMINALS
 	"IDENT" = 256,
 	"+",
