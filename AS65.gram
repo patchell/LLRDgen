@@ -1,0 +1,273 @@
+//-------------------------------
+// Grammar for the 6502 assmebler
+//-------------------------------
+TERMINALS
+	// Opecodes
+		"ADC" = 512,
+		"AND",
+		"ASL",
+		"BCC",
+		"BCS",
+		"BEQ",
+		"BMI",
+		"BNE",
+		"BPL",
+		"BVC",
+		"BVS",
+		"BIT",
+		"BRK",
+		"CLC",
+		"CLD",
+		"CLI",
+		"CLV",
+		"CMP",
+		"CPX",
+		"CPY",
+		"DEC",
+		"DEX",
+		"DEY",
+		"EOR",
+		"INC",
+		"INX",
+		"INY",
+		"JMP",
+		"JSR",
+		"LDA",
+		"LDX",
+		"LDY",
+		"LSR",
+		"NOP",
+		"ORA",
+		"PHA",
+		"PLA",
+		"PHP",
+		"PLP",
+		"ROL",
+		"ROR",
+		"RTI",
+		"RTS",
+		"SBC",
+		"STA",
+		"SEC",
+		"SED",
+		"SEI",
+		"STX",
+		"STY",
+		"TAX",
+		"TAY",
+		"TXA",
+		"TYA",
+		"TXS",
+		"TSX",
+		"ENDOFOPCODES",
+		"ACCUM",
+		"XREG",
+		"YREG",
+		"LABEL",
+		"STRING",
+		"SYMBOL",
+		"NUMBER",
+		"ORG",
+		"DB",
+		"DW",
+		"DL",
+		"DS",
+		"HEX_NUMBER",
+		"CHAR_CONSTANT",
+		"INCLUDE",
+		"SECTIONTOKEN",
+		"START",
+		"SIZE",
+		"MODE",
+		"READ_WRTE",
+		"READ_ONLY",
+		"R6502",
+		"PROCESSOR",
+		"WD65C02",
+		"WD65C816",
+		"VALUE",
+		"OR_OP",
+		"AND_OP",
+		"RIGHT_SHIFT",
+		"LEFT_SHIFT",
+		"MOD",
+		"#",
+		"(",
+		")",
+		",",
+		";",
+		"<",
+		">",
+		"*",
+		"ENDOFTOKENS"
+END_TERMINALS
+
+GRAMMAR
+As65	-> CodeLineList;
+
+CodeLineList	-> CodeLine CodeLineList_1;
+CodeLineList_1	-> ';' CodeLine CodeLineList_1
+				-> .
+				;
+CodeLine		-> OptLable CodeLine_1;
+CodeLine_1		-> Operators
+				-> DefineStorage
+				-> DefineMemory
+				-> Control
+				;
+
+Operators	-> ADC  AluAdrModes			//ALU Opcodes
+			-> AND  AluAdrModes
+			-> EOR  AluAdrModes
+			-> ORA  AluAdrModes
+			-> CMP  AluAdrModes
+			-> SBC  AluAdrModes
+			-> LDA  AluAdrModes
+			-> STA  StaAddressingModes
+			-> ASL ShiftAddressingModes		//shift addressing modes
+			-> ROL ShiftAddressingModes
+			-> LSR ShiftAddressingModes 
+			-> ROR ShiftAddressingModes 
+			-> BCC RelAddressingMode			// Branch Op Codes
+			-> BCS RelAddressingMode 
+			-> BEQ RelAddressingMode 
+			-> BMI RelAddressingMode 
+			-> BNE RelAddressingMode 
+			-> BPL RelAddressingMode 
+			-> BVC RelAddressingMode
+			-> BVS RelAddressingMode 
+			-> BIT BitAddressModes		//BIT opcode
+			-> BRK			//Implied Addressing Mode 
+			-> CLC 
+			-> CLD 
+			-> CLI 
+			-> CLV 
+			-> DEX 
+			-> DEY 
+			-> INX 
+			-> INY 
+			-> NOP 
+			-> PHA 
+			-> PLA 
+			-> PHP 
+			-> PLP 
+			-> RTI 
+			-> RTS 
+			-> SEC 
+			-> SED 
+			-> SEI 
+			-> TAX 
+			-> TAY 
+			-> TXA 
+			-> TYA 
+			-> TXS 
+			-> TSX 
+			-> INC IncAddressingMOdes		//Inc/Dec Addressing Modes
+			-> DEC IncAddressingMOdes
+			-> JMP JumpAddressingModes	// Jump
+			-> JSR CallAddressingMode		// Jump To Subroutine
+			-> CPX  CPXAddressingMode
+			-> CPY  CPXAddressingMode
+			-> LDX LdxAddressingMode
+			-> LDY LdyAddressingMOde
+			-> STX StxAddressingMode
+			-> STY StyAddressingMode
+			-> .
+			;
+
+DefineStorage	-> DS AsmConstant;
+
+DefineMemory	-> DB AsmConstList
+				-> DW AsmConstList
+				-> DL AsmConstList
+				;
+
+Control	-> SECTIONTOKEN STRING
+		-> ORG AsmConstant
+		-> PROCESSOR ProcessorType
+		;
+
+Processortype	-> R6502
+				-> WD65C02
+				-> WD65C816
+				;
+
+AluAdrModes	-> AsmConstant OptIndexReg
+			-> AluAdrModes_1
+			;
+AluAdrModes_1	-> '#' AsmConstant
+				-> '(' Indirect
+			;
+
+Indirect	-> AsmConstant  Indirect_1
+Indirect_1	-> ')' ',' YREG
+			-> ',' XREG ')'
+			;
+
+StaAddressingModes	-> AsmConstant OptIndexReg
+					-> '(' Indirect
+					;
+
+ShiftAddressingModes	-> AREG
+						-> AsmConstant OptXReg
+						;
+
+RelAddressingMode	-> AsmConstant;
+
+BitAddressModes	-> AsmConstant;
+
+IncAddressingMOdes	-> AsmConstant OptXReg;
+
+JumpAddressingModes	-> AsmConstant
+					-> '(' AsmConstant ')'
+					;
+
+CallAddressingMode	-> AsmConstant;
+
+LdxAddressingMode	-> AsmConstant OptYReg
+					-> '#' AsmConstant
+					;
+
+CPXAddressingMode	-> AsmConstant
+					-> '#' AsmConstant
+					;
+
+StxAddressingMode	-> AsmConstant OptYReg;
+
+LdyAddressingMode	-> AsmConstant OptXReg
+					-> '#' AsmConstant
+					;
+
+StyAddressingMode	-> AsmConstant OptXReg;
+
+OptIndexReg		-> ',' OptIndexReg_1
+				-> .
+				;
+OptIndexReg_1	-> XREG
+				-> YREG
+				;
+
+OptXReg			-> ',' XREG
+				-> .
+				;
+
+OptYReg			-> ',' YREG
+				-> .
+				;
+
+AsmConstList	-> UpperLower AsmConstList_1
+AsmConstList_1	-> ',' UpperLower AsmConstList_1
+				;
+
+UpperLower	-> '>' UpperLower
+			-> '<' UpperLower
+			-> AsmConstant
+			;
+
+AsmConstant		-> IDENT
+				-> LABLE
+				-> NUMBER
+				-> '*'
+				;
+
+END_GRAMMAR

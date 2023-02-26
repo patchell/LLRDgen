@@ -159,6 +159,7 @@ CLexer::Token CLexer::Lex()
 				{
 					c = LexGet();
 				} while (c != '\n');
+				LexUnGet(c);
 			}
 			else
 				LexUnGet(c);
@@ -320,7 +321,12 @@ CLexer::Token CLexer::Expect(CLexer::Token LookaHeadToken, CLexer::Token Expecte
 		LookaHeadToken = Lex();
 	else
 	{
-		fprintf(stderr, "Line %d: Unexpected Token:Got %d Expected %d\n", m_Line, LookaHeadToken, Expected);
+		fprintf(stderr, "Line %d: Column:%d Unexpected Token:Got %d Expected %d\n", 
+			m_Line, 
+			m_Col,
+			LookaHeadToken, 
+			Expected
+		);
 		exit(1);
 	}
 	return LookaHeadToken;

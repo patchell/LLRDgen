@@ -154,6 +154,9 @@
     <None Include="test3.gram">
       <Filter>Grammars</Filter>
     </None>
+    <None Include="AS65.gram">
+      <Filter>Grammars</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log.txt">

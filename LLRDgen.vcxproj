@@ -171,6 +171,7 @@
     <ClInclude Include="SymTab.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AS65.gram" />
     <None Include="Bin\LLRDgen.exe" />
     <None Include="README.md" />
     <None Include="Test.gram" />

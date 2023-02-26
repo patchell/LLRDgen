@@ -57,7 +57,7 @@ int main(int arcg, char *argv[])
 		fclose(pOUT);
 		exit(1);
 	}
-	fprintf(stderr, "RDgen Ver 0.0.1\n");
+	fprintf(stderr, "RDgen Ver 0.0.2\n");
 	fprintf(stderr, "InFile:%s  OutFile:%s\n",
 		argv[1],
 		aOutFile
