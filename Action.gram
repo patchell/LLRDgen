@@ -1,0 +1,378 @@
+TERMINALS
+	"IDENT" = 256,
+	"GLOBALS",
+	"ROUTINES",
+	"MODULE",
+	"RETURN",
+	"PROC",
+	"FUNC",
+	"FUNC_IDENT",
+	"PROC_IDENT",
+	"IF",
+	"FOR",
+	"WHILE",
+	"DO",
+	"OD",
+	"EXIT",
+	"THEN",
+	"FI",
+	"ELSEIF",
+	"ELSE",
+	"UNTILL",
+	"TO",
+	"STEP",
+	"ASM",
+	"ENDASM",
+	"OR",
+	"AND",
+	"GTEQ",
+	"LTEQ",
+	"NUMBER",
+	"DEFINE",
+	"TYPE",
+	"RECORDTYPE",
+	"BOOL",
+	"CHAR",
+	"BYTE",
+	"CARD",
+	"INT",
+	"POINTER",
+	"ARRAY",
+	"BEGIN",
+	"END",
+	"@",
+	".",
+	"^",
+	"!",
+	"&",
+	"%",
+	"#",
+	">",
+	"<",
+	"=",
+	"==+",
+	"==-",
+	"==*",
+	"==/",
+	"==MOD",
+	"==&",
+	"==!",
+	"==XOR",
+	"==%",
+	"==LSH",
+	"==RSH",
+	"[",
+	"]",
+	",",
+	";",
+	"+",
+	"-",
+	"*",
+	"/",
+	"MOD",
+	"LSH",
+	"RSH",
+	"(",
+	")"
+END_TERMINALS
+
+GRAMMAR
+
+Action65	->Program;
+
+
+Program	-> 'MODULE' Module
+		-> Module
+			;
+
+Module		-> SysDecls Routine Module_1;
+Module_1	-> 'MODULE' SysDecls Routine Module_1
+			-> .
+			;
+
+Routine	-> 'PROC' ProcDecl 'BEGIN' ProcBody 'END' Routine
+		-> 'FUNC' FundType ProcDecl 'BEGIN' ProcBody 'END' Routine
+		-> .
+		;
+
+ProcBody	-> SysDecls ProcBody_1;
+ProcBody_1	-> Statements;
+
+ProcDecl-> Ident ProcInit '(' VarDecls ')';
+
+ProcInit -> '=' Address
+		-> .
+		;
+
+Address	-> CompConst;
+
+
+FUNCcall	-> 'FUNC_IDENT' '(' VarDecls ')';
+PROCcall	-> 'PROC_IDENT' '(' VarDecls ')';
+
+Statements	-> 'IDENT' MemContentsType ASSIGNstmt Statements
+			-> 'IF' IfStmt Statements
+			-> 'FOR' ForStmt Statements
+			-> 'WHILE' WhileLoop Statements
+			-> 'DO' DoLoop Statements
+			-> 'EXIT' Statements
+			-> 'PROC_IDENT' ProcCall Statements
+			-> 'FUNC_IDENT' FuncCall Statements
+			-> 'RETURN' OptReturnData Statements
+			-> 'BEGIN' Statements 'END' Statements
+			-> '[' CodeBlock ']'
+			-> .
+			;
+
+OptReturnData	-> '(' ArithExpr ')'
+				-> .
+				;
+
+ASSIGNstmt	->  '=' ArithExpr
+			->  '==+' ArithExpr
+			->  '==-' ArithExpr
+			->  '==*' ArithExpr
+			->  '==/' ArithExpr
+			->  '==MOD' ArithExpr
+			->  '==&' ArithExpr
+			->  '==!' ArithExpr
+			->  '==XOR' ArithExpr
+			->  '==%' ArithExpr
+			->  '==LSH' ArithExpr
+			->  '==RSH' ArithExpr
+			-> .
+			;
+
+IFstmt		-> CondExpr 'THEN' Statements ELSEIFlist ELSEstmt 'FI';
+ELSEIFlist	-> ElseIf ELSEIFlist_1;
+ELSEIFlist_1-> 'ELSEIF' CondExpr 'THEN' Statements ELSEIFlist_1
+			-> .
+			;
+ELSEstmt	-> 'ELSE' Statements
+			-> .
+			;
+
+DOloop	-> Statements UNTILLstmt 'OD';
+UNTILLstmt	-> 'UNTILL' CondExpr
+			-> .
+			;
+
+WHILEloop	-> CondExpr 'DO' Statements 'OD';
+
+FORloop		-> Identifier '=' Start 'TO' Finish STEPoption 'DO' Statements 'OD';
+Start		-> ArithExpr;
+Finish		-> ArithExpr;
+STEPoption	-> 'STEP' ArithExpr
+			-> .
+			;
+
+CodeBlock	-> CompConst CodeBlock_1;
+CodeBlock_1	-> ',' CompConst CodeBlock_1
+			-> .
+			;
+//--------------------------------------
+// Arithmetic Expressions
+//--------------------------------------
+
+ArithExpr	-> LogicalAND LogicalOR_1;
+LogicalOR_1	-> 'OR' LogicalAND LogicalOR_1
+			-> .
+			;
+
+LogicalAND		-> RelOperation LogicalAND_1;
+LogicalAND_1	-> 'AND' RelOperation LogicalAND_1
+				-> .
+				;
+
+RelOperation	-> RelEquals RelOperation_1;
+RelOperation_1	-> '>' RelEquals RelOperation_1
+				-> '<' RelEquals RelOperation_1
+				-> 'GTEQ' RelEquals RelOperation_1
+				-> 'LTEQ' RelEquals RelOperation_1
+				-> .
+				;
+
+RelEquals	-> BitwiseOR RelEquals_1;
+RelEquals_1	-> '=' BitwiseOR RelEquals_1
+			-> '#' BitwiseOR RelEquals_1
+			-> .
+			;
+
+BitwiseOR	-> BitwiseAND BitwiseOR_1;
+BitwiseOR_1	-> '%' BitwiseAND BitwiseOR_1
+			-> .
+			;
+
+BitwiseAND		-> BitwiseXOR BitwiseAND_1;
+BitwiseAND_1	-> '&' BitwiseXOR BitwiseAND_1
+				-> .
+				;
+
+BitwiseXOR	-> AddExpr SimpleRelExpr_1;
+SimpleRelExpr_1	-> '!' AddExpr SimpleRelExpr_1
+				-> .
+				;
+
+AddExpr	-> ShifExpr AddExpr_1;
+AddExpr_1	-> '+' ShifExpr AddExpr_1
+			-> '-' ShifExpr AddExpr_1
+			-> .
+			;
+
+ShifExpr	-> MultExpr ShiftExpr_1;
+ShiftExpr_1	-> 'LSH' MultExpr ShiftExpr_1
+			-> 'RSH' MultExpr ShiftExpr_1
+			-> .
+			;
+
+MultExpr	-> Unary MultExpr_1;
+MultExpr_1	-> '*' Unary MultExpr_1
+			-> '/' Unary MultExpr_1
+			-> 'MOD' Unary MultExpr_1
+			-> .
+			;
+
+Unary	-> '-' Unary
+		-> Factor
+		;
+
+Factor	-> Number
+		-> FUNCcall
+		-> '(' ArithExpr ')'
+		-> MemContents
+		;
+
+//-------------------------------
+// Compiler Constants
+//-------------------------------
+CompConst		-> BaseCompConst CompConst_1;
+CompConst_1		-> '+' BaseCompConst CompConst_1
+				-> '-' BaseCompConst CompConst_1
+				-> .
+				;
+
+BaseCompConst	-> Ident
+				-> Number
+				-> PtrRef
+				-> '*'
+				;
+
+//-------------------------------------------
+// Declarations
+//-------------------------------------------
+FundType	-> 'BOOL' 
+			-> 'CHAR' OptModifier
+			-> 'BYTE' OptModifier
+			-> 'INT' OptModifier
+			-> 'CARD' OptModifier
+			;
+
+OptModifier	-> 'POINTER'
+			-> .
+			;
+
+VarDecls	-> 'RECORDTYPE' RecIdentLst
+			-> 'CHAR' CharDecl
+			-> 'BYTE' ByteDecl
+			-> 'INT' IntDecl
+			-> 'CARD' CardDecl
+			-> 'BOOL' BOOLDecl
+			-> .
+			;
+
+SysDecls	-> SysDecl SysDecls_1;
+SysDecls_1	-> ';' SysDecl SysDecls_1
+			-> .
+			;
+
+SysDecl		-> 'DEFINE' DefList
+			-> 'TYPE' RecIdentList
+			-> 'RECORDTYPE' Modifier VarList
+			-> 'CHAR' Modifier VarList
+			-> 'BYTE' Modifier VarList
+			-> 'INT' Modifier VarList
+			-> 'CARD'D Modifier VarList
+			-> 'BOOL' VarList
+			-> .
+			;
+
+DefList	-> Def DefList_1;
+DefList_1	-> ',' Def DefList_1
+			-> .
+			;
+
+Def		-> Ident '=' Constant;
+
+
+RecIdentList	-> RecIdent  RecIdentList;
+RecIdentList_1	-> ',' RecIdent RecIdentList_1
+				-> .
+				;
+
+RecIdent	-> Ident '=' '[' FieldInit ']'
+			-> .
+			;
+
+
+RecordDecl	-> RecIdentLst;
+
+RecIdentLst		-> RecIdent RecIdentLst_1
+RecIdentLst_1	-> ',' RecIdent RecIdentLst_1
+				-> .
+				;
+
+RecIdent	-> Ident OptRecInit;
+OptRecInit	-> '=' Address
+			-> .
+			;
+
+BOOLDecl	-> Ident OptInit BOOLDecl_1;
+BOOLDecl_1	-> ',' Ident OptInit BOOLDecl_1
+			-> .
+			;
+
+VarList		-> VarName VarList_1;
+VarList_1	-> ',' VarName VarList_1
+			-> .
+			;
+VarName	->  Ident OptInit;
+OptInit		-> '=' CompConst
+			-> .
+			;
+
+Modifier	-> 'POINTER'
+			-> 'ARRAY' ArrayStuff
+			-> .
+			;
+
+ArrayStuff	-> '(' CompConst ')' OptArrayInit
+			-> .
+			;
+OptArrayInit	-> '=' OptArrayInit_1
+				-> .
+				;
+OptArrayInit_1	-> '[' OptArrayInit_2 ']';
+OptArrayInit_2	-> CompConst OptArrayInit_3;
+OptArrayInit_3	-> ',' CompConst OptArrayInit_3
+				-> .
+				;
+
+//----------------------------------
+//Variable References
+//Memory References
+//----------------------------------
+
+MemContents	-> Ident MemContentsType
+			-> '@' Ident
+			;
+
+MemContentsType		-> '(' ArithExpr ')'	//array ref
+					-> '^'	// Pointer Dereference
+					-> '.' Ident	//record ref
+					-> .
+					;
+
+Ident	-> 'IDENT'
+Number	-> 'NUMBER'
+		;
+END_GRAMMAR

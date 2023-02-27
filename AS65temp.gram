@@ -60,7 +60,6 @@ TERMINALS
 		"TXS",
 		"TSX",
 		"ENDOFOPCODES",
-		"IDENT",
 		"AREG",
 		"XREG",
 		"YREG",
@@ -266,7 +265,7 @@ UpperLower	-> '>' UpperLower
 			;
 
 AsmConstant		-> 'IDENT'
-				-> 'LABEL'
+				-> 'LABLE'
 				-> 'NUMBER'
 				-> '*'
 				;

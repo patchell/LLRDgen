@@ -133,6 +133,8 @@ CLexer::Token CLexer::Lex()
 	int c;
 	Token TokenValue = Token(0);
 
+//	if (m_Line >= 285)
+//		printf("Boo-Boo Line:%d\n", m_Line);
 	m_LexBuffIndex = 0;
 	while (Loop)
 	{
@@ -162,7 +164,10 @@ CLexer::Token CLexer::Lex()
 				LexUnGet(c);
 			}
 			else
+			{
 				LexUnGet(c);
+				printf("Fix Big Problem\n");
+			}
 			break;
 		case '0':case '1':case '2':case '3':case '4':
 		case '5':case '6':case '7':case '8':case '9':
@@ -227,19 +232,45 @@ CLexer::Token CLexer::Lex()
 			TokenValue = Token(c);
 			Loop = FALSE;
 			break;
-		case '\'':	// Literal Terminal Token
-			m_aLexBuff[0] = LexGet();
-			m_aLexBuff[1] = 0;
+		case '\'':	// Terminal Token
+			m_LexBuffIndex = 0;
+			auxLoop = TRUE;
+			while (auxLoop)
+			{
+				c = LexGet();
+				if (c == '\'')
+				{
+					m_aLexBuff[m_LexBuffIndex] = 0;
+					auxLoop = FALSE;
+				}
+				else
+				{
+					m_aLexBuff[m_LexBuffIndex++] = c;
+				}
+			}
 			m_pLexSymbol = (CSymbol*)LookupSymbol(m_aLexBuff);
 			if (m_pLexSymbol)
 			{
 				TokenValue = Token(m_pLexSymbol->GetTokenValue());
+				if (TokenValue == Token::NONTERMINAL)
+				{
+					fprintf(stderr, "ERROR Line:%d Col:%d  Using %s as a Terminal\n",
+						m_Line,
+						m_Col,
+						m_pLexSymbol->GetName()
+					);
+					exit(4);
+				}
 				Loop = FALSE;
 			}
 			else
 			{
-				fprintf(stderr, "Undefined Token %s\n", m_aLexBuff);
-				Loop = FALSE;
+				fprintf(stderr, "Line %d Col %d Undefined Token %s\n", 
+					m_Line,
+					m_Col,
+					m_aLexBuff
+				);
+				exit(7);
 			}
 			LexGet();	//get rid of the following '
 			break;
@@ -282,6 +313,16 @@ CLexer::Token CLexer::Lex()
 				{
 					TokenValue = Token(m_pLexSymbol->GetTokenValue());
 					Loop = FALSE;
+					if (TokenValue == Token::TERMINAL)
+					{
+						fprintf(stderr, "Line %d  Col %d\n", m_Line, m_Col);
+						fprintf(stderr, "Terminal %s Not used properly\n", m_aLexBuff);
+						fprintf(stderr, "Terminals Must be surrounded by \' marks'\n");
+						fprintf(stderr, "For Example:\'%s\' rather than just %s\n",
+							m_aLexBuff,m_aLexBuff
+						);
+						exit(6);
+					}
 				}
 				else
 				{
@@ -321,11 +362,42 @@ CLexer::Token CLexer::Expect(CLexer::Token LookaHeadToken, CLexer::Token Expecte
 		LookaHeadToken = Lex();
 	else
 	{
-		fprintf(stderr, "Line %d: Column:%d Unexpected Token:Got %d Expected %d\n", 
+		char* pExp = new char[256], * pGot = new char[256];
+		CLexer::KeyWord* pKY = 0;
+		
+		if (LookaHeadToken >= Token(256))
+		{
+			pKY = FindKeyword(LookaHeadToken);
+			if (pKY)
+				strcpy_s(pGot, 256, pKY->m_Name);
+			else
+				fprintf(stderr, "Unknown Token %d\n", LookaHeadToken);
+		}
+		else
+		{
+			pGot[0] = int(LookaHeadToken);
+			pGot[1] = 0;
+		}
+		if (Expected >= Token(256))
+		{
+			pKY = FindKeyword(Expected);
+			if (pKY)
+				strcpy_s(pExp, 256, pKY->m_Name);
+			else
+				fprintf(stderr, "Unknown Token %d\n", Expected);
+		}
+		else
+		{
+			pExp[0] = int(Expected);
+			pGot[1] = 0;
+		}
+		fprintf(stderr, "Line %d: Column:%d Unexpected Token:Got %d:%s Expected %d:%s\n", 
 			m_Line, 
 			m_Col,
 			LookaHeadToken, 
-			Expected
+			pGot,
+			Expected,
+			pExp
 		);
 		exit(1);
 	}
@@ -391,13 +463,18 @@ CLexer::KeyWord* CLexer::FindKeyword(Token KeywordToken)
 
 	while (Loop)
 	{
-		if (KeyWords[i].m_TokenID == KeywordToken)
+		if (KeyWords[i].m_TokenID != Token::ENDOFTOKENS)
 		{
-			pKeyword = (KeyWord*)&KeyWords[i];
-			Loop = 0;
+			if (KeyWords[i].m_TokenID == KeywordToken)
+			{
+				pKeyword = (KeyWord*)&KeyWords[i];
+				Loop = 0;
+			}
+			else
+				++i;
 		}
 		else
-			++i;
+			Loop = 0;
 	}
 	return pKeyword;
 }
