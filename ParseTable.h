@@ -19,11 +19,14 @@ public:
 	int GetTerminalIndex(CLexeme* pLex);
 	int GetTerminalIndex(CSymbol* pSym);
 	int GetNonTerminalIndex(CSymbol* pSym);
-	int CheckForConflicts();
+	int GetNumberOfEntries();
+	int CheckForConflicts(FILE *pOut);
 	void SetTerminalSet(CSet* pTrml) { m_pTerminalSet = pTrml; }
 	CSet* GetTerminalSet() { return m_pTerminalSet; }
 	void SetNonTerminalSet(CSet* pNTRML) { m_pNonTerminalSet = pNTRML; }
 	CSet* GetNonTerminalSet() { return m_pNonTerminalSet; }
+	int GetRows() { return m_Rows; }
+	int GetCols() { return m_Cols; }
 	void Print(FILE* pO);
 };
 

@@ -5,6 +5,8 @@ CParseTableEntry::CParseTableEntry()
 	m_pHead = 0;
 	m_pTail = 0;
 	m_nMembers = 0;
+	m_pColName = 0;
+	m_pRowName = 0;
 }
 
 CParseTableEntry::~CParseTableEntry()
@@ -37,7 +39,6 @@ void CParseTableEntry::AddMember(CParseTableEntryMember* pPTE)
 	if (DoesNotContains(pPTE->GetProduction()))
 	{
 		m_nMembers++;
-		m_nEntries++;
 		if (GetTail())
 		{
 			GetTail()->SetNext(pPTE);
@@ -52,14 +53,33 @@ void CParseTableEntry::AddMember(CParseTableEntryMember* pPTE)
 	}
 }
 
-void CParseTableEntry::Print(FILE* pO, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
+void CParseTableEntry::Print(
+	FILE* pO, 
+	BOOL bLHS, 
+	BOOL bEOL, 
+	int nIndentSpaces,
+	BOOL bNumberLines
+)
 {
+	int Item = 0;
 	CParseTableEntryMember* pPTEM;
+	char* s = 0;
 
 	pPTEM = GetHead();
 	while (pPTEM)
 	{
-		pPTEM->Print(pO, bLHS, bEOL, nIndentSpaces);
+		if (bNumberLines)
+		{
+			if (s == 0)
+			{
+				s = new char[256];
+				IndentString(s, nIndentSpaces);
+				nIndentSpaces = 0;
+			}
+			if(pO) fprintf(pO, "%s%d. ", s, ++Item);
+		}
+		if(pO) pPTEM->Print(pO, bLHS, bEOL, 1);
 		pPTEM = pPTEM->GetNext();
 	}
+	if(s) delete[] s;
 }

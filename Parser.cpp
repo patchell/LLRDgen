@@ -17,9 +17,15 @@ BOOL CParser::Create(FILE* pIn, FILE* pOut)
 {
 	m_pOut = pOut;
 	m_Lex.Create(pIn);
-	GetTerminalSet()->Create("Terminals");
-	GetNonTerminalSet()->Create("Non Terminals");
+	GetTerminalSet()->Create("Terminals", "TERMINALS");
+	GetNonTerminalSet()->Create("Non Terminals","NONTERMINALS");
 	return TRUE;
+}
+
+void CParser::CloseFiles()
+{
+	fclose(m_pOut);
+	m_Lex.CloseFiles();
 }
 
 void CParser::Parse()
@@ -197,6 +203,9 @@ CLexer::Token CParser::Production(CLexer::Token LookaHeadToken)
 			pSym->Print(LogFile());
 		}
 		GetLexer()->GetSymTab()->AddSymbol(pSym);
+		pMember = new CSetMember;
+		pMember->Create(pSym);
+		GetNonTerminalSet()->AddToSet(pMember);
 		LookaHeadToken = CLexer::Token::NONTERMINAL;
 	}
 	else if (LookaHeadToken == CLexer::Token::NONTERMINAL)

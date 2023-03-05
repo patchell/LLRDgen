@@ -1,5 +1,16 @@
 Readme.nd
 
+March 24, 2023
+	I am in an Iterim Testing phase.  I am generating a list
+	of conflicts (I hope) and am using that information to try and
+	write a more or less complex grammar.  I fixed some of the
+	deficiencies.  Even though I have written code that hopefully
+	generates correct info in order to build a parse table does not
+	mean that I know how to write grammars. :)  I did get the "Action"
+	grammar down to 0 conflicts, but as it turned out the grammar was
+	kind of screwy which prompted me to check for undefined and orphandd
+	Non Terminals.  Still, I seem to be making progress.
+
 Feb 23, 2023
 	The parse table looks like it is being
 	generated correctly.  It at least works with

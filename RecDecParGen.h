@@ -11,6 +11,7 @@ public:
 	CRecDecParGen();
 	virtual ~CRecDecParGen();
 	BOOL Create(FILE* pIn, FILE* pOut, FILE* pLog);
+	void CloseFiles();
 	BOOL Run();
 	void CreateFirstSets(FILE* pOut);
 	void CreateFollowSets(FILE* pOut);

@@ -50,8 +50,8 @@ private:
 	int m_UngetBuffer;
 	char m_aLexBuff[4096];
 	int m_LexBuffIndex;
-	int m_Line;
-	int m_Col;
+	static inline int m_Line;
+	static inline int m_Col;
 	int m_Number;
 	CSymbol* m_pLexSymbol;
 	inline static CSymbol m_EmptySymbol;
@@ -60,6 +60,8 @@ public:
 	CLexer();
 	virtual ~CLexer();
 	BOOL Create(FILE *pIn);
+	void CloseFiles();
+	static void Error(FILE* pO, const char* pErrorString);
 	int LexGet();
 	void LexUnGet(int Value) {
 		m_UngetBuffer = Value;

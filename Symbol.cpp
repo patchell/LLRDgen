@@ -2,13 +2,9 @@
 
 BOOL CSymbol::Create(const char* pName)
 {
-	char* s = new char[128];
-	sprintf_s(s, 128, "%s First Set", pName);
-	m_FirstSet.Create(s);
-	sprintf_s(s, 128, "%s Follow Set", pName);
-	m_FollowSet.Create(s);
+	m_FirstSet.Create(pName, "FIRST");
+	m_FollowSet.Create(pName,"FOLLOW");
 	CBin::SetName(pName);
-	delete[] s;
 	return TRUE;
 }
 

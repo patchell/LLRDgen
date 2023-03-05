@@ -81,7 +81,7 @@ void CLexeme::Print(FILE* pO, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 	char* s = new char[256];
 
 	fprintf(pO, "%s%s", 
-		IndentString(s, nIndentSpaces+2),
+		IndentString(s, nIndentSpaces),
 		GetLexemeSymbol()->GetName());
 	delete[] s;
 }

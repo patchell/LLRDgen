@@ -31,6 +31,7 @@ extern 	CRecDecParGen Parser;
 extern FILE* LogFile();
 extern const char* TrueFalse(BOOL b);
 extern char* IndentString(char* s, int nSpaces);
+extern void CloseAllFiles();
 
 #endif
 

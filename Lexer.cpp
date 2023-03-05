@@ -67,6 +67,18 @@ BOOL CLexer::Create(FILE* pIn)
 	return TRUE;
 }
 
+void CLexer::CloseFiles()
+{
+	fclose(m_pInputFile);
+}
+
+void CLexer::Error(FILE* pO, const char* pErrorString)
+{
+	fprintf(pO, "Line %d  Col %d Error:%s\n", m_Line, m_Col, pErrorString);
+	CloseAllFiles();
+	exit(9);
+}
+
 int CLexer::LexGet()
 {
 	int c = 0;
@@ -272,7 +284,6 @@ CLexer::Token CLexer::Lex()
 				);
 				exit(7);
 			}
-			LexGet();	//get rid of the following '
 			break;
 		default:	//Keywords and Identifiers
 			m_aLexBuff[m_LexBuffIndex++] = c;

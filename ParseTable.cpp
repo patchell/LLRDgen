@@ -123,7 +123,7 @@ BOOL CParseTable::Rule1(CLexeme* pY)
 	int Row, Col;
 
 	pProductionRule = pY->GetLexemeSymbol()->GetHead();
-	FIRSTy.Create("TempFirstY");
+	FIRSTy.Create("TempFirstY", "FIRST");
 	fprintf(LogFile(), "################> Rule 1 <#################\n");
 	while (pProductionRule)
 	{
@@ -174,7 +174,7 @@ BOOL CParseTable::Rule2(CLexeme* pY)
 	pY->GetFollowSet()->Print(LogFile(), FALSE, TRUE, 0);
 	m_pTerminalSet->Print(LogFile(), FALSE, TRUE, 0);
 	pProductionRule = pY->GetLexemeSymbol()->GetHead();
-	FIRSTy.Create("TempFirstY");
+	FIRSTy.Create("TempFirstY", "FIRST");
 	fprintf(LogFile(), "############< Rule 2 >############\n");
 	while (pProductionRule)
 	{
@@ -251,6 +251,7 @@ int CParseTable::GetTerminalIndex(CSymbol* pSym)
 	return Index;
 }
 
+
 int CParseTable::GetNonTerminalIndex(CSymbol* pSym)
 {
 	int Index = 0;
@@ -268,14 +269,62 @@ int CParseTable::GetNonTerminalIndex(CSymbol* pSym)
 	return Index;
 }
 
-int CParseTable::CheckForConflicts()
+int CParseTable::GetNumberOfEntries()
 {
-	return 0;
+	int TotalEntries = 0;
+	int i, j;
+	int ni, nj;
+	CParseTableEntry* pEntry;
+
+	ni = GetRows();
+	nj = GetCols();
+	for (i = 0; i < ni; ++i)
+	{
+		for (j = 0; j < nj; ++j)
+		{
+			pEntry = m_matParseTable(i, j);
+			if (pEntry->GetNumMembers() > 0)
+			{
+				++TotalEntries;
+			}
+		}
+	}
+	return TotalEntries;
+}
+
+int CParseTable::CheckForConflicts(FILE* pOut)
+{
+	int TotalConflicts = 0;
+	int i, j;
+	int ni, nj;
+	CParseTableEntry* pEntry;
+
+	ni = GetRows();
+	nj = GetCols();
+	for (i = 0; i < ni; ++i)
+	{
+		for (j = 0; j < nj; ++j)
+		{
+			pEntry = m_matParseTable(i, j);
+			if (pEntry->GetNumMembers() > 1)
+			{
+				fprintf(pOut, "%d(\'%s\',\'%s\')\n",
+					pEntry->GetNumMembers(),
+					m_ppNonTerminalSymbols[i]->GetName(),
+					m_ppTerminalSymbols[j]->GetName()
+				);
+				m_matParseTable(i, j)->Print(pOut, TRUE, TRUE, 10,TRUE);
+				TotalConflicts += pEntry->GetNumMembers();
+			}
+		}
+	}
+	return TotalConflicts;
 }
 
 void CParseTable::Print(FILE* pO)
 {
 	int i, j;
+	BOOL bNumberLines = FALSE;
 
 	if (pO)
 		fprintf(pO, "xxxxxxxxxxxx Parse Table xxxxxxxxxxxxxxxxx\n");
@@ -285,11 +334,16 @@ void CParseTable::Print(FILE* pO)
 		{
 			if (m_matParseTable(i, j)->GetNumMembers())
 			{
-				fprintf(pO, "(\'%s\',\'%s\') ",
+				if(pO) fprintf(pO, "(\'%s\',\'%s\')\n",
 					m_ppNonTerminalSymbols[i]->GetName(),
 					m_ppTerminalSymbols[j]->GetName()
 				);
-				m_matParseTable(i, j)->Print(pO, TRUE, TRUE, 0);
+				if (pO)
+				{
+					if (m_matParseTable(i, j)->GetNumMembers() > 1)
+						bNumberLines = TRUE;
+					m_matParseTable(i, j)->Print(pO, TRUE, TRUE, 5, bNumberLines);
+				}
 			}
 		}
 	}

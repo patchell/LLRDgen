@@ -13,20 +13,49 @@ BOOL CRecDecParGen::Create(FILE* pIn, FILE* pOut, FILE* pLog)
 {
 	m_pLog = pLog;
 	CParser::Create(pIn, pOut);
-	GetNullableSet()->Create("Nullables");
-	GetNotNullables()->Create("NOT_Nullables");
+	GetNullableSet()->Create("Nullables","NULLABLES");
+	GetNotNullables()->Create("NOT_Nullables", "NOTNULLABLE");
 	return TRUE;
+}
+
+void CRecDecParGen::CloseFiles()
+{
+	fclose(m_pLog);
+	CParser::CloseFiles();
 }
 
 BOOL CRecDecParGen::Run()
 {
 	CSetMember* pDollarSign;
+	int UndefinedNonTerminals;
+	int Orphans;
 	//-----------------------------------
 	// Parse the Grammar
 	//-----------------------------------
 	Parse();
 	fprintf(LogFile(), "*************  Print Out Grammar Structure************\n");
 	PrintGrammar(LogFile());
+	//------------------------------------
+	// Check for Undefined Non Terminals
+	//------------------------------------
+	UndefinedNonTerminals = GetLexer()->GetSymTab()->CheckForUnUsedNonTerminala(LogFile());
+	fprintf(stderr, "Undefined Non Terminals:%d\n", UndefinedNonTerminals);
+	if (UndefinedNonTerminals)
+	{
+		CloseAllFiles();
+		exit(10);
+	}
+	fprintf(LogFile(), "******************************\n");
+	fprintf(LogFile(), "******* Check For Orphans ****\n");
+	fprintf(LogFile(), "******************************\n");
+	Orphans = GetLexer()->GetSymTab()->CheckForOrphans(stderr, GetNonTerminalSet());
+	Orphans = GetLexer()->GetSymTab()->CheckForOrphans(LogFile(),GetNonTerminalSet());
+	fprintf(stderr, "Total Orphans = %d\n", Orphans);
+	if (Orphans)
+	{
+		CloseAllFiles();
+		exit(11);
+	}
 	// Add $ to terminal list
 	pDollarSign = new CSetMember;
 	pDollarSign->Create(CLexer::GetEndOfTokenStream());
@@ -37,15 +66,14 @@ BOOL CRecDecParGen::Run()
 	//-----------------------------------
 	fprintf(LogFile(), "********** Non Terminals Set **********\n");
 	GetNonTerminalSet()->Print(LogFile(),FALSE,TRUE,0);
-//	GetTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
 	//------------------------------------
 	// Create Nullable Set
 	//------------------------------------
 	fprintf(LogFile(), "*********** Build Nullable Set **********\n");
 	CreateNullableSet(LogFile());
-	GetNullableSet()->Print(LogFile());
+	GetNullableSet()->Print(LogFile(),FALSE,TRUE,0);
 	fprintf(LogFile(), "\n");
-	GetNonTerminalSet()->Print(LogFile());
+	GetNonTerminalSet()->Print(LogFile(),FALSE,TRUE,0);
 	fprintf(LogFile(), "\n");
 	fprintf(LogFile(), "****************Create NOT nullable set ************************\n");
 	CreateNotNullablesSet(LogFile());
@@ -70,7 +98,18 @@ BOOL CRecDecParGen::Run()
 	fprintf(LogFile(), "---------------- Create Parse Table --------------\n");
 	GetParseTable()->Create(GetTerminalSet(), GetNonTerminalSet());
 	GetParseTable()->FillTable();
-	fprintf(LogFile(), "Table Entries = %d\n", CParseTableEntry::GetNumEntries());
+	fprintf(LogFile(), "Table Entries = %d\n", 
+		GetParseTable()->GetNumberOfEntries());
+	//--------------------------------------------
+	// Check For Conflicts
+	//--------------------------------------------
+	fprintf(LogFile(), "------------ Check For Conflicts-------------\n");
+	fprintf(LogFile(), "Conflicts = %d\n",
+		GetParseTable()->CheckForConflicts(LogFile())
+	);
+	fprintf(stderr , "Conflicts = %d\n",
+		GetParseTable()->CheckForConflicts(stderr)
+	);
 	return 0;
 }
 
@@ -244,7 +283,7 @@ void CRecDecParGen::CreateNullableSet(FILE* pOut)
 			pRule = pSymLHS->GetHead();
 			while (pRule && !bNull)
 			{
-				fprintf(LogFile(), "%s->\n", pSymLHS->GetName());
+				pRule->Print(LogFile(), TRUE, TRUE, 0);
 				bNull |= pRule->DoesThisRuleHaveEpsilon();
 				if (bNull)
 				{

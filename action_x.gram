@@ -50,6 +50,7 @@ TERMINALS
 	">",
 	"<",
 	"=",
+	":=",
 	"==+",
 	"==-",
 	"==*",
@@ -77,11 +78,12 @@ TERMINALS
 END_TERMINALS
 
 GRAMMAR
-
+//--------------------------------
+// Program Structure
+//--------------------------------
 Action65	->Modules;
 
 Modules		-> 'MODULE' Modules_1
-//			-> Modules Modules_1
 			;
 Modules_1	-> 'MODULE' Module Modules_1
 			-> .
@@ -99,7 +101,6 @@ Routine	-> 'PROC' ProcDecl 'BEGIN' ProcBody
 		-> 'FUNC' FundType FuncDecl 'BEGIN' ProcBody
 		;
 
-
 ProcBody	-> SysDecls ProcBody_1;
 ProcBody_1	-> Statements;
 
@@ -109,28 +110,29 @@ FuncDecl	-> FuncIdent ProcInit '(' ParamList ')';
 ProcIdent	-> 'PROC_IDENT';
 FuncIdent	-> 'FUNC_IDENT';
 
-
-ProcInit -> '=' Address
+ProcInit -> '=' ArithExpr
 		-> .
 		;
 
-Address	-> CompConst;
-
+//------------------------------------------
+// Statements
+//------------------------------------------
 Statements		->Statement Statements_1;
 Statements_1	-> ';' Statement Statements_1
-				-> 'END'
-				-> 'FI'
-				-> 'OD'
+				-> 'END' Statement Statements_1
+				-> 'FI' Statement Statements_1
+				-> 'OD' Statement Statements_1
+				-> ')' Statement Statements_1
 				-> .
 				;
 
-Statement	-> MemContents ASSIGNstmt 
+Statement	-> Ident MemContentsType ASSIGNstmt 
+			-> ProcIdent '(' IdentList  
 			-> 'IF' IfStmt 
-			-> 'FOR' FORloop 
+			-> 'FOR' ForStmt 
 			-> 'WHILE' WhileLoop 
 			-> 'DO' DoLoop 
 			-> 'EXIT' 
-			-> 'PROC_IDENT' '(' VarDecls ')' 
 			-> 'RETURN' OptReturnData 
 			-> 'BEGIN' Statements
 			-> '[' CodeBlock
@@ -140,7 +142,7 @@ OptReturnData	-> '(' ArithExpr ')'
 				-> .
 				;
 
-ASSIGNstmt	->  '=' ArithExpr
+ASSIGNstmt	->  ':=' ArithExpr
 			->  '==+' ArithExpr
 			->  '==-' ArithExpr
 			->  '==*' ArithExpr
@@ -154,18 +156,18 @@ ASSIGNstmt	->  '=' ArithExpr
 			->  '==RSH' ArithExpr
 			;
 
-IfStmt		-> ArithExpr ThenPart;
+IfStmt		-> CondExpr ThenPart;
 ThenPart	-> 'THEN' ThenPart_1;
 ThenPart_1	-> Statements ElseIfPart;
-ElseIfPart	-> 'ELSEIF' ArithExpr ThenPart
+ElseIfPart	-> 'ELSEIF' CondExpr ThenPart
 			-> 'ELSE' Statements
 			-> .
 			;
 
 DoLoop	-> Statements UNTILLstmt;
-UNTILLstmt	-> 'UNTILL' ArithExpr;
+UNTILLstmt	-> 'UNTILL' CondExpr;
 
-WhileLoop	-> ArithExpr 'DO' Statements;
+WhileLoop	-> CondExpr 'DO' Statements;
 
 FORloop		-> Ident '=' Start 'TO' Finish STEPoption 'DO' Statements;
 Start		-> ArithExpr;
@@ -174,10 +176,12 @@ STEPoption	-> 'STEP' ArithExpr
 			-> .
 			;
 
-CodeBlock	-> CompConst CodeBlock_1;
-CodeBlock_1	-> ',' CompConst CodeBlock_1
+CodeBlock	-> ArithExpr CodeBlock_1;
+CodeBlock_1	-> ',' ArithExpr CodeBlock_1
 			-> .
 			;
+
+
 //--------------------------------------
 // Arithmetic Expressions
 //--------------------------------------
@@ -244,54 +248,18 @@ Unary	-> '-' Unary
 		-> Factor
 		;
 
-Factor	-> CompConst
+Factor	-> BaseCompConst
 		-> FUNCcall
 		-> '(' ArithExpr ')'
-		-> MemContents
+		-> Ident MemContentsType
 		;
 
 FUNCcall	-> FuncIdent '(' IdentList ')';
 
-IdentList	-> MemContentsType IdentList_1;
-IdentList_1	-> ',' MemContentsType IdentList_1
-
-IdentList	-> MemContentsType IdentList_1;
-IdentList_1	-> ',' MemContentsType IdentList_1
+IdentList	-> Ident IdentList_1;
+IdentList_1	-> ',' Ident IndentList_1
 			-> .
 			;
-
-//-------------------------------
-// Compiler Constants
-//-------------------------------
-CompConst		-> BaseCompConst CompConst_1;
-CompConst_1		-> '+' BaseCompConst CompConst_1
-				-> '-' BaseCompConst CompConst_1
-				-> .
-				;
-
-BaseCompConst	-> Number
-				-> '@' Ident
-				-> '*'
-				;
-
-//----------------------------------
-//Variable References
-//Memory References
-//----------------------------------
-
-MemContents	-> Ident MemContentsType
-			-> '@' Ident
-			;
-
-MemContentsType		-> '(' ArithExpr ')'	//array ref
-					-> '^'	// Pointer Dereference
-					-> '.' Ident	//record ref
-					-> .
-					;
-
-Ident	-> 'IDENT';
-Number	-> 'NUMBER';
-
 //-------------------------------------------
 // Declarations
 //-------------------------------------------
@@ -308,7 +276,6 @@ OptModifier	-> 'POINTER'
 ParamList	-> Param ParamList_1;
 ParamList_1	-> ',' Param ParamList_1
 			-> .
-			;
 Param		-> 'RECORDTYPE' OptModifier Ident
 			-> 'CHAR' OptModifier Ident
 			-> 'BYTE' OptModifier Ident
@@ -336,7 +303,7 @@ SysDecl		-> 'DEFINE' DefList
 			-> 'CHAR' Modifier VarList
 			-> 'BYTE' Modifier VarList
 			-> 'INT' Modifier VarList
-			-> 'CARD' Modifier VarList
+			-> 'CARD'D Modifier VarList
 			-> 'BOOL' VarList
 			-> .
 			;
@@ -346,7 +313,7 @@ VarList_1	-> ',' VarName VarList_1
 			-> .
 			;
 VarName		->  Ident OptInit;
-OptInit		-> '=' CompConst
+OptInit		-> '=' ArithExpr
 			-> .
 			;
 
@@ -355,21 +322,17 @@ DefList_1	-> ',' Def DefList_1
 			-> .
 			;
 
-Def		-> Ident '=' CompConst;
+Def		-> Ident '=' Constant;
 
 //--------------------------------------
 // TYPE Definition
 //--------------------------------------
-RecIdent		-> RecIdent_1 RecField;
-RecIdent_1		-> Ident OptRecInit;
-OptRecInit		-> '=' Address
-				-> .
-				;
-RecField		-> '[' RecFieldList;
+RecIdent		-> RecField;
+RecField		->  '=' '[' RecFieldList ']';
 RecFieldList	-> VarDecls RecFieldList_1;
 RecFieldList_1	-> ';' VarDecls RecFieldList_1
 				-> .
-				;
+			;
 
 
 Modifier	-> 'POINTER'
@@ -377,16 +340,39 @@ Modifier	-> 'POINTER'
 			-> .
 			;
 
-ArrayStuff	-> '(' CompConst ')' OptArrayInit
+ArrayStuff	-> '(' ArotjExpr ')' OptArrayInit
 			-> .
 			;
 OptArrayInit	-> '=' OptArrayInit_1
 				-> .
 				;
-OptArrayInit_1	-> '[' OptArrayInit_2 ']';
-OptArrayInit_2	-> CompConst OptArrayInit_3;
-OptArrayInit_3	-> ',' CompConst OptArrayInit_3
+OptArrayInit_1	-> '[' OptArrayInit_2 ']' ;
+OptArrayInit_2	-> ArithExpr OptArrayInit_3 ;
+OptArrayInit_3	-> ',' ArithExpr OptArrayInit_3
 				-> .
 				;
+
+//-------------------------------
+// Compiler Constants
+//-------------------------------
+BaseCompConst	-> 'NUMBER'
+				-> '*'
+				-> '@' Ident
+				;
+
+
+Ident	-> 'IDENT';
+
+//----------------------------------
+//Variable References
+//Memory References
+//----------------------------------
+
+
+MemContentsType 	-> '(' ArithExpr ')'	//array ref
+					-> '^'	// Pointer Dereference
+					-> '.' Ident	//record ref
+					-> .
+					;
 
 END_GRAMMAR

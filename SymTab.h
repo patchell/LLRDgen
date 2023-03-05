@@ -25,6 +25,9 @@ public:
 	int GetTableSize() { return m_tSize; }
 	CBucket** GetTable() { return m_ppTab; }
 	CBucket* GetBucket(int i) { return m_ppTab[i]; }
+	int CheckForUnUsedNonTerminala(FILE* pOut);
+	int CheckForOrphans(FILE* pOut, CSet* pSetNonTerminals);
+	BOOL CheckOrphans_SearchRules(FILE* pOut, CSet* pSetNonTerminals, CLexeme* pLexeme);
 	//-----------------------------------
 	// Debug
 	//-----------------------------------

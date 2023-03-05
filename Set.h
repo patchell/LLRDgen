@@ -11,10 +11,8 @@ class CSet
 public:
 	CSet();
 	virtual ~CSet();
-	BOOL Create(const char* pName);
-	void SetName(const char* pName) {
-		strcpy_s(m_aName, 128, pName);
-	}
+	BOOL Create(const char* pName, const char* pClassName);
+	void SetName(const char* pName, const char* pClassName);
 	const char* GetName() { return m_aName; }
 	BOOL Copy(CSet* pSet);
 	BOOL CopyExceptEmpty(CSet* pSet);
@@ -27,6 +25,7 @@ public:
     BOOL IsNotAlreadyInSet(CSetMember* pSetMember);
     BOOL IsAlreadyInSet(CSetMember* pSetMembr);
 	BOOL Contains(CSymbol* pSym);
+	BOOL Contains(CLexeme* pSym);
 	BOOL DoesNotContain(CSymbol* pSym);
 	//-----------------------------
 	// Membership Coordinator

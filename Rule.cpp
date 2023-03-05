@@ -247,6 +247,8 @@ BOOL CRule::DoesThisRuleHaveEpsilon()
 
 	pEpsilon = CLexer::GetEmpty();
 	pLexeme = GetHead();
+	if (!pLexeme)
+		CLexer::Error(stderr, "Lexeme is NULL");
 	if (pLexeme->GetLexemeSymbol() != pEpsilon)
 		bRuleHasEpsilon = FALSE;
 	return bRuleHasEpsilon;
@@ -352,7 +354,7 @@ void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 	{
 		while (pL)
 		{
-			pL->Print(pOut,FALSE,TRUE, nIndentSpaces);
+			pL->Print(pOut,FALSE,FALSE, 1);
 			pL = pL->GetNext();
 		}
 	}

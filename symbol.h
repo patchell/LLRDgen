@@ -58,6 +58,7 @@ public:
 	BOOL IsNotNullable() { return !m_IsNullable; }
 	void SetStartSymbol() { m_StartSymbol = TRUE; }
 	virtual BOOL IsStartSymbol() { return m_StartSymbol; }
+	virtual BOOL IsNotStartSymbol() { return !m_StartSymbol; }
 	void SetEndOfTokenStream() { m_EndOfTokenStream = TRUE; }
 	BOOL IsEndOfTokenSteam() {
 		return m_EndOfTokenStream;

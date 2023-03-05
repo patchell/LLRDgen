@@ -172,6 +172,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Action.gram" />
+    <None Include="action_x.gram" />
+    <None Include="action_xx.gram" />
     <None Include="AS65.gram" />
     <None Include="Bin\LLRDgen.exe" />
     <None Include="README.md" />

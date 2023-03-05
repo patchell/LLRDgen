@@ -16,10 +16,15 @@ CSet::~CSet()
 
 }
 
-BOOL CSet::Create(const char* pName)
+BOOL CSet::Create(const char* pName, const char* pClassName)
 {
-	strcpy_s(m_aName, 128, pName);
+	SetName(pName, pClassName);
 	return TRUE;
+}
+
+void CSet::SetName(const char* pName, const char* pClassName)
+{
+	sprintf_s(m_aName, 128, "%s[\'%s\']", pClassName,pName);
 }
 
 BOOL CSet::Copy(CSet* pSourceSet)
@@ -180,6 +185,11 @@ BOOL CSet::Contains(CSymbol* pSym)
 	}
 	fprintf(LogFile(), "%s\n", rV ? "TRUE" : "FALSE");
     return rV;
+}
+
+BOOL CSet::Contains(CLexeme* pLexeme)
+{
+	return Contains(pLexeme->GetLexemeSymbol());
 }
 
 BOOL CSet::DoesNotContain(CSymbol* pSym)

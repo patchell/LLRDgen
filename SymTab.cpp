@@ -151,6 +151,128 @@ void CSymTab::DelSymbol(CBin* pSym)
 	m_ppTab[HashValue]->Delete(pSym);
 }
 
+int CSymTab::CheckForUnUsedNonTerminala(FILE* pOut)
+{
+	int Unused = 0;
+	CSymbol* pSym;
+	CBin* pBin;
+	int i;
+
+	for (i = 0; i < GetTableSize(); i++)
+	{
+		if (GetBucket(i))
+		{
+			pBin = GetBucket(i)->GetHead();
+			while (pBin)
+			{
+				pSym = (CSymbol *) (pBin);
+				if (CLexer::Token(pSym->GetTokenValue()) == CLexer::Token::NONTERMINAL)
+				{
+					if (pSym->GetHead() == NULL)
+					{
+						fprintf(pOut, "Non Terminal \'%s\' is Undefined\n",
+							pSym->GetName()
+						);
+						Unused++;
+					}
+				}
+				pBin = pBin->GetNext();
+			}
+		}
+	}
+	return Unused;
+}
+
+int CSymTab::CheckForOrphans(FILE* pOut, CSet* pSetNonTerminals)
+{
+	//-------------------------------------------------------
+	// CheckForOrphans
+	// 
+	// Check to see if all members of the set of NonTerminals
+	// is actually used in a production
+	//-------------------------------------------------------
+	int Orphans = 0;
+	CSetMember* pSMebr;
+
+	pSMebr = pSetNonTerminals->GetHead();
+	while (pSMebr)
+	{
+		if (pSMebr->GetSetMemberLexeme()->GetLexemeSymbol()->IsNotStartSymbol())
+		{
+			if (CheckOrphans_SearchRules(
+				pOut,
+				pSetNonTerminals,
+				pSMebr->GetSetMemberLexeme()) == TRUE
+				)
+			{
+				Orphans++;
+				fprintf(pOut, "    %s is an Orphan\n",
+					pSMebr->GetSetMemberLexeme()->GetName());
+			}
+		}
+		pSMebr = pSMebr->GetNext();
+	}
+	return Orphans;
+}
+
+BOOL CSymTab::CheckOrphans_SearchRules(
+	FILE* pOut, 
+	CSet* pSetNonTerminals, 
+	CLexeme* pLexemeCanidate		//Canidate
+)
+{
+	//---------------------------------------------
+	// CheckOrphans_SearchRules
+	// 
+	// Returns FALSE if the Canidate is an Orphan
+	// Returns TRUE if it is not an ORPHAN
+	// Seems Backwards ;)
+	//---------------------------------------------
+	CSetMember* pNonTerminalSetMember;
+	CLexeme* pRuleLexeme;
+	CRule* pRule;
+	BOOL bIsAnOrphan = TRUE;
+
+	pNonTerminalSetMember = pSetNonTerminals->GetHead();
+	while (pNonTerminalSetMember && bIsAnOrphan)
+	{
+		if (pLexemeCanidate->GetLexemeSymbol() == 
+			pNonTerminalSetMember->GetSetMemberSymbol()
+		)
+		{
+			//---------------------------------
+			// Skip This one
+			//---------------------------------
+			pNonTerminalSetMember = pNonTerminalSetMember->GetNext();
+		}
+		else
+		{
+			//----------------------------------
+			// Check to see if the Cannidate
+			// is on the RHS of the production
+			//----------------------------------
+			pRule = pNonTerminalSetMember->GetSetMemberSymbol()->GetHead();
+			while (pRule && bIsAnOrphan)
+			{
+				pRuleLexeme = pRule->GetHead();
+	//			pRule->Print(pOut, TRUE, TRUE,  0);
+				while (pRuleLexeme && bIsAnOrphan)
+				{
+					if (pRuleLexeme->GetLexemeSymbol() == pLexemeCanidate->GetLexemeSymbol())
+					{
+						bIsAnOrphan = FALSE;
+					}
+					pRuleLexeme = pRuleLexeme->GetNext();
+				}
+				pRule = pRule->GetNext();
+			}
+		}
+		pNonTerminalSetMember = pNonTerminalSetMember->GetNext();
+	}
+	return bIsAnOrphan;
+}
+
+
 //*********************************************************
 // Hash
 //
@@ -221,7 +343,6 @@ void CSymTab::PrintFirstSets(FILE* pOut)
 				if (pSym->GetTokenValue() == UINT(CLexer::Token::NONTERMINAL))
 				{
 					pSym->GetFirstSet()->Print(pOut);
-					fprintf(LogFile(), "\n");
 				}
 				pBin = pBin->GetNext();
 			}
@@ -252,7 +373,6 @@ void CSymTab::PrintFollowSets(FILE* pOut,
 				if (pSym->GetTokenValue() == UINT(CLexer::Token::NONTERMINAL))
 				{
 					pSym->GetFollowSet()->Print(pOut);
-					fprintf(LogFile(), "\n");
 				}
 				pBin = pBin->GetNext();
 			}

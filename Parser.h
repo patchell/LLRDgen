@@ -20,6 +20,7 @@ public:
 	CParser();
 	virtual ~CParser();
 	BOOL Create(FILE* pIn, FILE* pOut);
+	void CloseFiles();
 	virtual CLexer* GetLexer() { return &m_Lex; }
 	CSymbol* GetCurrentNonTerminal() { return m_pCurrentNonTerminal; }
 	void SetCurrentNonTerminal(CSymbol* pSym) { m_pCurrentNonTerminal = pSym; }

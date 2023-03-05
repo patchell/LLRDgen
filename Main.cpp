@@ -5,6 +5,11 @@
 
 CRecDecParGen Parser;	//BARF a global
 
+void CloseAllFiles()
+{
+	Parser.CloseFiles();
+}
+
 FILE* LogFile()
 {
 	return Parser.GetLogFile();
@@ -57,7 +62,7 @@ int main(int arcg, char *argv[])
 		fclose(pOUT);
 		exit(1);
 	}
-	fprintf(stderr, "RDgen Ver 0.0.2\n");
+	fprintf(stderr, "LLRDgen Ver 0.0.2\n");
 	fprintf(stderr, "InFile:%s  OutFile:%s\n",
 		argv[1],
 		aOutFile
@@ -66,8 +71,6 @@ int main(int arcg, char *argv[])
 	Parser.Create(pIN, pOUT, pLog);
 	Parser.Run();
 	printf("Done\n");
-	fclose(pIN);
-	fclose(pOUT);
-	fclose(pLog);
+	Parser.CloseFiles();
 	return 0;
 }
