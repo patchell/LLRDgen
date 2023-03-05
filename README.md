@@ -1,6 +1,9 @@
 Readme.nd
 
-March 24, 2023
+March 5, 2023
+	Getting SO close.
+
+March 4, 2023
 	I am in an Iterim Testing phase.  I am generating a list
 	of conflicts (I hope) and am using that information to try and
 	write a more or less complex grammar.  I fixed some of the
