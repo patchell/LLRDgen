@@ -14,6 +14,7 @@ class CSymbol: public CBin
 	CSet m_FirstSet;
 	CSet m_FollowSet;
 	int m_nTotalRules;
+	int m_LineNumber;		//line where defined
 public:
 	CSymbol() {
 		m_IsEmpty = FALSE;
@@ -24,6 +25,7 @@ public:
 		m_pHead = 0;
 		m_pTail = 0;
 		m_nTotalRules = 0;
+		m_LineNumber = 0;
 	}
 	virtual ~CSymbol() {}
 	BOOL Create(const char* pName);
@@ -49,6 +51,8 @@ public:
 	//-----------------------------
 	// Accessor Methods
 	//-----------------------------
+	int GetLineWhereDefined() { return m_LineNumber; }
+	void SetLineWhereDefined(int ln) { m_LineNumber = ln; }
 	UINT GetTokenValue() { return m_TokenValue; }
 	void SetTokenValue(UINT TV) { m_TokenValue = TV; }
 	BOOL IsEmpty() { return m_IsEmpty; }

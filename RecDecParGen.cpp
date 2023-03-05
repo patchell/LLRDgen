@@ -29,27 +29,37 @@ BOOL CRecDecParGen::Run()
 	CSetMember* pDollarSign;
 	int UndefinedNonTerminals;
 	int Orphans;
+	int Recursions;
 	//-----------------------------------
 	// Parse the Grammar
 	//-----------------------------------
 	Parse();
 	fprintf(LogFile(), "*************  Print Out Grammar Structure************\n");
 	PrintGrammar(LogFile());
+	//----------------------------------------------------------------
+	//------------------- Check for Left recursion -------------------
+	//----------------------------------------------------------------
+	Recursions = CheckForDirectRecursion(stderr, GetNonTerminalSet());
+	fprintf(stderr, "Total Recursions = %d\n", Recursions);
+	if (Recursions)
+	{
+		CloseAllFiles();
+		exit(12);
+	}
 	//------------------------------------
 	// Check for Undefined Non Terminals
 	//------------------------------------
-	UndefinedNonTerminals = GetLexer()->GetSymTab()->CheckForUnUsedNonTerminala(LogFile());
+	UndefinedNonTerminals = GetLexer()->GetSymTab()->CheckForUnUsedNonTerminala(stderr);
 	fprintf(stderr, "Undefined Non Terminals:%d\n", UndefinedNonTerminals);
 	if (UndefinedNonTerminals)
 	{
 		CloseAllFiles();
 		exit(10);
 	}
-	fprintf(LogFile(), "******************************\n");
-	fprintf(LogFile(), "******* Check For Orphans ****\n");
-	fprintf(LogFile(), "******************************\n");
+	//---------------------------------------
+	// Check for Orphans
+	//---------------------------------------
 	Orphans = GetLexer()->GetSymTab()->CheckForOrphans(stderr, GetNonTerminalSet());
-	Orphans = GetLexer()->GetSymTab()->CheckForOrphans(LogFile(),GetNonTerminalSet());
 	fprintf(stderr, "Total Orphans = %d\n", Orphans);
 	if (Orphans)
 	{
@@ -111,6 +121,98 @@ BOOL CRecDecParGen::Run()
 		GetParseTable()->CheckForConflicts(stderr)
 	);
 	return 0;
+}
+
+int CRecDecParGen::CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals)
+{
+	int DirectRecursionCount = 0;
+	CSetMember* pSetMember;
+	CSetMember* pSetMemLHS;
+	CRule* pRule;
+	CRule* pLHSrules;
+	CLexeme* pLHSRuleLexeme;
+
+	pSetMemLHS = pNonTerminals->GetHead();
+	while (pSetMemLHS)
+	{
+		//---------------------------------------
+		// Scan Through all non terminals
+		// pSetMember
+		//---------------------------------------
+		pSetMember = pNonTerminals->GetHead();
+		while (pSetMember)
+		{
+			if (pSetMemLHS != pSetMember)	// if equal, skip
+			{
+				//--------------------------------------------
+				// Indirect Recursion
+				//--------------------------------------------
+				pRule = pSetMember->GetRule();
+				while (pRule)
+				{
+					//--------------------------------------
+					// Check to see if pSetMemLHS is in
+					// the left most lexemes of the
+					// rules for pSetMember
+					//--------------------------------------
+					if (pRule->GetHead()->GetLexemeSymbol() == 
+						pSetMemLHS->GetSetMemberSymbol()
+					)
+					{
+						//------------------------------------
+						// Now check to see if pSetMember is
+						// in any of the rules for for
+						// pSetMemLHS
+						//------------------------------------
+						pLHSrules = pSetMemLHS->GetRule();
+						while (pLHSrules)
+						{
+							pLHSRuleLexeme = pLHSrules->GetHead();
+							while (pLHSRuleLexeme)
+							{
+								if (pLHSRuleLexeme->GetLexemeSymbol() ==
+									pSetMember->GetSetMemberSymbol()
+									)
+								{
+									//-------------------------------
+									// We have an Indirect Recursion
+									//-------------------------------
+									fprintf(pO, "-----------------------\n");
+									fprintf(pO, "Warning:Possible Indirect Left Recursion\n");
+									pRule->Print(pO, TRUE, TRUE, 5, TRUE);
+									pLHSrules->Print(pO, TRUE, TRUE, 5, TRUE);
+								}
+								pLHSRuleLexeme = pLHSRuleLexeme->GetNext();
+							}
+							pLHSrules = pLHSrules->GetNext();
+						}
+					}
+					pRule = pRule->GetNext();
+				}
+			}
+			else
+			{
+				//----------------------------------
+				// Direct Recursion
+				//----------------------------------
+				pRule = pSetMemLHS->GetSetMemberSymbol()->GetHead();
+				if (pRule->GetLHS() ==
+					pRule->GetHead()->GetLexemeSymbol()
+				)
+				{
+					fprintf(pO, "---------------------\n");
+					fprintf(pO, "Error:Direct Left Recursion\n");
+					pSetMember->GetRule()->GetHead()->GetLexemeSymbol()->Print(pO);
+					pRule->GetHead()->GetLexemeSymbol()->Print(pO);
+					pRule->Print(pO, TRUE, TRUE, 5, TRUE);
+					DirectRecursionCount++;
+				}
+			}
+			pSetMember = pSetMember->GetNext();
+		}
+		pSetMemLHS = pSetMemLHS->GetNext();
+	}
+    return DirectRecursionCount;
 }
 
 

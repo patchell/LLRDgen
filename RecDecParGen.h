@@ -13,6 +13,7 @@ public:
 	BOOL Create(FILE* pIn, FILE* pOut, FILE* pLog);
 	void CloseFiles();
 	BOOL Run();
+	int CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals);
 	void CreateFirstSets(FILE* pOut);
 	void CreateFollowSets(FILE* pOut);
 	BOOL ApplyFollowRulesTo(CSymbol* pSym);

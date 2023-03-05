@@ -291,8 +291,12 @@ void CSet::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
 	CSetMember* pMember = GetHead();
 	int DelemiterChar;
+	char* s = new char[256];
 
-	fprintf(pOut, "\'%s\' {", GetName());
+	fprintf(pOut, "%s%s {",
+		IndentString(s, nIndentSpaces),
+		GetName()
+	);
 	while (pMember)
 	{
 		if (pMember->GetPrev())
@@ -305,4 +309,5 @@ void CSet::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 	fprintf(pOut, " }");
 	if (bEOL)
 		fprintf(pOut, "\n");
+	delete[]s;
 }

@@ -206,7 +206,8 @@ int CSymTab::CheckForOrphans(FILE* pOut, CSet* pSetNonTerminals)
 				)
 			{
 				Orphans++;
-				fprintf(pOut, "    %s is an Orphan\n",
+				fprintf(pOut, "ERROR:Line %d:%s is an Orphan\n",
+					pSMebr->GetSetMemberSymbol()->GetLineWhereDefined(),
 					pSMebr->GetSetMemberLexeme()->GetName());
 			}
 		}

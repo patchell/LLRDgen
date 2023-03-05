@@ -46,6 +46,11 @@ BOOL CSetMember::Compare(CSymbol* pSym)
 	return bSymsAgree;
 }
 
+CRule* CSetMember::GetRule()
+{
+	return GetSetMemberLexeme()->GetLexemeSymbol()->GetHead();
+}
+
 void CSetMember::Print(FILE* pOut, int DelimiterChar, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
 	fprintf(pOut, "%c\'%s\'", DelimiterChar, GetSetMemberLexeme()->GetLexemeSymbol()->GetName());

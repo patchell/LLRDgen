@@ -189,6 +189,8 @@ CLexer::Token CParser::Production(CLexer::Token LookaHeadToken)
 	if (LookaHeadToken == CLexer::Token::IDENT)
 	{
 		pSym = GetLexer()->GetSymbol();
+		if (pSym->GetLineWhereDefined() == 0)
+			pSym->SetLineWhereDefined(GetLexer()->GetLineNumber());
 		pSym->SetTokenValue(UINT(CLexer::Token::NONTERMINAL));
 		if (m_FirstGrammarSymbol)
 		{
@@ -214,6 +216,7 @@ CLexer::Token CParser::Production(CLexer::Token LookaHeadToken)
 		pMember = new CSetMember;
 		pMember->Create(pSym);
 		GetNonTerminalSet()->AddToSet(pMember);
+		pSym->SetLineWhereDefined(GetLexer()->GetLineNumber());
 	}
 	switch (LookaHeadToken)
 	{

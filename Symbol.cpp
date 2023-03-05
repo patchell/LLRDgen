@@ -71,12 +71,8 @@ void CSymbol::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 	);
 //	if (IsTerminal())
 	{
-		fprintf(pOut, "\tFirst Set");
-		GetFirstSet()->Print(pOut);
-		fprintf(pOut, "\n");
-		fprintf(pOut, "\tFollw Set");
-		GetFollowSet()->Print(pOut);
-		fprintf(pOut, "\n");
+		GetFirstSet()->Print(pOut,FALSE,TRUE, nIndentSpaces + 5);
+		GetFollowSet()->Print(pOut, FALSE, TRUE, nIndentSpaces + 5);
 	}
 }
 

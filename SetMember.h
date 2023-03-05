@@ -24,7 +24,10 @@ public:
 	// Attributes
 	//--------------------------
 	CLexeme* GetSetMemberLexeme() { return m_pLexeme; }
-	CSymbol* GetSetMemberSymbol() { return m_pLexeme->GetLexemeSymbol(); }
+	CSymbol* GetSetMemberSymbol() {
+		return GetSetMemberLexeme()->GetLexemeSymbol();
+	}
+	CRule* GetRule(); 
 	void SetSetMemberLexem(CLexeme*pL) { m_pLexeme = pL; }
 	//--------------------------------------------
 	// Debug Methods

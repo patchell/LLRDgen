@@ -38,7 +38,8 @@ public:
 	void Print(FILE* pOut, 
 		BOOL bLHS=FALSE, 
 		BOOL bEOL = TRUE, 
-		int IndentSpaces = 0
+		int IndentSpaces = 0,
+		BOOL bLineNumber = FALSE
 	);
 	//-----------------------------
 	// Linked List Managment

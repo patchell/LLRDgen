@@ -340,14 +340,22 @@ BOOL CRule::RuleTotallyNullable()
 	return 0;
 }
 
-void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
+void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces, BOOL bLineNumber)
 {
 	CLexeme* pL = GetHead();
 	char* s = new char[256];
 
+	if (bLineNumber)
+	{
+		fprintf(pOut, "%sLine-%d:",
+			IndentString(s, nIndentSpaces),
+			GetLHS()->GetLineWhereDefined()
+		);
+		nIndentSpaces = 0;
+	}
 	if (bLHS)
 		fprintf(pOut, "%s%s", 
-			IndentString(s, nIndentSpaces + 2),
+			IndentString(s, nIndentSpaces),
 			GetLHS()->GetName());
 	fprintf(pOut, "->");
 	if (pL)
