@@ -169,6 +169,9 @@
     <None Include="action_xxx.gram">
       <Filter>Grammars</Filter>
     </None>
+    <None Include="action_xxxx.gram">
+      <Filter>Grammars</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log.txt">

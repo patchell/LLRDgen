@@ -1,5 +1,13 @@
 Readme.nd
 
+March 6, 2023
+	Either the First Sets and or the Follow Sets are 
+	incorrect.  I am not that bad at writing grammars.
+	In particular, the grammar that I wote for a FOR
+	statement seems to generate a lot of conflicts even
+	when I get it down to the bare bones.  So, back to
+	verifying FIRST and FOLLOW.
+
 March 5, 2023
 	Getting SO close.
 

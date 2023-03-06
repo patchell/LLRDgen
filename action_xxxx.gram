@@ -99,66 +99,56 @@ Routines	-> Routine Routines_1;
 Routines_1	-> 'END' Routine Routines_1
 			-> .
 			;
-Routine	-> 'PROC' ProcDecl 'BEGIN' ProcBody
-		-> 'FUNC' FundType FuncDecl 'BEGIN' ProcBody
+Routine	-> 'FUNC' FundType FuncDecl 'BEGIN' ProcBody
+		-> 'PROC' ProcDecl 'BEGIN' ProcBody		
 		;
 
 ProcBody	-> SysDecls ProcBody_1;
 ProcBody_1	-> Statements;
 
+
 ProcDecl	-> ProcIdent OptInit '(' ParamList ')';
 FuncDecl	-> FuncIdent OptInit '(' ParamList ')';
 
-ProcIdent	-> 'PROC_IDENT';
 FuncIdent	-> 'FUNC_IDENT';
-
+ProcIdent	-> 'PROC_IDENT';
 
 //------------------------------------------
 // Statements
 //------------------------------------------
-Statements		->Statement Statements_1;
-Statements_1	-> ';' Statement Statements_1
-				-> 'FI' Statement Statements_1
-				-> 'OD' Statement Statements_1
-				-> ')' Statement Statements_1
-				-> ']' Statement Statements_1
-				-> .
+SemiTermStmts	-> 'UNTIL' ArithExpr ';'  
+				-> 'EXIT' ';' 
 				;
 
-Statement		-> StructStmts
-//				-> NotStructStmts
-				;
-//NotStructStmts	-> MemContents ASSIGNstmt
-//				;
-StructStmts		-> 'PROC_IDENT' '(' IdentList
-				-> 'IF' IfStmt 
-				-> 'FOR' FORLoop 
-				-> 'WHILE' WhileLoop 
-				-> 'DO' DoLoop 
-				-> 'EXIT' 
-				-> 'RETURN' OptReturnData 
-				-> '[' CodeBlock
-				-> .
+ODTermStmts		-> 'WHILE' ArithExpr DO Statments 'OD'
+				-> 'DO' Statements OD 
 				;
 
-OptReturnData	-> '(' ArithExpr ')'
-				-> .
+FITermStmts		-> 'IF' IfStmt 'FI' ;
+
+
+Statements		-> SemiTermStmts 
+				-> ODTermStmts
+				-> FITermStmts
 				;
 
-//ASSIGNstmt	->  ':=' ArithExpr
-//			->  '==+' ArithExpr
-//			->  '==-' ArithExpr
-//			->  '==*' ArithExpr
-//			->  '==/' ArithExpr
-//			->  '==MOD' ArithExpr
-//			->  '==&' ArithExpr
-//			->  '==!' ArithExpr
-//			->  '==XOR' ArithExpr
-//			->  '==%' ArithExpr
-//			->  '==LSH' ArithExpr
-//			->  '==RSH' ArithExpr
-//			;
+//-------------------------------------
+// While Loop
+//-------------------------------------
+WhileLoop	-> ArithExpr 'DO' Statements;
 
+//------------------------------------
+// Do Loop
+//------------------------------------
+DoLoop	-> Statements UNTILLstmt ;
+UNTILLstmt	-> 'UNTILL' ArithExpr ';' ;
+//------------------------------------
+// assignment statments
+//------------------------------------
+
+//-------------------------------
+// If-Then-Elseif-Else Statement
+//-------------------------------
 IfStmt		-> ArithExpr ThenPart;
 ThenPart	-> 'THEN' ThenPart_1;
 ThenPart_1	-> Statements ElseIfPart;
@@ -166,24 +156,22 @@ ElseIfPart	-> 'ELSEIF' ArithExpr ThenPart
 			-> 'ELSE' Statements
 			-> .
 			;
-
-DoLoop	-> Statements UNTILLstmt;
-UNTILLstmt	-> 'UNTILL' ArithExpr;
-
-WhileLoop	-> ArithExpr 'DO' Statements;
-
-FORLoop		-> Ident '=' Start 'TO' Finish STEPoption 'DO' Statements;
-Start		-> ArithExpr;
-Finish		-> ArithExpr;
-STEPoption	-> 'STEP' ArithExpr
-			-> .
+//----------------------------------
+// For Loop
+//----------------------------------
+//FORLoop			->  Start ToPart;
+//ToPart	-> 'TO' Finish Next;
+//Next	-> StepPart DoPart;
+//StepPart	-> 'STEP' Step
+//			-> .
 			;
-
-CodeBlock	-> CompConst CodeBlock_1;
-CodeBlock_1	-> ',' CompConst CodeBlock_1
-			-> .
-			;
-
+//DoPart	-> 'DO' ;
+//Start	-> Ident ;
+//Finish	-> Ident ;
+//Step -> Ident ;
+//FORLoop		-> Start 'TO' Finish STEPoption 'DO' Statements;
+//Start		-> . ;//'(' MemContents ASSIGNstmt ')';
+//Finish		-> . ; //'(' MemContents ASSIGNstmt ')';
 
 //--------------------------------------
 // Arithmetic Expressions
@@ -263,6 +251,7 @@ IdentList	-> MemContents IdentList_1;
 IdentList_1	-> ',' MemContents IdentList_1
 			-> .
 			;
+
 //-------------------------------------------
 // Declarations
 //-------------------------------------------
@@ -344,22 +333,26 @@ Modifier	-> 'POINTER'
 			-> .
 			;
 
-ArrayStuff	-> '(' ArithExpr ')' OptArrayInit
+ArrayStuff	-> '(' CompConst ')' OptArrayInit
 			-> .
 			;
-OptArrayInit	-> '=' '[' CodeBlock ']'
+OptArrayInit	-> '=' '[' CompConstList ']'
 				-> .
 				;
 
 //-------------------------------
 // Compiler Constants
 //-------------------------------
+CompConstList	-> CompConst CompConstList_1;
+CompConstList_1	-> ',' CompConst CompConstList_1
+				-> .
+				;
 CompConst		-> BaseCompConst CompConst_1;
 CompConst_1		-> '+' BaseCompConst CompConst_1
 				-> .
 				;
 BaseCompConst	-> 'NUMBER'
-				-> '<*'
+				-> '*'
 				-> '@' MemContents
 				;
 

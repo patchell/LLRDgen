@@ -175,6 +175,7 @@
     <None Include="action_x.gram" />
     <None Include="action_xx.gram" />
     <None Include="action_xxx.gram" />
+    <None Include="action_xxxx.gram" />
     <None Include="AS65.gram" />
     <None Include="Bin\LLRDgen.exe" />
     <None Include="README.md" />
