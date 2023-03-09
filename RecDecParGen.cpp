@@ -112,7 +112,7 @@ BOOL CRecDecParGen::Run()
 		GetLexer()->GetSymTab()->GetTerminalSet(), 
 		GetLexer()->GetSymTab()->GetNonTerminalSet()
 	);
-	GetParseTable()->FillTable(LogFile());
+	GetParseTable()->FillTable(NULL);
 	fprintf(LogFile(), "Table Entries = %d\n", 
 		GetParseTable()->GetNumberOfEntries());
 	//--------------------------------------------

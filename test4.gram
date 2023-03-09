@@ -21,12 +21,29 @@ TERMINALS
 	"DO",
 	"OD",
 	"NUMBER",
-	"INT"
+	"INT",
+	"PROC",
+	"BEGIN",
+	"END"
 END_TERMINALS
 
 GRAMMAR
-grammar -> Decls statements
+grammar -> program
 		;
+
+program	-> 'INT'VarList program
+		-> 'PROC' Proc program
+		-> .
+		;
+
+Proc		-> 'IDENT' OptInit Proc_1;
+OptInit		-> '=' BaseConstant
+			-> .
+			;
+Proc_1		-> '('  ')' Proc_2;
+Proc_2		-> 'BEGIN' ProcBody;
+ProcBody	-> statements 'END';
+
 
 statements -> statement statements_1
             ;
@@ -35,7 +52,7 @@ statements_1	-> ';' statement statements_1
 				-> .
 				;
 
-statement	-> MemContents Assignment
+statement	-> 'IDENT' MemContType Assignment
 			-> 'FOR' ForStmt
           ;
 
@@ -77,16 +94,8 @@ MemContType	-> '(' expr ')'
 //			;
 BaseConstant	-> 'NUMBER'
 				-> '@' MemContents
+				.
 				;
-
-Decls		-> Decl Decls_1;
-Decls_1		-> ';' Decl Decls_1
-			->	.
-			;
-
-Decl		-> 'INT' VarList
-			-> .
-			;
 
 VarList		-> Var VarList_1;
 VarList_1	-> ',' Var VarList_1
@@ -94,13 +103,15 @@ VarList_1	-> ',' Var VarList_1
 			;
 
 Var			-> Var_1 Var_2;
-Var_2		-> 'VARIDENT' Var_3;
-Var_3		-> '[' 'NUMBER' ']'
-			-> .
-			;
-
 Var_1		-> '*' Var_1
 			-> .
 			;
+Var_2		-> 'IDENT' Var_3;
+Var_3		-> '[' Dim ']'
+			-> .
+			;
+
+
+Dim	-> 'NUMBER';
 
 END_GRAMMAR

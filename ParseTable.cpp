@@ -100,6 +100,7 @@ BOOL CParseTable::FillTable(FILE* pOut)
 		if(pOut) fprintf(pOut, "------- Non Terminal: %s --------\n", pY->GetName());
 		Rule1(pOut, pY);
 		Rule2(pOut, pY);
+		fprintf(LogFile(), "----\n");
 	}
 	Print(pOut);
 	return bConflicts;
@@ -139,9 +140,11 @@ BOOL CParseTable::Rule1(FILE* pOut, CLexeme* pY)
 			Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 			pEntryMember = new CParseTableEntryMember;
 			pEntryMember->Create(pProductionRule);
-			if (pOut)fprintf(pOut, "  Add ");
-			pProductionRule->Print(pOut, TRUE, FALSE, 0);
-			if (pOut) fprintf(pOut, " ==> Table(%s, %s)\n", 
+//			if (pOut)
+				fprintf(LogFile(), "  By Rule 1 Add ");
+			pProductionRule->Print(LogFile(), TRUE, FALSE, 0);
+//			if (pOut) 
+				fprintf(LogFile(), " ==> Table(%s, %s)\n",
 				GetRowName(Row),
 				GetColName(Col)
 			);
@@ -199,12 +202,14 @@ BOOL CParseTable::Rule2(FILE* pOut, CLexeme* pY)
 				Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 				pEntryMember = new CParseTableEntryMember;
 				pEntryMember->Create(pProductionRule);
-				if (pOut)fprintf(pOut, "Add ");
-				pProductionRule->Print(pOut, TRUE, FALSE, 0);
-				if (pOut) fprintf(pOut, " ==> Table(%s, %s)\n",
-					GetRowName(Row),
-					GetColName(Col)
-				);
+//				if (pOut)
+					fprintf(LogFile(), "  By Rule 2a Add ");
+				pProductionRule->Print(LogFile(), TRUE, FALSE, 0);
+//				if (pOut) 
+					fprintf(LogFile(), " ==> Table(%s, %s)\n",
+						GetRowName(Row),
+						GetColName(Col)
+					);
 				m_matParseTable(Row, Col)->AddMember(pEntryMember);
 				pSetMember = pSetMember->GetNext();
 			}
@@ -214,6 +219,12 @@ BOOL CParseTable::Rule2(FILE* pOut, CLexeme* pY)
 				Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 				pEntryMember = new CParseTableEntryMember;
 				pEntryMember->Create(pProductionRule);
+				fprintf(LogFile(), "  By Rule 2b Add ");
+				pProductionRule->Print(LogFile(), TRUE, FALSE);
+				fprintf(LogFile(), " ==> Table(%s, %s)\n",
+					GetRowName(Row),
+					GetColName(Col)
+				);
 				m_matParseTable(Row, Col)->AddMember(pEntryMember);
 			}
 		}
@@ -253,7 +264,7 @@ int CParseTable::GetTerminalIndex(CLexeme* pLex)
 
 int CParseTable::GetTerminalIndex(CSymbol* pSym)
 {
-	int Index = 0;
+	int Index = -1;
 	int i;
 	BOOL bLoop;
 
@@ -265,23 +276,33 @@ int CParseTable::GetTerminalIndex(CSymbol* pSym)
 			Index = i;
 		}
 	}
+	if (Index < 0)
+	{
+		fprintf(stderr, "Could not find Terminal %s\n", pSym->GetName());
+		exit(-1);
+	}
 	return Index;
 }
 
 
 int CParseTable::GetNonTerminalIndex(CSymbol* pSym)
 {
-	int Index = 0;
+	int Index = -1;
 	int i;
 	BOOL bLoop;
 
-	for (i = 0, bLoop = TRUE; i < m_Cols && bLoop; ++i)
+	for (i = 0, bLoop = TRUE; i < m_Rows && bLoop; ++i)
 	{
 		if (pSym->Compare(m_ppNonTerminalSymbols[i]->GetLexemeSymbol()))
 		{
 			bLoop = FALSE;
 			Index = i;
 		}
+	}
+	if (Index < 0)
+	{
+		fprintf(stderr, "Could not find Non Terminal %s\n", pSym->GetName());
+		exit(-1);
 	}
 	return Index;
 }

@@ -1,5 +1,10 @@
 Readme.nd
 
+March 9, 2023
+	Three more just REALLY bad blunders.  All four caused
+	by Copy-Paste.  This happens to me all the time.
+	Think I'll Learn? NO!
+
 March 8, 2023
 	Well, the problem was in the Terminals Set.  Seems that
 	I forgot to put 'Epsilon' into that set.  Caused all
