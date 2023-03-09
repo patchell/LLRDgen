@@ -1,10 +1,14 @@
 #include "Global.h"
 
-void CBin::Print(FILE* pOut, const char* s)
+void CBin::Print(FILE* pOut,
+	BOOL bLHS,
+	BOOL bEOL,
+	int nIndentSpaces
+)
 {
-	fprintf(pOut, "CBin::%s  No Data\n", m_pName);
+	if (pOut)
+	{
+		fprintf(pOut, "CBin::%s  No Data\n", m_pName);
+	}
 }
 
-void CBin::PrintProduction(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
-{
-}

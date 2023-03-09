@@ -5,6 +5,8 @@ constexpr auto SYMTAB_SIZE = 101;
 class CSymTab
 {
 	int Hash(const char* name);
+	CSet m_NonTerminals;
+	CSet m_Terminals;
 protected:
 	int m_nElements;	//total number of elements in table
 	int m_tSize;	//depth of table
@@ -28,6 +30,8 @@ public:
 	int CheckForUnUsedNonTerminala(FILE* pOut);
 	int CheckForOrphans(FILE* pOut, CSet* pSetNonTerminals);
 	BOOL CheckOrphans_SearchRules(FILE* pOut, CSet* pSetNonTerminals, CLexeme* pLexeme);
+	CSet* GetNonTerminalSet() { return &m_NonTerminals; }
+	CSet* GetTerminalSet() { return &m_Terminals; }
 	//-----------------------------------
 	// Debug
 	//-----------------------------------

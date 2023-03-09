@@ -56,6 +56,8 @@ BOOL CSymTab::Create(int TableDepth)
 	for (int i = 0; i < m_tSize; ++i)
 		m_ppTab[i] = 0;
 	m_nElements = 0;
+	GetTerminalSet()->Create("Terminals", "TERMINALS");
+	GetNonTerminalSet()->Create("Non Terminals", "NONTERMINALS");
 	return TRUE;
 }
 
@@ -314,7 +316,7 @@ void CSymTab::PrintTable(FILE* pOut)
 	int i;
 	int maxStringLen = 0;
 
-	fprintf(pOut, "**************** SymbolTable *****************\n");
+	if(pOut) fprintf(pOut, "**************** SymbolTable *****************\n");
 	for (i = 0; i < m_tSize; ++i)
 	{
 		if (m_ppTab[i])
@@ -322,61 +324,40 @@ void CSymTab::PrintTable(FILE* pOut)
 			m_ppTab[i]->Print(pOut);
 		}
 	}
-	fprintf(pOut, "^^^^^^^^^^^^^^^ SymbolTable ^^^^^^^^^^^^^^^^^^^^^^\n");
+	if(pOut) fprintf(pOut, "^^^^^^^^^^^^^^^ SymbolTable ^^^^^^^^^^^^^^^^^^^^^^\n");
 }
 
 void CSymTab::PrintFirstSets(FILE* pOut)
 {
-	CBucket* pBucket;
-	CBin* pBin;
-	int i;
+	CSetMember* pSetMemberNonTerminals;
 
-	for (i = 0; i < GetTableSize(); ++i)
+	if (pOut)
 	{
-		pBucket = GetBucket(i);
-		if (pBucket)
+		pSetMemberNonTerminals = GetNonTerminalSet()->GetHead();
+		while (pSetMemberNonTerminals)
 		{
-			pBin = pBucket->GetHead();
-			while (pBin)
-			{
-				CSymbol* pSym;
-				pSym = (CSymbol*)pBin;
-				if (pSym->GetTokenValue() == UINT(CLexer::Token::NONTERMINAL))
-				{
-					pSym->GetFirstSet()->Print(pOut);
-				}
-				pBin = pBin->GetNext();
-			}
+			pSetMemberNonTerminals->GetSetMemberSymbol()->GetFirstSet()->Print(pOut);
+			pSetMemberNonTerminals = pSetMemberNonTerminals->GetNext();
 		}
 	}
 }
 
-void CSymTab::PrintFollowSets(FILE* pOut, 
+void CSymTab::PrintFollowSets(
+	FILE* pOut, 
 	BOOL bLHS, 
 	BOOL bEOL, 
 	int nIndentSpaces
 )
 {
-	CBucket* pBucket;
-	CBin* pBin;
-	int i;
+	CSetMember* pSetMemberNonTerminals;
 
-	for (i = 0; i < GetTableSize(); ++i)
+	if (pOut)
 	{
-		pBucket = GetBucket(i);
-		if (pBucket)
+		pSetMemberNonTerminals = GetNonTerminalSet()->GetHead();
+		while (pSetMemberNonTerminals)
 		{
-			pBin = pBucket->GetHead();
-			while (pBin)
-			{
-				CSymbol* pSym;
-				pSym = (CSymbol*)pBin;
-				if (pSym->GetTokenValue() == UINT(CLexer::Token::NONTERMINAL))
-				{
-					pSym->GetFollowSet()->Print(pOut);
-				}
-				pBin = pBin->GetNext();
-			}
+			pSetMemberNonTerminals->GetSetMemberSymbol()->GetFollowSet()->Print(pOut);
+			pSetMemberNonTerminals = pSetMemberNonTerminals->GetNext();
 		}
 	}
 }

@@ -38,7 +38,8 @@ public:
 	//----------------------------
 	// Debug Stuff
 	//----------------------------
-	virtual void PrintProduction(FILE* pOut, 
+	virtual void PrintProduction(
+		FILE* pOut, 
 		BOOL bLHS = FALSE, 
 		BOOL bEOL = TRUE, 
 		int nIndentSpaces = 0

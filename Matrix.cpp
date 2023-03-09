@@ -35,16 +35,18 @@ void CMatrix::Print(FILE *pO,const char *pTitle)	//print matrix
 {
     int i,j;
 
-	fprintf(pO,"--------- %s ---------\n",pTitle);
-	fprintf(pO,"Rows=%d  Col=%d\n", m_Cols, m_Rows);
-    for(i=0;i< m_Rows;++i)	///rows
-    {
-		for(j=0;j< m_Cols;++j)	///columns
-			(*this)(i,j)->Print(LogFile());
-		fprintf(pO,"\n");
+	if (pO)
+	{
+		fprintf(pO, "--------- %s ---------\n", pTitle);
+		fprintf(pO, "Rows=%d  Col=%d\n", m_Cols, m_Rows);
+		for (i = 0; i < m_Rows; ++i)	///rows
+		{
+			for (j = 0; j < m_Cols; ++j)	///columns
+				(*this)(i, j)->Print(LogFile());
+			fprintf(pO, "\n");
+		}
+		fprintf(pO, "-------------------------------\n");
 	}
-	fprintf(pO,"-------------------------------\n");
-
 }
 
 CParseTableEntry*& CMatrix::operator()(int i,int j)

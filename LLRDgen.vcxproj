@@ -182,6 +182,7 @@
     <None Include="Test.gram" />
     <None Include="Test2.gram" />
     <None Include="test3.gram" />
+    <None Include="test4.gram" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Log.txt" />

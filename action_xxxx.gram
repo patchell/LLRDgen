@@ -116,32 +116,25 @@ ProcIdent	-> 'PROC_IDENT';
 //------------------------------------------
 // Statements
 //------------------------------------------
-SemiTermStmts	-> 'UNTIL' ArithExpr ';'  
-				-> 'EXIT' ';' 
-				;
-
-ODTermStmts		-> 'WHILE' ArithExpr DO Statments 'OD'
-				-> 'DO' Statements OD 
-				;
-
-FITermStmts		-> 'IF' IfStmt 'FI' ;
-
-
 Statements		-> SemiTermStmts 
 				-> ODTermStmts
 				-> FITermStmts
 				;
 
-//-------------------------------------
-// While Loop
-//-------------------------------------
-WhileLoop	-> ArithExpr 'DO' Statements;
+SemiTermStmts	-> 'UNTILL' ArithExpr ';'  
+				-> 'EXIT' ';' 
+				;
 
-//------------------------------------
-// Do Loop
-//------------------------------------
-DoLoop	-> Statements UNTILLstmt ;
-UNTILLstmt	-> 'UNTILL' ArithExpr ';' ;
+ODTermStmts
+				-> 'FOR' FORLoop 'OD'
+//				-> 'DO' Statements 'OD' 
+//				-> 'WHILE' ArithExpr 'DO' Statements 'OD'
+				;
+
+FITermStmts		-> 'IF' IfStmt 'FI' ;
+
+
+
 //------------------------------------
 // assignment statments
 //------------------------------------
@@ -159,19 +152,17 @@ ElseIfPart	-> 'ELSEIF' ArithExpr ThenPart
 //----------------------------------
 // For Loop
 //----------------------------------
-//FORLoop			->  Start ToPart;
-//ToPart	-> 'TO' Finish Next;
-//Next	-> StepPart DoPart;
-//StepPart	-> 'STEP' Step
-//			-> .
+DoPart	-> 'DO' Statements ;
+Start	-> MemContents '='ArithExpr ;
+Finish	-> ArithExpr ;
+Step -> ArithExpr ;
+
+StepPart	-> 'STEP' Step
+			-> .
 			;
-//DoPart	-> 'DO' ;
-//Start	-> Ident ;
-//Finish	-> Ident ;
-//Step -> Ident ;
-//FORLoop		-> Start 'TO' Finish STEPoption 'DO' Statements;
-//Start		-> . ;//'(' MemContents ASSIGNstmt ')';
-//Finish		-> . ; //'(' MemContents ASSIGNstmt ')';
+Next	-> StepPart DoPart;
+ToPart	-> 'TO' Finish Next;
+FORLoop	->  Start ToPart;
 
 //--------------------------------------
 // Arithmetic Expressions

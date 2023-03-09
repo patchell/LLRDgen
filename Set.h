@@ -17,16 +17,16 @@ public:
 	BOOL Copy(CSet* pSet);
 	BOOL CopyExceptEmpty(CSet* pSet);
 	BOOL Union(CSet* pSetB, CSet& SetC);
-	BOOL Union(CSet* pSetA);
+	BOOL Union(FILE* pOut, CSet* pSetA);
 	BOOL UnionExceptEmpty(CSet* pSetA);
 	BOOL Intersection(CSet* pSetB, CSet& SetC);
 	BOOL IsMemberOf(CSet* pSetB);
 	int GetNumberOfMembers() { return m_nNumberOfMembers; }
     BOOL IsNotAlreadyInSet(CSetMember* pSetMember);
     BOOL IsAlreadyInSet(CSetMember* pSetMembr);
-	BOOL Contains(CSymbol* pSym);
-	BOOL Contains(CLexeme* pSym);
-	BOOL DoesNotContain(CSymbol* pSym);
+	BOOL Contains(FILE*pOut, CSymbol* pSym);
+	BOOL Contains(FILE* pOut, CLexeme* pSym);
+	BOOL DoesNotContain(FILE* pOut, CSymbol* pSym);
 	//-----------------------------
 	// Membership Coordinator
 	//-----------------------------

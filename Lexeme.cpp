@@ -78,10 +78,16 @@ BOOL CLexeme::IsNotNullable()
 
 void CLexeme::Print(FILE* pO, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
-	char* s = new char[256];
+	char* s;
 
-	fprintf(pO, "%s%s", 
-		IndentString(s, nIndentSpaces),
-		GetLexemeSymbol()->GetName());
-	delete[] s;
+	if (pO)
+	{
+		s = new char[256];
+		fprintf(pO, "%s%s",
+			IndentString(s, nIndentSpaces),
+			GetLexemeSymbol()->GetName());
+		if (bEOL)
+			fprintf(pO, "\n");
+		delete[] s;
+	}
 }

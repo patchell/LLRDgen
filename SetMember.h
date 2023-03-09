@@ -32,7 +32,7 @@ public:
 	//--------------------------------------------
 	// Debug Methods
 	//--------------------------------------------
-	void Print(FILE* pOut, 
+	int Print(FILE* pOut, 
 		int DelimiterChar, 
 		BOOL bLHS = FALSE, 
 		BOOL bEOL = TRUE, 

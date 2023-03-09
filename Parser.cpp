@@ -17,8 +17,6 @@ BOOL CParser::Create(FILE* pIn, FILE* pOut)
 {
 	m_pOut = pOut;
 	m_Lex.Create(pIn);
-	GetTerminalSet()->Create("Terminals", "TERMINALS");
-	GetNonTerminalSet()->Create("Non Terminals","NONTERMINALS");
 	return TRUE;
 }
 
@@ -55,7 +53,6 @@ CLexer::Token CParser::Terminals(CLexer::Token LookaHeadToken)
 	LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::TERMINALS);
 	LookaHeadToken = TerminalList(LookaHeadToken);
 	LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::END_TERMINALS);
-	GetLexer()->GetSymTab()->PrintTable(LogFile());
 	return LookaHeadToken;
 }
 
@@ -109,7 +106,7 @@ CLexer::Token CParser::Terminal(CLexer::Token LookaHeadToken)
 
 	pMember = new CSetMember;
 	pMember->Create(pSym);
-	GetTerminalSet()->AddToSet(pMember);
+	GetLexer()->GetSymTab()->GetTerminalSet()->AddToSet(pMember);
 
 	LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::STRING);
 	LookaHeadToken = OptInit(LookaHeadToken);
@@ -201,13 +198,13 @@ CLexer::Token CParser::Production(CLexer::Token LookaHeadToken)
 			m_FirstGrammarSymbol = FALSE;
 			pMember = new CSetMember;
 			pMember->Create(pSym);
-			GetNonTerminalSet()->AddToSet(pMember);
+			GetLexer()->GetSymTab()->GetNonTerminalSet()->AddToSet(pMember);
 			pSym->Print(LogFile());
 		}
 		GetLexer()->GetSymTab()->AddSymbol(pSym);
 		pMember = new CSetMember;
 		pMember->Create(pSym);
-		GetNonTerminalSet()->AddToSet(pMember);
+		GetLexer()->GetSymTab()->GetNonTerminalSet()->AddToSet(pMember);
 		LookaHeadToken = CLexer::Token::NONTERMINAL;
 	}
 	else if (LookaHeadToken == CLexer::Token::NONTERMINAL)
@@ -215,7 +212,7 @@ CLexer::Token CParser::Production(CLexer::Token LookaHeadToken)
 		pSym = GetLexer()->GetSymbol();
 		pMember = new CSetMember;
 		pMember->Create(pSym);
-		GetNonTerminalSet()->AddToSet(pMember);
+		GetLexer()->GetSymTab()->GetNonTerminalSet()->AddToSet(pMember);
 		pSym->SetLineWhereDefined(GetLexer()->GetLineNumber());
 	}
 	switch (LookaHeadToken)
@@ -303,7 +300,6 @@ CLexer::Token CParser::LexemeList(CLexer::Token LookaHeadToken)
 			pLexeme = new CLexeme;
 			pLexeme->Create();
 			pSym = GetLexer()->GetSymbol();
-			fprintf(LogFile(), "Parser:NT:%s\n", pSym->GetName());
 			pLexeme->SetLexemeSymbol(pSym);
 			GetCurrentRule()->AddLexeme(pLexeme);
 			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::TERMINAL);

@@ -51,9 +51,20 @@ CRule* CSetMember::GetRule()
 	return GetSetMemberLexeme()->GetLexemeSymbol()->GetHead();
 }
 
-void CSetMember::Print(FILE* pOut, int DelimiterChar, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
+int CSetMember::Print(FILE* pOut, int DelimiterChar, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
-	fprintf(pOut, "%c\'%s\'", DelimiterChar, GetSetMemberLexeme()->GetLexemeSymbol()->GetName());
-	if (bEOL)
-		fprintf(pOut, "\n");
+	int NumCharsPrinted = 0;
+
+	if (pOut)
+	{
+		fprintf(pOut, "%c\'%s\'", 
+			DelimiterChar, 
+			GetSetMemberLexeme()->GetLexemeSymbol()->GetName()
+		);
+		NumCharsPrinted = strlen(GetSetMemberLexeme()->GetLexemeSymbol()->GetName());
+		NumCharsPrinted += nIndentSpaces + 3;
+		if (bEOL)
+			fprintf(pOut, "\n");
+	}
+	return NumCharsPrinted;
 }

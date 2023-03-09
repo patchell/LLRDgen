@@ -14,18 +14,19 @@ public:
 	virtual ~CRule();
 	BOOL Create(CSymbol* pLeftHandSide);
 	CSymbol* GetLHS() { return m_pLHS; }
-	BOOL FIRST(CLexeme* pY1, CSet& FirstSet);
+	BOOL FIRST(FILE *pOut,CLexeme* pY1, CSet& FirstSet);
     BOOL FIRST_Y1Y2__Yk(
+		FILE* pOut,
 		CLexeme* pY11, 
 		CSet& FirstSet
 	);
-	BOOL FOLLOW();
-	BOOL FOLLOW_RULE2(CSymbol* pA, CSymbol* pB, CSymbol *pb);
-	BOOL FOLLOW_RULE3(CSymbol* pA, CSymbol* pB);
-	BOOL FOLLOW_RULE4(CSymbol* pA, CSymbol* pB, CSymbol *pb);
+	BOOL FOLLOW(FILE* pOut);
+	BOOL FOLLOW_RULE2(FILE* pOut, CSymbol* pA, CSymbol* pB, CSymbol *pb);
+	BOOL FOLLOW_RULE3(FILE* pOut, CSymbol* pA, CSymbol* pB);
+	BOOL FOLLOW_RULE4(FILE* pOut, CSymbol* pA, CSymbol* pB, CSymbol *pb);
 	BOOL DoAllLexemesContainEpsilong();
 	BOOL DoesThisRuleHaveEpsilon();
-	BOOL DoesThisRuleHave(CSymbol* pSym);
+	BOOL DoesThisRuleHave(FILE* pOut, CSymbol* pSym);
 	BOOL IsNull() {
 		return m_NULL;
 	}

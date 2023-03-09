@@ -1,0 +1,1083 @@
+???????? $ Nullable Set(0)
+grammar:  Token:NONTERMINAL Value:265 NULLABLE(0) START(1)
+     FIRST['grammar'] { }
+     FOLLOW['grammar'] { '$' }
+*************  Print Out Grammar Structure************
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+********** Non Terminals Set **********
+NONTERMINALS['Non Terminals'] { 'grammar','statements','statements_1','statement','Assignment'
+,'expr','expr_1','term','term_1','factor','ForStmt','ToPart','StepPart','DoPart','MemContents'
+,'MemContType','BaseConstant','Decls','Decls_1','Decl','VarList','VarList_1','Var'
+,'Var_2','Var_3','Var_1' }
+*********** Build Nullable Set **********
+****************Create NOT nullable set ************************
+----- Calc First Sets------
+FIRST['grammar'] { 'INT' }
+FIRST['statements'] { 'FOR','IDENT' }
+FIRST['statements_1'] { ';','ϵ' }
+FIRST['statement'] { 'FOR','IDENT' }
+FIRST['Assignment'] { '=' }
+FIRST['expr'] { '(','IDENT','NUMBER','@' }
+FIRST['expr_1'] { '+','-','ϵ' }
+FIRST['term'] { '(','IDENT','NUMBER','@' }
+FIRST['term_1'] { '*','/','ϵ' }
+FIRST['factor'] { '(','IDENT','NUMBER','@' }
+FIRST['ForStmt'] { '(','IDENT','NUMBER','@' }
+FIRST['ToPart'] { 'TO' }
+FIRST['StepPart'] { 'STEP','ϵ' }
+FIRST['DoPart'] { 'DO' }
+FIRST['MemContents'] { 'IDENT' }
+FIRST['MemContType'] { '(','^','ϵ' }
+FIRST['BaseConstant'] { 'NUMBER','@' }
+FIRST['Decls'] { 'ϵ','INT' }
+FIRST['Decls_1'] { ';','ϵ' }
+FIRST['Decl'] { 'INT','ϵ' }
+FIRST['VarList'] { '*' }
+FIRST['VarList_1'] { ',','ϵ' }
+FIRST['Var'] { '*' }
+FIRST['Var_2'] { 'VARIDENT' }
+FIRST['Var_3'] { '[','ϵ' }
+FIRST['Var_1'] { '*','ϵ' }
+----- Calc Follow Sets------
+------------ Follow Sets ---------------
+FOLLOW['grammar'] { '$' }
+FOLLOW['statements'] { 'OD','$' }
+FOLLOW['statements_1'] { 'OD','$' }
+FOLLOW['statement'] { ';','OD','$' }
+FOLLOW['Assignment'] { ';','OD','$' }
+FOLLOW['expr'] { ')','TO' }
+FOLLOW['expr_1'] { ')','TO' }
+FOLLOW['term'] { '+','-',')','TO' }
+FOLLOW['term_1'] { '+','-',')','TO' }
+FOLLOW['factor'] { '*','/','+','-',')','TO' }
+FOLLOW['ForStmt'] { }
+FOLLOW['ToPart'] { }
+FOLLOW['StepPart'] { 'DO' }
+FOLLOW['DoPart'] { }
+FOLLOW['MemContents'] { '=','*','/','+','-',')','TO' }
+FOLLOW['MemContType'] { }
+FOLLOW['BaseConstant'] { '*','/','+','-',')','TO' }
+FOLLOW['Decls'] { 'FOR','IDENT' }
+FOLLOW['Decls_1'] { 'FOR','IDENT' }
+FOLLOW['Decl'] { ';','FOR','IDENT' }
+FOLLOW['VarList'] { }
+FOLLOW['VarList_1'] { }
+FOLLOW['Var'] { ',' }
+FOLLOW['Var_2'] { ',' }
+FOLLOW['Var_3'] { }
+FOLLOW['Var_1'] { 'VARIDENT' }
+---------------- Create Parse Table --------------
+TerminalSymbol:IDENT
+TerminalSymbol:VARIDENT
+TerminalSymbol:+
+TerminalSymbol:-
+TerminalSymbol:*
+TerminalSymbol:/
+TerminalSymbol:.
+TerminalSymbol:(
+TerminalSymbol:)
+TerminalSymbol:=
+TerminalSymbol:;
+TerminalSymbol:^
+TerminalSymbol:@
+TerminalSymbol:[
+TerminalSymbol:]
+TerminalSymbol:,
+TerminalSymbol:FOR
+TerminalSymbol:TO
+TerminalSymbol:STEP
+TerminalSymbol:DO
+TerminalSymbol:OD
+TerminalSymbol:NUMBER
+TerminalSymbol:INT
+TerminalSymbol:ϵ
+TerminalSymbol:$
+------- Non Terminal: grammar --------
+> Rule 1 <
+grammar-> Decls statements     FIRST['TempFirstY'] { 'INT' }
+BEGIN INT ******
+  Add grammar-> Decls statements ==> Table(grammar, INT)
+END INT ^^^^^^^
+FOLLOW['grammar'] { '$' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------grammar-> Decls statements--------
+Is 'ϵ' Not Contained in 'FIRST['Decls']'
+			Compare 'ϵ' To 'ϵ'
+FALSE
+Is ϵ in Set FIRST['Decls']
+TRUE
+End of Y1Y2...Yk Chain
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'INT' }
+ 'INT'
+------- Non Terminal: statements --------
+> Rule 1 <
+statements-> statement statements_1     FIRST['TempFirstY'] { 'FOR','IDENT' }
+BEGIN FOR ******
+  Add statements-> statement statements_1 ==> Table(statements, FOR)
+END FOR ^^^^^^^
+BEGIN IDENT ******
+  Add statements-> statement statements_1 ==> Table(statements, IDENT)
+END IDENT ^^^^^^^
+FOLLOW['statements'] { 'OD','$' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------statements-> statement statements_1--------
+Is 'ϵ' Not Contained in 'FIRST['statement']'
+			Compare 'ϵ' To 'FOR'
+			Compare 'ϵ' To 'IDENT'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['statement'] { 'FOR','IDENT' } => FIRST['TempFirstY'] { 'FOR','IDENT' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'FOR','IDENT' }
+ 'FOR'
+ 'IDENT'
+------- Non Terminal: statements_1 --------
+> Rule 1 <
+statements_1-> ; statement statements_1     FIRST['TempFirstY'] { ';' }
+BEGIN ; ******
+  Add statements_1-> ; statement statements_1 ==> Table(statements_1, ;)
+END ; ^^^^^^^
+statements_1-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add statements_1-> ϵ ==> Table(statements_1, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['statements_1'] { 'OD','$' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------statements_1-> ; statement statements_1--------
+Is 'ϵ' Not Contained in 'FIRST[';']'
+			Compare 'ϵ' To ';'
+TRUE
+FIRST['TempFirstY'] { } U FIRST[';'] { ';' } => FIRST['TempFirstY'] { ';' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { ';' }
+ ';'
+--------statements_1-> ϵ--------
+FIRST['TempFirstY'] { ';' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { ';','ϵ' }
+FIRST['TempFirstY'] { ';','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { ';','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ 'OD'
+Add statements_1-> ϵ ==> Table(statements_1, OD)
+ '$'
+Add statements_1-> ϵ ==> Table(statements_1, $)
+Is $ in Set FOLLOW['statements_1']
+TRUE
+  FIRST['TempFirstY'] { ';','ϵ' }
+ ';'
+ 'ϵ'
+------- Non Terminal: statement --------
+> Rule 1 <
+statement-> MemContents Assignment     FIRST['TempFirstY'] { 'IDENT' }
+BEGIN IDENT ******
+  Add statement-> MemContents Assignment ==> Table(statement, IDENT)
+END IDENT ^^^^^^^
+statement-> FOR ForStmt     FIRST['TempFirstY'] { 'FOR' }
+BEGIN FOR ******
+  Add statement-> FOR ForStmt ==> Table(statement, FOR)
+END FOR ^^^^^^^
+FOLLOW['statement'] { ';','OD','$' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------statement-> MemContents Assignment--------
+Is 'ϵ' Not Contained in 'FIRST['MemContents']'
+			Compare 'ϵ' To 'IDENT'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['MemContents'] { 'IDENT' } => FIRST['TempFirstY'] { 'IDENT' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'IDENT' }
+ 'IDENT'
+--------statement-> FOR ForStmt--------
+Is 'ϵ' Not Contained in 'FIRST['FOR']'
+			Compare 'ϵ' To 'FOR'
+TRUE
+FIRST['TempFirstY'] { 'IDENT' } U FIRST['FOR'] { 'FOR' } => FIRST['TempFirstY'] { 'IDENT','FOR' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'IDENT','FOR' }
+ 'IDENT'
+ 'FOR'
+------- Non Terminal: Assignment --------
+> Rule 1 <
+Assignment-> = expr     FIRST['TempFirstY'] { '=' }
+BEGIN = ******
+  Add Assignment-> = expr ==> Table(Assignment, =)
+END = ^^^^^^^
+FOLLOW['Assignment'] { ';','OD','$' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Assignment-> = expr--------
+Is 'ϵ' Not Contained in 'FIRST['=']'
+			Compare 'ϵ' To '='
+TRUE
+FIRST['TempFirstY'] { } U FIRST['='] { '=' } => FIRST['TempFirstY'] { '=' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '=' }
+ '='
+------- Non Terminal: expr --------
+> Rule 1 <
+expr-> term expr_1     FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+BEGIN ( ******
+  Add expr-> term expr_1 ==> Table(expr, ()
+END ( ^^^^^^^
+BEGIN IDENT ******
+  Add expr-> term expr_1 ==> Table(expr, IDENT)
+END IDENT ^^^^^^^
+BEGIN NUMBER ******
+  Add expr-> term expr_1 ==> Table(expr, NUMBER)
+END NUMBER ^^^^^^^
+BEGIN @ ******
+  Add expr-> term expr_1 ==> Table(expr, @)
+END @ ^^^^^^^
+FOLLOW['expr'] { ')','TO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------expr-> term expr_1--------
+Is 'ϵ' Not Contained in 'FIRST['term']'
+			Compare 'ϵ' To '('
+			Compare 'ϵ' To 'IDENT'
+			Compare 'ϵ' To 'NUMBER'
+			Compare 'ϵ' To '@'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['term'] { '(','IDENT','NUMBER','@' } => FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+ '('
+ 'IDENT'
+ 'NUMBER'
+ '@'
+------- Non Terminal: expr_1 --------
+> Rule 1 <
+expr_1-> + term expr_1     FIRST['TempFirstY'] { '+' }
+BEGIN + ******
+  Add expr_1-> + term expr_1 ==> Table(expr_1, +)
+END + ^^^^^^^
+expr_1-> - term expr_1     FIRST['TempFirstY'] { '-' }
+BEGIN - ******
+  Add expr_1-> - term expr_1 ==> Table(expr_1, -)
+END - ^^^^^^^
+expr_1-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add expr_1-> ϵ ==> Table(expr_1, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['expr_1'] { ')','TO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------expr_1-> + term expr_1--------
+Is 'ϵ' Not Contained in 'FIRST['+']'
+			Compare 'ϵ' To '+'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['+'] { '+' } => FIRST['TempFirstY'] { '+' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '+' }
+ '+'
+--------expr_1-> - term expr_1--------
+Is 'ϵ' Not Contained in 'FIRST['-']'
+			Compare 'ϵ' To '-'
+TRUE
+FIRST['TempFirstY'] { '+' } U FIRST['-'] { '-' } => FIRST['TempFirstY'] { '+','-' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '+','-' }
+ '+'
+ '-'
+--------expr_1-> ϵ--------
+FIRST['TempFirstY'] { '+','-' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '+','-','ϵ' }
+FIRST['TempFirstY'] { '+','-','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '+','-','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ ')'
+Add expr_1-> ϵ ==> Table(expr_1, ))
+ 'TO'
+Add expr_1-> ϵ ==> Table(expr_1, TO)
+Is $ in Set FOLLOW['expr_1']
+FALSE
+  FIRST['TempFirstY'] { '+','-','ϵ' }
+ '+'
+ '-'
+ 'ϵ'
+------- Non Terminal: term --------
+> Rule 1 <
+term-> factor term_1     FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+BEGIN ( ******
+  Add term-> factor term_1 ==> Table(term, ()
+END ( ^^^^^^^
+BEGIN IDENT ******
+  Add term-> factor term_1 ==> Table(term, IDENT)
+END IDENT ^^^^^^^
+BEGIN NUMBER ******
+  Add term-> factor term_1 ==> Table(term, NUMBER)
+END NUMBER ^^^^^^^
+BEGIN @ ******
+  Add term-> factor term_1 ==> Table(term, @)
+END @ ^^^^^^^
+FOLLOW['term'] { '+','-',')','TO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------term-> factor term_1--------
+Is 'ϵ' Not Contained in 'FIRST['factor']'
+			Compare 'ϵ' To '('
+			Compare 'ϵ' To 'IDENT'
+			Compare 'ϵ' To 'NUMBER'
+			Compare 'ϵ' To '@'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['factor'] { '(','IDENT','NUMBER','@' } => FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+ '('
+ 'IDENT'
+ 'NUMBER'
+ '@'
+------- Non Terminal: term_1 --------
+> Rule 1 <
+term_1-> * factor term_1     FIRST['TempFirstY'] { '*' }
+BEGIN * ******
+  Add term_1-> * factor term_1 ==> Table(term_1, *)
+END * ^^^^^^^
+term_1-> / factor term_1     FIRST['TempFirstY'] { '/' }
+BEGIN / ******
+  Add term_1-> / factor term_1 ==> Table(term_1, /)
+END / ^^^^^^^
+term_1-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add term_1-> ϵ ==> Table(term_1, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['term_1'] { '+','-',')','TO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------term_1-> * factor term_1--------
+Is 'ϵ' Not Contained in 'FIRST['*']'
+			Compare 'ϵ' To '*'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['*'] { '*' } => FIRST['TempFirstY'] { '*' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '*' }
+ '*'
+--------term_1-> / factor term_1--------
+Is 'ϵ' Not Contained in 'FIRST['/']'
+			Compare 'ϵ' To '/'
+TRUE
+FIRST['TempFirstY'] { '*' } U FIRST['/'] { '/' } => FIRST['TempFirstY'] { '*','/' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '*','/' }
+ '*'
+ '/'
+--------term_1-> ϵ--------
+FIRST['TempFirstY'] { '*','/' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '*','/','ϵ' }
+FIRST['TempFirstY'] { '*','/','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '*','/','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ '+'
+Add term_1-> ϵ ==> Table(term_1, +)
+ '-'
+Add term_1-> ϵ ==> Table(term_1, -)
+ ')'
+Add term_1-> ϵ ==> Table(term_1, ))
+ 'TO'
+Add term_1-> ϵ ==> Table(term_1, TO)
+Is $ in Set FOLLOW['term_1']
+FALSE
+  FIRST['TempFirstY'] { '*','/','ϵ' }
+ '*'
+ '/'
+ 'ϵ'
+------- Non Terminal: factor --------
+> Rule 1 <
+factor-> MemContents     FIRST['TempFirstY'] { 'IDENT' }
+BEGIN IDENT ******
+  Add factor-> MemContents ==> Table(factor, IDENT)
+END IDENT ^^^^^^^
+factor-> BaseConstant     FIRST['TempFirstY'] { 'NUMBER','@' }
+BEGIN NUMBER ******
+  Add factor-> BaseConstant ==> Table(factor, NUMBER)
+END NUMBER ^^^^^^^
+BEGIN @ ******
+  Add factor-> BaseConstant ==> Table(factor, @)
+END @ ^^^^^^^
+factor-> ( expr )     FIRST['TempFirstY'] { '(' }
+BEGIN ( ******
+  Add factor-> ( expr ) ==> Table(factor, ()
+END ( ^^^^^^^
+FOLLOW['factor'] { '*','/','+','-',')','TO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------factor-> MemContents--------
+Is 'ϵ' Not Contained in 'FIRST['MemContents']'
+			Compare 'ϵ' To 'IDENT'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['MemContents'] { 'IDENT' } => FIRST['TempFirstY'] { 'IDENT' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'IDENT' }
+ 'IDENT'
+--------factor-> BaseConstant--------
+Is 'ϵ' Not Contained in 'FIRST['BaseConstant']'
+			Compare 'ϵ' To 'NUMBER'
+			Compare 'ϵ' To '@'
+TRUE
+FIRST['TempFirstY'] { 'IDENT' } U FIRST['BaseConstant'] { 'NUMBER','@' } => FIRST['TempFirstY'] { 'IDENT','NUMBER','@' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'IDENT','NUMBER','@' }
+ 'IDENT'
+ 'NUMBER'
+ '@'
+--------factor-> ( expr )--------
+Is 'ϵ' Not Contained in 'FIRST['(']'
+			Compare 'ϵ' To '('
+TRUE
+FIRST['TempFirstY'] { 'IDENT','NUMBER','@' } U FIRST['('] { '(' } => FIRST['TempFirstY'] { 'IDENT','NUMBER','@','(' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'IDENT','NUMBER','@','(' }
+ 'IDENT'
+ 'NUMBER'
+ '@'
+ '('
+------- Non Terminal: ForStmt --------
+> Rule 1 <
+ForStmt-> expr ToPart     FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+BEGIN ( ******
+  Add ForStmt-> expr ToPart ==> Table(ForStmt, ()
+END ( ^^^^^^^
+BEGIN IDENT ******
+  Add ForStmt-> expr ToPart ==> Table(ForStmt, IDENT)
+END IDENT ^^^^^^^
+BEGIN NUMBER ******
+  Add ForStmt-> expr ToPart ==> Table(ForStmt, NUMBER)
+END NUMBER ^^^^^^^
+BEGIN @ ******
+  Add ForStmt-> expr ToPart ==> Table(ForStmt, @)
+END @ ^^^^^^^
+FOLLOW['ForStmt'] { }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------ForStmt-> expr ToPart--------
+Is 'ϵ' Not Contained in 'FIRST['expr']'
+			Compare 'ϵ' To '('
+			Compare 'ϵ' To 'IDENT'
+			Compare 'ϵ' To 'NUMBER'
+			Compare 'ϵ' To '@'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['expr'] { '(','IDENT','NUMBER','@' } => FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '(','IDENT','NUMBER','@' }
+ '('
+ 'IDENT'
+ 'NUMBER'
+ '@'
+------- Non Terminal: ToPart --------
+> Rule 1 <
+ToPart-> TO expr StepPart DoPart     FIRST['TempFirstY'] { 'TO' }
+BEGIN TO ******
+  Add ToPart-> TO expr StepPart DoPart ==> Table(ToPart, TO)
+END TO ^^^^^^^
+FOLLOW['ToPart'] { }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------ToPart-> TO expr StepPart DoPart--------
+Is 'ϵ' Not Contained in 'FIRST['TO']'
+			Compare 'ϵ' To 'TO'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['TO'] { 'TO' } => FIRST['TempFirstY'] { 'TO' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'TO' }
+ 'TO'
+------- Non Terminal: StepPart --------
+> Rule 1 <
+StepPart-> STEP expr     FIRST['TempFirstY'] { 'STEP' }
+BEGIN STEP ******
+  Add StepPart-> STEP expr ==> Table(StepPart, STEP)
+END STEP ^^^^^^^
+StepPart-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add StepPart-> ϵ ==> Table(StepPart, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['StepPart'] { 'DO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------StepPart-> STEP expr--------
+Is 'ϵ' Not Contained in 'FIRST['STEP']'
+			Compare 'ϵ' To 'STEP'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['STEP'] { 'STEP' } => FIRST['TempFirstY'] { 'STEP' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'STEP' }
+ 'STEP'
+--------StepPart-> ϵ--------
+FIRST['TempFirstY'] { 'STEP' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { 'STEP','ϵ' }
+FIRST['TempFirstY'] { 'STEP','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { 'STEP','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ 'DO'
+Add StepPart-> ϵ ==> Table(StepPart, DO)
+Is $ in Set FOLLOW['StepPart']
+FALSE
+  FIRST['TempFirstY'] { 'STEP','ϵ' }
+ 'STEP'
+ 'ϵ'
+------- Non Terminal: DoPart --------
+> Rule 1 <
+DoPart-> DO statements OD     FIRST['TempFirstY'] { 'DO' }
+BEGIN DO ******
+  Add DoPart-> DO statements OD ==> Table(DoPart, DO)
+END DO ^^^^^^^
+FOLLOW['DoPart'] { }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------DoPart-> DO statements OD--------
+Is 'ϵ' Not Contained in 'FIRST['DO']'
+			Compare 'ϵ' To 'DO'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['DO'] { 'DO' } => FIRST['TempFirstY'] { 'DO' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'DO' }
+ 'DO'
+------- Non Terminal: MemContents --------
+> Rule 1 <
+MemContents-> IDENT MemContType     FIRST['TempFirstY'] { 'IDENT' }
+BEGIN IDENT ******
+  Add MemContents-> IDENT MemContType ==> Table(MemContents, IDENT)
+END IDENT ^^^^^^^
+FOLLOW['MemContents'] { '=','*','/','+','-',')','TO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------MemContents-> IDENT MemContType--------
+Is 'ϵ' Not Contained in 'FIRST['IDENT']'
+			Compare 'ϵ' To 'IDENT'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['IDENT'] { 'IDENT' } => FIRST['TempFirstY'] { 'IDENT' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'IDENT' }
+ 'IDENT'
+------- Non Terminal: MemContType --------
+> Rule 1 <
+MemContType-> ( expr )     FIRST['TempFirstY'] { '(' }
+BEGIN ( ******
+  Add MemContType-> ( expr ) ==> Table(MemContType, ()
+END ( ^^^^^^^
+MemContType-> ^     FIRST['TempFirstY'] { '^' }
+BEGIN ^ ******
+  Add MemContType-> ^ ==> Table(MemContType, ^)
+END ^ ^^^^^^^
+MemContType-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add MemContType-> ϵ ==> Table(MemContType, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['MemContType'] { }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------MemContType-> ( expr )--------
+Is 'ϵ' Not Contained in 'FIRST['(']'
+			Compare 'ϵ' To '('
+TRUE
+FIRST['TempFirstY'] { } U FIRST['('] { '(' } => FIRST['TempFirstY'] { '(' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '(' }
+ '('
+--------MemContType-> ^--------
+Is 'ϵ' Not Contained in 'FIRST['^']'
+			Compare 'ϵ' To '^'
+TRUE
+FIRST['TempFirstY'] { '(' } U FIRST['^'] { '^' } => FIRST['TempFirstY'] { '(','^' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '(','^' }
+ '('
+ '^'
+--------MemContType-> ϵ--------
+FIRST['TempFirstY'] { '(','^' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '(','^','ϵ' }
+FIRST['TempFirstY'] { '(','^','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '(','^','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+Is $ in Set FOLLOW['MemContType']
+FALSE
+  FIRST['TempFirstY'] { '(','^','ϵ' }
+ '('
+ '^'
+ 'ϵ'
+------- Non Terminal: BaseConstant --------
+> Rule 1 <
+BaseConstant-> NUMBER     FIRST['TempFirstY'] { 'NUMBER' }
+BEGIN NUMBER ******
+  Add BaseConstant-> NUMBER ==> Table(BaseConstant, NUMBER)
+END NUMBER ^^^^^^^
+BaseConstant-> @ MemContents     FIRST['TempFirstY'] { '@' }
+BEGIN @ ******
+  Add BaseConstant-> @ MemContents ==> Table(BaseConstant, @)
+END @ ^^^^^^^
+FOLLOW['BaseConstant'] { '*','/','+','-',')','TO' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------BaseConstant-> NUMBER--------
+Is 'ϵ' Not Contained in 'FIRST['NUMBER']'
+			Compare 'ϵ' To 'NUMBER'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['NUMBER'] { 'NUMBER' } => FIRST['TempFirstY'] { 'NUMBER' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'NUMBER' }
+ 'NUMBER'
+--------BaseConstant-> @ MemContents--------
+Is 'ϵ' Not Contained in 'FIRST['@']'
+			Compare 'ϵ' To '@'
+TRUE
+FIRST['TempFirstY'] { 'NUMBER' } U FIRST['@'] { '@' } => FIRST['TempFirstY'] { 'NUMBER','@' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'NUMBER','@' }
+ 'NUMBER'
+ '@'
+------- Non Terminal: Decls --------
+> Rule 1 <
+Decls-> Decl Decls_1     FIRST['TempFirstY'] { 'INT','ϵ' }
+BEGIN INT ******
+  Add Decls-> Decl Decls_1 ==> Table(Decls, INT)
+END INT ^^^^^^^
+BEGIN ϵ ******
+  Add Decls-> Decl Decls_1 ==> Table(Decls, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['Decls'] { 'FOR','IDENT' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Decls-> Decl Decls_1--------
+Is 'ϵ' Not Contained in 'FIRST['Decl']'
+			Compare 'ϵ' To 'INT'
+			Compare 'ϵ' To 'ϵ'
+FALSE
+Is ϵ in Set FIRST['Decl']
+TRUE
+End of Y1Y2...Yk Chain
+FIRST['TempFirstY'] { 'INT' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { 'INT','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ 'FOR'
+Add Decls-> Decl Decls_1 ==> Table(Decls, FOR)
+ 'IDENT'
+Add Decls-> Decl Decls_1 ==> Table(Decls, IDENT)
+Is $ in Set FOLLOW['Decls']
+FALSE
+  FIRST['TempFirstY'] { 'INT','ϵ' }
+ 'INT'
+ 'ϵ'
+------- Non Terminal: Decls_1 --------
+> Rule 1 <
+Decls_1-> ; Decl Decls_1     FIRST['TempFirstY'] { ';' }
+BEGIN ; ******
+  Add Decls_1-> ; Decl Decls_1 ==> Table(Decls_1, ;)
+END ; ^^^^^^^
+Decls_1-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add Decls_1-> ϵ ==> Table(Decls_1, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['Decls_1'] { 'FOR','IDENT' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Decls_1-> ; Decl Decls_1--------
+Is 'ϵ' Not Contained in 'FIRST[';']'
+			Compare 'ϵ' To ';'
+TRUE
+FIRST['TempFirstY'] { } U FIRST[';'] { ';' } => FIRST['TempFirstY'] { ';' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { ';' }
+ ';'
+--------Decls_1-> ϵ--------
+FIRST['TempFirstY'] { ';' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { ';','ϵ' }
+FIRST['TempFirstY'] { ';','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { ';','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ 'FOR'
+Add Decls_1-> ϵ ==> Table(Decls_1, FOR)
+ 'IDENT'
+Add Decls_1-> ϵ ==> Table(Decls_1, IDENT)
+Is $ in Set FOLLOW['Decls_1']
+FALSE
+  FIRST['TempFirstY'] { ';','ϵ' }
+ ';'
+ 'ϵ'
+------- Non Terminal: Decl --------
+> Rule 1 <
+Decl-> INT VarList     FIRST['TempFirstY'] { 'INT' }
+BEGIN INT ******
+  Add Decl-> INT VarList ==> Table(Decl, INT)
+END INT ^^^^^^^
+Decl-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add Decl-> ϵ ==> Table(Decl, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['Decl'] { ';','FOR','IDENT' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Decl-> INT VarList--------
+Is 'ϵ' Not Contained in 'FIRST['INT']'
+			Compare 'ϵ' To 'INT'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['INT'] { 'INT' } => FIRST['TempFirstY'] { 'INT' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'INT' }
+ 'INT'
+--------Decl-> ϵ--------
+FIRST['TempFirstY'] { 'INT' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { 'INT','ϵ' }
+FIRST['TempFirstY'] { 'INT','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { 'INT','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ ';'
+Add Decl-> ϵ ==> Table(Decl, ;)
+ 'FOR'
+Add Decl-> ϵ ==> Table(Decl, FOR)
+ 'IDENT'
+Add Decl-> ϵ ==> Table(Decl, IDENT)
+Is $ in Set FOLLOW['Decl']
+FALSE
+  FIRST['TempFirstY'] { 'INT','ϵ' }
+ 'INT'
+ 'ϵ'
+------- Non Terminal: VarList --------
+> Rule 1 <
+VarList-> Var VarList_1     FIRST['TempFirstY'] { '*' }
+BEGIN * ******
+  Add VarList-> Var VarList_1 ==> Table(VarList, *)
+END * ^^^^^^^
+FOLLOW['VarList'] { }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------VarList-> Var VarList_1--------
+Is 'ϵ' Not Contained in 'FIRST['Var']'
+			Compare 'ϵ' To '*'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['Var'] { '*' } => FIRST['TempFirstY'] { '*' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '*' }
+ '*'
+------- Non Terminal: VarList_1 --------
+> Rule 1 <
+VarList_1-> , Var VarList_1     FIRST['TempFirstY'] { ',' }
+BEGIN , ******
+  Add VarList_1-> , Var VarList_1 ==> Table(VarList_1, ,)
+END , ^^^^^^^
+VarList_1-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add VarList_1-> ϵ ==> Table(VarList_1, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['VarList_1'] { }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------VarList_1-> , Var VarList_1--------
+Is 'ϵ' Not Contained in 'FIRST[',']'
+			Compare 'ϵ' To ','
+TRUE
+FIRST['TempFirstY'] { } U FIRST[','] { ',' } => FIRST['TempFirstY'] { ',' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { ',' }
+ ','
+--------VarList_1-> ϵ--------
+FIRST['TempFirstY'] { ',' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { ',','ϵ' }
+FIRST['TempFirstY'] { ',','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { ',','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+Is $ in Set FOLLOW['VarList_1']
+FALSE
+  FIRST['TempFirstY'] { ',','ϵ' }
+ ','
+ 'ϵ'
+------- Non Terminal: Var --------
+> Rule 1 <
+Var-> Var_1 Var_2     FIRST['TempFirstY'] { '*' }
+BEGIN * ******
+  Add Var-> Var_1 Var_2 ==> Table(Var, *)
+END * ^^^^^^^
+FOLLOW['Var'] { ',' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Var-> Var_1 Var_2--------
+Is 'ϵ' Not Contained in 'FIRST['Var_1']'
+			Compare 'ϵ' To '*'
+			Compare 'ϵ' To 'ϵ'
+FALSE
+Is ϵ in Set FIRST['Var_1']
+TRUE
+End of Y1Y2...Yk Chain
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '*' }
+ '*'
+------- Non Terminal: Var_2 --------
+> Rule 1 <
+Var_2-> VARIDENT Var_3     FIRST['TempFirstY'] { 'VARIDENT' }
+BEGIN VARIDENT ******
+  Add Var_2-> VARIDENT Var_3 ==> Table(Var_2, VARIDENT)
+END VARIDENT ^^^^^^^
+FOLLOW['Var_2'] { ',' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Var_2-> VARIDENT Var_3--------
+Is 'ϵ' Not Contained in 'FIRST['VARIDENT']'
+			Compare 'ϵ' To 'VARIDENT'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['VARIDENT'] { 'VARIDENT' } => FIRST['TempFirstY'] { 'VARIDENT' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { 'VARIDENT' }
+ 'VARIDENT'
+------- Non Terminal: Var_3 --------
+> Rule 1 <
+Var_3-> [ NUMBER ]     FIRST['TempFirstY'] { '[' }
+BEGIN [ ******
+  Add Var_3-> [ NUMBER ] ==> Table(Var_3, [)
+END [ ^^^^^^^
+Var_3-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add Var_3-> ϵ ==> Table(Var_3, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['Var_3'] { }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Var_3-> [ NUMBER ]--------
+Is 'ϵ' Not Contained in 'FIRST['[']'
+			Compare 'ϵ' To '['
+TRUE
+FIRST['TempFirstY'] { } U FIRST['['] { '[' } => FIRST['TempFirstY'] { '[' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '[' }
+ '['
+--------Var_3-> ϵ--------
+FIRST['TempFirstY'] { '[' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '[','ϵ' }
+FIRST['TempFirstY'] { '[','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '[','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+Is $ in Set FOLLOW['Var_3']
+FALSE
+  FIRST['TempFirstY'] { '[','ϵ' }
+ '['
+ 'ϵ'
+------- Non Terminal: Var_1 --------
+> Rule 1 <
+Var_1-> * Var_1     FIRST['TempFirstY'] { '*' }
+BEGIN * ******
+  Add Var_1-> * Var_1 ==> Table(grammar, *)
+END * ^^^^^^^
+Var_1-> ϵ     FIRST['TempFirstY'] { 'ϵ' }
+BEGIN ϵ ******
+  Add Var_1-> ϵ ==> Table(grammar, ϵ)
+END ϵ ^^^^^^^
+FOLLOW['Var_1'] { 'VARIDENT' }
+TERMINALS['Terminals'] { 'IDENT','VARIDENT','+','-','*','/','.','(',')','=',';','^'
+,'@','[',']',',','FOR','TO','STEP','DO','OD','NUMBER','INT','ϵ','$' }
+############< Rule 2 >############
+--------Var_1-> * Var_1--------
+Is 'ϵ' Not Contained in 'FIRST['*']'
+			Compare 'ϵ' To '*'
+TRUE
+FIRST['TempFirstY'] { } U FIRST['*'] { '*' } => FIRST['TempFirstY'] { '*' }
+Is ϵ in Set FIRST['TempFirstY']
+FALSE
+  FIRST['TempFirstY'] { '*' }
+ '*'
+--------Var_1-> ϵ--------
+FIRST['TempFirstY'] { '*' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '*','ϵ' }
+FIRST['TempFirstY'] { '*','ϵ' } U FIRST['ϵ'] { 'ϵ' } => FIRST['TempFirstY'] { '*','ϵ' }
+Is ϵ in Set FIRST['TempFirstY']
+TRUE
+ 'VARIDENT'
+Add Var_1-> ϵ ==> Table(grammar, VARIDENT)
+Is $ in Set FOLLOW['Var_1']
+FALSE
+  FIRST['TempFirstY'] { '*','ϵ' }
+ '*'
+ 'ϵ'
+xxxxxxxxxxxx Parse Table xxxxxxxxxxxxxxxxx
+('grammar','VARIDENT')
+ Var_1-> ϵ
+('grammar','*')
+ Var_1-> * Var_1
+('grammar','INT')
+ grammar-> Decls statements
+('grammar','ϵ')
+ Var_1-> ϵ
+('statements','IDENT')
+ statements-> statement statements_1
+('statements','FOR')
+ statements-> statement statements_1
+('statements_1',';')
+ statements_1-> ; statement statements_1
+('statements_1','OD')
+ statements_1-> ϵ
+('statements_1','ϵ')
+ statements_1-> ϵ
+('statements_1','$')
+ statements_1-> ϵ
+('statement','IDENT')
+ statement-> MemContents Assignment
+('statement','FOR')
+ statement-> FOR ForStmt
+('Assignment','=')
+ Assignment-> = expr
+('expr','IDENT')
+ expr-> term expr_1
+('expr','(')
+ expr-> term expr_1
+('expr','@')
+ expr-> term expr_1
+('expr','NUMBER')
+ expr-> term expr_1
+('expr_1','+')
+ expr_1-> + term expr_1
+('expr_1','-')
+ expr_1-> - term expr_1
+('expr_1',')')
+ expr_1-> ϵ
+('expr_1','TO')
+ expr_1-> ϵ
+('expr_1','ϵ')
+ expr_1-> ϵ
+('term','IDENT')
+ term-> factor term_1
+('term','(')
+ term-> factor term_1
+('term','@')
+ term-> factor term_1
+('term','NUMBER')
+ term-> factor term_1
+('term_1','+')
+ term_1-> ϵ
+('term_1','-')
+ term_1-> ϵ
+('term_1','*')
+ term_1-> * factor term_1
+('term_1','/')
+ term_1-> / factor term_1
+('term_1',')')
+ term_1-> ϵ
+('term_1','TO')
+ term_1-> ϵ
+('term_1','ϵ')
+ term_1-> ϵ
+('factor','IDENT')
+ factor-> MemContents
+('factor','(')
+ factor-> ( expr )
+('factor','@')
+ factor-> BaseConstant
+('factor','NUMBER')
+ factor-> BaseConstant
+('ForStmt','IDENT')
+ ForStmt-> expr ToPart
+('ForStmt','(')
+ ForStmt-> expr ToPart
+('ForStmt','@')
+ ForStmt-> expr ToPart
+('ForStmt','NUMBER')
+ ForStmt-> expr ToPart
+('ToPart','TO')
+ ToPart-> TO expr StepPart DoPart
+('StepPart','STEP')
+ StepPart-> STEP expr
+('StepPart','DO')
+ StepPart-> ϵ
+('StepPart','ϵ')
+ StepPart-> ϵ
+('DoPart','DO')
+ DoPart-> DO statements OD
+('MemContents','IDENT')
+ MemContents-> IDENT MemContType
+('MemContType','(')
+ MemContType-> ( expr )
+('MemContType','^')
+ MemContType-> ^
+('MemContType','ϵ')
+ MemContType-> ϵ
+('BaseConstant','@')
+ BaseConstant-> @ MemContents
+('BaseConstant','NUMBER')
+ BaseConstant-> NUMBER
+('Decls','IDENT')
+ Decls-> Decl Decls_1
+('Decls','FOR')
+ Decls-> Decl Decls_1
+('Decls','INT')
+ Decls-> Decl Decls_1
+('Decls','ϵ')
+ Decls-> Decl Decls_1
+('Decls_1','IDENT')
+ Decls_1-> ϵ
+('Decls_1',';')
+ Decls_1-> ; Decl Decls_1
+('Decls_1','FOR')
+ Decls_1-> ϵ
+('Decls_1','ϵ')
+ Decls_1-> ϵ
+('Decl','IDENT')
+ Decl-> ϵ
+('Decl',';')
+ Decl-> ϵ
+('Decl','FOR')
+ Decl-> ϵ
+('Decl','INT')
+ Decl-> INT VarList
+('Decl','ϵ')
+ Decl-> ϵ
+('VarList','*')
+ VarList-> Var VarList_1
+('VarList_1',',')
+ VarList_1-> , Var VarList_1
+('VarList_1','ϵ')
+ VarList_1-> ϵ
+('Var','*')
+ Var-> Var_1 Var_2
+('Var_2','VARIDENT')
+ Var_2-> VARIDENT Var_3
+('Var_3','[')
+ Var_3-> [ NUMBER ]
+('Var_3','ϵ')
+ Var_3-> ϵ
+Table Entries = 72
+------------ Check For Conflicts-------------

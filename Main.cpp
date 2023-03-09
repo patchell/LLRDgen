@@ -54,10 +54,11 @@ int main(int arcg, char *argv[])
 		fclose(pIN);
 		exit(1);
 	}
-	fopen_s(&pLog, "Log.txt", "w");
+	sprintf_s(aOutFile, 256, "%s_Log.txt", argv[1]);
+	fopen_s(&pLog, aOutFile, "w");
 	if (pLog == NULL)
 	{
-		fprintf(stderr, "Could not open the Log File\n");
+		fprintf(stderr, "Could not open %s as the Log File\n", aOutFile);
 		fclose(pIN);
 		fclose(pOUT);
 		exit(1);

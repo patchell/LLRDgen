@@ -51,27 +51,29 @@ void CSymbol::PrintProduction(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpace
 	CRule* pRH = GetHead();
 
 	//	INDENT(IndentString, Indent);
-
-	fprintf(pOut, "%s\n", GetName());
-	while (pRH)
+	if (pOut)
 	{
-		pRH->Print(pOut);
-		pRH = pRH->GetNext();
+		fprintf(pOut, "%s\n", GetName());
+		while (pRH)
+		{
+			pRH->Print(pOut);
+			pRH = pRH->GetNext();
+		}
 	}
 }
 
 void CSymbol::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
-	fprintf(pOut, "%s:  Token:%s Value:%d NULLABLE(%d) START(%d)\n",
-		GetName(),
-		CLexer::LookupTokenName(CLexer::Token(GetTokenValue())),
-		GetTokenValue(),
-		IsNullable(),
-		IsStartSymbol()
-	);
-//	if (IsTerminal())
+	if (pOut)
 	{
-		GetFirstSet()->Print(pOut,FALSE,TRUE, nIndentSpaces + 5);
+		fprintf(pOut, "%s:  Token:%s Value:%d NULLABLE(%d) START(%d)\n",
+			GetName(),
+			CLexer::LookupTokenName(CLexer::Token(GetTokenValue())),
+			GetTokenValue(),
+			IsNullable(),
+			IsStartSymbol()
+		);
+		GetFirstSet()->Print(pOut, FALSE, TRUE, nIndentSpaces + 5);
 		GetFollowSet()->Print(pOut, FALSE, TRUE, nIndentSpaces + 5);
 	}
 }

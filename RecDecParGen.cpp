@@ -27,6 +27,7 @@ void CRecDecParGen::CloseFiles()
 BOOL CRecDecParGen::Run()
 {
 	CSetMember* pDollarSign;
+	CSetMember* pEmptySymbol;;
 	int UndefinedNonTerminals;
 	int Orphans;
 	int Recursions;
@@ -35,12 +36,12 @@ BOOL CRecDecParGen::Run()
 	//-----------------------------------
 	Parse();
 	fprintf(LogFile(), "*************  Print Out Grammar Structure************\n");
-	PrintGrammar(LogFile());
+	PrintGrammar(NULL);
 	//----------------------------------------------------------------
 	//------------------- Check for Left recursion -------------------
 	//----------------------------------------------------------------
-	Recursions = CheckForDirectRecursion(stderr, GetNonTerminalSet());
-	fprintf(stderr, "Total Recursions = %d\n", Recursions);
+	Recursions = CheckForDirectRecursion(stderr, GetLexer()->GetSymTab()->GetNonTerminalSet());
+	fprintf(stderr, "Total Left Recursions = %d\n", Recursions);
 	if (Recursions)
 	{
 		CloseAllFiles();
@@ -59,66 +60,67 @@ BOOL CRecDecParGen::Run()
 	//---------------------------------------
 	// Check for Orphans
 	//---------------------------------------
-	Orphans = GetLexer()->GetSymTab()->CheckForOrphans(stderr, GetNonTerminalSet());
+	Orphans = GetLexer()->GetSymTab()->CheckForOrphans(stderr, GetLexer()->GetSymTab()->GetNonTerminalSet());
 	fprintf(stderr, "Total Orphans = %d\n", Orphans);
 	if (Orphans)
 	{
-		CloseAllFiles();
-		exit(11);
+//		CloseAllFiles();
+//		exit(11);
 	}
-	// Add $ to terminal list
+	//----------------------------
+	// Add $ and Epsilon to terminal list
+	//----------------------------
+	pEmptySymbol = new CSetMember;
+	pEmptySymbol->Create(CLexer::GetEmpty());
+	GetLexer()->GetSymTab()->GetTerminalSet()->AddToSet(pEmptySymbol);
 	pDollarSign = new CSetMember;
 	pDollarSign->Create(CLexer::GetEndOfTokenStream());
-	GetTerminalSet()->AddToSet(pDollarSign);
-	GetTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
+	GetLexer()->GetSymTab()->GetTerminalSet()->AddToSet(pDollarSign);
+	GetLexer()->GetSymTab()->GetTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
 	//-----------------------------------
-	// Create a set of Non Terminals
+	// Print the set of Non Terminals
 	//-----------------------------------
 	fprintf(LogFile(), "********** Non Terminals Set **********\n");
-	GetNonTerminalSet()->Print(LogFile(),FALSE,TRUE,0);
+	GetLexer()->GetSymTab()->GetNonTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
 	//------------------------------------
 	// Create Nullable Set
 	//------------------------------------
 	fprintf(LogFile(), "*********** Build Nullable Set **********\n");
-	CreateNullableSet(LogFile());
-	GetNullableSet()->Print(LogFile(),FALSE,TRUE,0);
-	fprintf(LogFile(), "\n");
-	GetNonTerminalSet()->Print(LogFile(),FALSE,TRUE,0);
-	fprintf(LogFile(), "\n");
+	CreateNullableSet(NULL);
+	GetNullableSet()->Print(NULL,FALSE,TRUE,0);
+	GetLexer()->GetSymTab()->GetNonTerminalSet()->Print(NULL,FALSE,TRUE,0);
 	fprintf(LogFile(), "****************Create NOT nullable set ************************\n");
-	CreateNotNullablesSet(LogFile());
+	CreateNotNullablesSet(NULL);
 	//----------------------------------------------
 	// Create First Set
 	//----------------------------------------------
 	fprintf(LogFile(), "----- Calc First Sets------\n");
-	CreateFirstSets(LogFile());;
+	CreateFirstSets(NULL);
 	GetLexer()->GetSymTab()->PrintFirstSets(LogFile());
-	fprintf(LogFile(), "\n");
 	//---------------------------------------
 	// Create Follow Sets
 	//---------------------------------------
 	fprintf(LogFile(), "----- Calc Follow Sets------\n");
-	CreateFollowSets(LogFile());
+	CreateFollowSets(NULL);
 	fprintf(LogFile(), "------------ Follow Sets ---------------\n");
-	GetLexer()->GetSymTab()->PrintFollowSets(LogFile());
-	fprintf(LogFile(), "\n");
+	GetLexer()->GetSymTab()->PrintFollowSets(LogFile(),FALSE,TRUE,0);
 	//--------------------------------------
 	// Create Parse Table
 	//--------------------------------------
 	fprintf(LogFile(), "---------------- Create Parse Table --------------\n");
-	GetParseTable()->Create(GetTerminalSet(), GetNonTerminalSet());
-	GetParseTable()->FillTable();
+	GetParseTable()->Create(
+		GetLexer()->GetSymTab()->GetTerminalSet(), 
+		GetLexer()->GetSymTab()->GetNonTerminalSet()
+	);
+	GetParseTable()->FillTable(LogFile());
 	fprintf(LogFile(), "Table Entries = %d\n", 
 		GetParseTable()->GetNumberOfEntries());
 	//--------------------------------------------
 	// Check For Conflicts
 	//--------------------------------------------
 	fprintf(LogFile(), "------------ Check For Conflicts-------------\n");
-	fprintf(LogFile(), "Conflicts = %d\n",
-		GetParseTable()->CheckForConflicts(LogFile())
-	);
 	fprintf(stderr , "Conflicts = %d\n",
-		GetParseTable()->CheckForConflicts(stderr)
+		GetParseTable()->CheckForConflicts(LogFile())
 	);
 	return 0;
 }
@@ -177,8 +179,8 @@ int CRecDecParGen::CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals)
 									//-------------------------------
 									// We have an Indirect Recursion
 									//-------------------------------
-									fprintf(pO, "-----------------------\n");
-									fprintf(pO, "Warning:Possible Indirect Left Recursion\n");
+									if(pO) fprintf(pO, "-----------------------\n");
+									if (pO) fprintf(pO, "Warning:Possible Indirect Left Recursion\n");
 									pRule->Print(pO, TRUE, TRUE, 5, TRUE);
 									pLHSrules->Print(pO, TRUE, TRUE, 5, TRUE);
 								}
@@ -200,8 +202,8 @@ int CRecDecParGen::CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals)
 					pRule->GetHead()->GetLexemeSymbol()
 				)
 				{
-					fprintf(pO, "---------------------\n");
-					fprintf(pO, "Error:Direct Left Recursion\n");
+					if (pO) fprintf(pO, "---------------------\n");
+					if (pO) fprintf(pO, "Error:Direct Left Recursion\n");
 					pSetMember->GetRule()->GetHead()->GetLexemeSymbol()->Print(pO);
 					pRule->GetHead()->GetLexemeSymbol()->Print(pO);
 					pRule->Print(pO, TRUE, TRUE, 5, TRUE);
@@ -250,34 +252,34 @@ void CRecDecParGen::CreateFirstSets(FILE* pOut)
 	CSet* pFIRST_X;
 	int Iterration = 1;
 
-	fprintf(LogFile(), "******* Create First Set Ver 2 ********\n");
+	if (pOut) fprintf(pOut, "******* Create First Set Ver 2 ********\n");
 	do
 	{
-		fprintf(LogFile(), "###### First Set Iteration #%d\n", Iterration++);
+		if (pOut) fprintf(pOut, "###### First Set Iteration #%d\n", Iterration++);
 		bChanged = FALSE;
-		pNonTerminalSetMember = GetNonTerminalSet()->GetHead();
+		pNonTerminalSetMember = GetLexer()->GetSymTab()->GetNonTerminalSet()->GetHead();
 		while (pNonTerminalSetMember)
 		{
-			fprintf(LogFile(), "----------------------\n");
-			fprintf(LogFile(), "FIRST(%s)\n", pNonTerminalSetMember->GetSetMemberSymbol()->GetName());
+			if (pOut) fprintf(pOut, "----------------------\n");
+			if (pOut) fprintf(pOut, "FIRST(%s)\n", pNonTerminalSetMember->GetSetMemberSymbol()->GetName());
 			pSymLHS = pNonTerminalSetMember->GetSetMemberSymbol();
 			pRule = pSymLHS->GetHead();
 			pFIRST_X = pSymLHS->GetFirstSet();
 			while (pRule)
 			{
-				fprintf(LogFile(), "%s\t", pSymLHS->GetName());
-				pRule->Print(LogFile());
+				if (pOut) fprintf(pOut, "%s\t", pSymLHS->GetName());
+				pRule->Print(pOut);
 				bChanged |= pRule->FIRST(
+					pOut,
 					pRule->GetHead(),
 					pSymLHS->GetFirstSetRef()
 				);
-				pSymLHS->GetFirstSetRef().Print(LogFile());
-				fprintf(LogFile(), "\n");
+				pSymLHS->GetFirstSetRef().Print(pOut, FALSE, TRUE);
 				pRule = pRule->GetNext();
 			}
 			pNonTerminalSetMember = pNonTerminalSetMember->GetNext();
 		}
-		fprintf(LogFile(), "###### Iteration #%d  DONE!\n", Iterration);
+		if(pOut) fprintf(pOut, "###### Iteration #%d  DONE!\n", Iterration);
 	} while (bChanged);
 }
 
@@ -317,19 +319,19 @@ void CRecDecParGen::CreateFollowSets(FILE* pOut)
 	LoopCount = 100;
 	do
 	{
-		fprintf(LogFile(), "######### Follow Set Itteration #%d\n", ++Iteration);
+		if(pOut) fprintf(pOut, "######### Follow Set Itteration #%d\n", ++Iteration);
 		bChanged = FALSE;
-		pNonTerminalSetMember = GetNonTerminalSet()->GetHead();
+		pNonTerminalSetMember = GetLexer()->GetSymTab()->GetNonTerminalSet()->GetHead();
 		while (pNonTerminalSetMember)
 		{
 			pSym = pNonTerminalSetMember->GetSetMemberSymbol();
-			bChanged |= ApplyFollowRulesTo(pSym);
+			bChanged |= ApplyFollowRulesTo(pOut, pSym);
 			pNonTerminalSetMember = pNonTerminalSetMember->GetNext();
 		}
 	} while (bChanged && --LoopCount);	//end of do loop
 }
 
-BOOL CRecDecParGen::ApplyFollowRulesTo(CSymbol* pSym)
+BOOL CRecDecParGen::ApplyFollowRulesTo(FILE* pOut, CSymbol* pSym)
 {
 	//-------------------------------------------------
 	// ApplyFollowRulesTo
@@ -344,15 +346,15 @@ BOOL CRecDecParGen::ApplyFollowRulesTo(CSymbol* pSym)
 	CSetMember* pNonTerminalSetMember;
 	CRule* pRule;
 
-	pNonTerminalSetMember = GetNonTerminalSet()->GetHead();
-	fprintf(LogFile(), "------------Looking For %s ---------------\n", pSym->GetName());
+	pNonTerminalSetMember = GetLexer()->GetSymTab()->GetNonTerminalSet()->GetHead();
+	if(pOut) fprintf(pOut, "------------Looking For %s ---------------\n", pSym->GetName());
 	while (pNonTerminalSetMember)
 	{
 		pProductionSymbol = pNonTerminalSetMember->GetSetMemberSymbol();
 		pRule = pProductionSymbol->GetHead();
 		while (pRule)
 		{
-			bChanged |= pRule->DoesThisRuleHave(pSym);
+			bChanged |= pRule->DoesThisRuleHave(pOut, pSym);
 			pRule = pRule->GetNext();
 		}
 		pNonTerminalSetMember = pNonTerminalSetMember->GetNext();
@@ -373,11 +375,11 @@ void CRecDecParGen::CreateNullableSet(FILE* pOut)
 	BOOL bChanged = FALSE;
 	BOOL bNull = FALSE;
 
-	fprintf(LogFile(),"----- Generate Nullables-------\n");
+	if(pOut) fprintf(pOut,"----- Generate Nullables-------\n");
 	do
 	{
 		bChanged = FALSE;
-		pNTLHS = GetNonTerminalSet()->GetHead();
+		pNTLHS = GetLexer()->GetSymTab()->GetNonTerminalSet()->GetHead();
 		while (pNTLHS)
 		{
 			bNull = FALSE;
@@ -385,7 +387,7 @@ void CRecDecParGen::CreateNullableSet(FILE* pOut)
 			pRule = pSymLHS->GetHead();
 			while (pRule && !bNull)
 			{
-				pRule->Print(LogFile(), TRUE, TRUE, 0);
+				pRule->Print(pOut, TRUE, TRUE, 0);
 				bNull |= pRule->DoesThisRuleHaveEpsilon();
 				if (bNull)
 				{
@@ -399,42 +401,13 @@ void CRecDecParGen::CreateNullableSet(FILE* pOut)
 			}
 			pNTLHS = pNTLHS->GetNext();
 		}
-		fprintf(LogFile(), "************ Nullable Iteration %d *********\n", ++Iteration);
+		if(pOut) fprintf(pOut, "************ Nullable Iteration %d *********\n", ++Iteration);
 		if (Iteration > 100)
 			bChanged = FALSE;
 	} while (bChanged);
-	fprintf(LogFile(), "----- Done Generate Nullables-------\n");
+	if(pOut) fprintf(pOut, "----- Done Generate Nullables-------\n");
 }
 
-
-void CRecDecParGen::CreateNonTerminals(FILE* pOut)
-{
-	CBucket* pBucket;
-	CBin* pBin;
-	CSymbol* pSym;
-	CSetMember* pMember;
-	int i;
-
-	for (i = 0; i < GetLexer()->GetSymTab()->GetTableSize(); ++i)
-	{
-		pBucket = GetLexer()->GetSymTab()->GetBucket(i);
-		if (pBucket)
-		{
-			pBin = pBucket->GetHead();
-			while (pBin)
-			{
-				pSym = (CSymbol*)pBin;
-				if (pSym->IsNonTerminal())
-				{
-					pMember = new CSetMember;
-					pMember->Create(pSym);
-					GetNonTerminalSet()->AddToSet(pMember);
-				}
-				pBin = pBin->GetNext();
-			}
-		}
-	}
-}
 
 void CRecDecParGen::CreateNotNullablesSet(FILE* pOut)
 {

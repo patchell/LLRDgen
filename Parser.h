@@ -9,8 +9,6 @@ class CGrammar;
 
 class CParser
 {
-	CSet m_NonTerminals;
-	CSet m_Terminals;
 	CSymbol* m_pCurrentNonTerminal;
 	CRule* m_pCurrentRule;
 	CLexer m_Lex;
@@ -26,8 +24,6 @@ public:
 	void SetCurrentNonTerminal(CSymbol* pSym) { m_pCurrentNonTerminal = pSym; }
 	virtual CRule* GetCurrentRule() { return m_pCurrentRule; }
 	virtual void Parse();
-	CSet* GetNonTerminalSet() { return &m_NonTerminals; }
-	CSet* GetTerminalSet() { return &m_Terminals; }
 	//---------------------------------------
 	// Debug
 	//---------------------------------------

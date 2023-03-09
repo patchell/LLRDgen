@@ -1,5 +1,14 @@
 Readme.nd
 
+March 8, 2023
+	Well, the problem was in the Terminals Set.  Seems that
+	I forgot to put 'Epsilon' into that set.  Caused all
+	manner of problems, and then when you add another 
+	blunder to that which was the routine that got an index
+	for a terminal symbol returned 0 even if it did no 
+	find that symbol. Zero was the index for an IDENT is
+	the test grammar.  Quite a search to find that problem.
+
 March 6, 2023
 	Either the First Sets and or the Follow Sets are 
 	incorrect.  I am not that bad at writing grammars.

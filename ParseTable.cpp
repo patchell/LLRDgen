@@ -37,6 +37,7 @@ BOOL CParseTable::Create(CSet* pTerm, CSet* pNon)
 		m_ppTerminalSymbols[i] = new CLexeme;
 		m_ppTerminalSymbols[i]->Create();
 		m_ppTerminalSymbols[i]->SetLexemeSymbol(pSM->GetSetMemberSymbol());
+		fprintf(LogFile(), "TerminalSymbol:%s\n", pSM->GetSetMemberSymbol()->GetName());
 		pSM = pSM->GetNext();
 	}
 	//---------------- Non Terminal Table ----------------------
@@ -72,7 +73,7 @@ BOOL CParseTable::Create(CSet* pTerm, CSet* pNon)
 	return rV;
 }
 
-BOOL CParseTable::FillTable()
+BOOL CParseTable::FillTable(FILE* pOut)
 {
 	//-----------------------------------------------
 	// FillTable
@@ -96,15 +97,15 @@ BOOL CParseTable::FillTable()
 		// Get Left Hand Side of production
 		//------------------------------------
 		pY = m_ppNonTerminalSymbols[i];
-		fprintf(LogFile(), "------- %s --------\n", pY->GetName());
-		Rule1(pY);
-		Rule2(pY);
+		if(pOut) fprintf(pOut, "------- Non Terminal: %s --------\n", pY->GetName());
+		Rule1(pOut, pY);
+		Rule2(pOut, pY);
 	}
-	Print(LogFile());
+	Print(pOut);
 	return bConflicts;
 }
 
-BOOL CParseTable::Rule1(CLexeme* pY)
+BOOL CParseTable::Rule1(FILE* pOut, CLexeme* pY)
 {
 	//---------------------------------------------
 	// Rule1
@@ -124,23 +125,28 @@ BOOL CParseTable::Rule1(CLexeme* pY)
 
 	pProductionRule = pY->GetLexemeSymbol()->GetHead();
 	FIRSTy.Create("TempFirstY", "FIRST");
-	fprintf(LogFile(), "################> Rule 1 <#################\n");
+	if(pOut) fprintf(pOut, "> Rule 1 <\n");
 	while (pProductionRule)
 	{
-		fprintf(LogFile(), "--------");
-		pProductionRule->Print(LogFile(),TRUE,FALSE,0);
-		fprintf(LogFile(), "--------\n");
-		pProductionRule->FIRST(pProductionRule->GetHead(), FIRSTy);
+		pProductionRule->Print(pOut,TRUE,FALSE,0);
+		pProductionRule->FIRST(NULL, pProductionRule->GetHead(), FIRSTy);
+		FIRSTy.Print(pOut, FALSE, TRUE, 5);
 		pSetMember = FIRSTy.GetHead();
 		while (pSetMember)
 		{
-			fprintf(LogFile(), "******* %s ******\n", pSetMember->GetSetMemberLexeme()->GetName());
+			if(pOut) fprintf(pOut, "BEGIN %s ******\n", pSetMember->GetSetMemberLexeme()->GetName());
 			Col = GetTerminalIndex(pSetMember->GetSetMemberLexeme());
 			Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 			pEntryMember = new CParseTableEntryMember;
 			pEntryMember->Create(pProductionRule);
+			if (pOut)fprintf(pOut, "  Add ");
+			pProductionRule->Print(pOut, TRUE, FALSE, 0);
+			if (pOut) fprintf(pOut, " ==> Table(%s, %s)\n", 
+				GetRowName(Row),
+				GetColName(Col)
+			);
 			m_matParseTable(Row, Col)->AddMember(pEntryMember);
-			fprintf(LogFile(), "^^^^^^^ %s ^^^^^^^\n", pSetMember->GetSetMemberLexeme()->GetName());
+			if(pOut) fprintf(pOut, "END %s ^^^^^^^\n", pSetMember->GetSetMemberLexeme()->GetName());
 			pSetMember = pSetMember->GetNext();
 		}
 		FIRSTy.MakeEmpty();
@@ -149,7 +155,7 @@ BOOL CParseTable::Rule1(CLexeme* pY)
     return rV;
 }
 
-BOOL CParseTable::Rule2(CLexeme* pY)
+BOOL CParseTable::Rule2(FILE* pOut, CLexeme* pY)
 {
 	//-----------------------------------------------
 	// Rule2
@@ -171,32 +177,38 @@ BOOL CParseTable::Rule2(CLexeme* pY)
 	CSetMember* pSetMember;
 	int Row, Col;
 
-	pY->GetFollowSet()->Print(LogFile(), FALSE, TRUE, 0);
-	m_pTerminalSet->Print(LogFile(), FALSE, TRUE, 0);
+	pY->GetFollowSet()->Print(pOut, FALSE, TRUE, 0);
+	m_pTerminalSet->Print(pOut, FALSE, TRUE, 0);
 	pProductionRule = pY->GetLexemeSymbol()->GetHead();
 	FIRSTy.Create("TempFirstY", "FIRST");
-	fprintf(LogFile(), "############< Rule 2 >############\n");
+	if(pOut) fprintf(pOut, "############< Rule 2 >############\n");
 	while (pProductionRule)
 	{
-		fprintf(LogFile(), "--------");
-		pProductionRule->Print(LogFile(), TRUE, FALSE, 0);
-		fprintf(LogFile(), "--------\n");
-		pProductionRule->FIRST(pProductionRule->GetHead(), FIRSTy);
-		if (FIRSTy.Contains(CLexer::GetEmpty()))
+		if(pOut) fprintf(pOut, "--------");
+		pProductionRule->Print(pOut, TRUE, FALSE, 0);
+		if(pOut) fprintf(pOut, "--------\n");
+		pProductionRule->FIRST(pOut, pProductionRule->GetHead(), FIRSTy);
+		if (FIRSTy.Contains(pOut, CLexer::GetEmpty()))
 		{
 			pFollowY = pProductionRule->GetLHS()->GetFollowSet();
 			pSetMember = pFollowY->GetHead();
 			while (pSetMember)
 			{
-				pSetMember->Print(LogFile(), ' ', FALSE, TRUE, 5);
+				pSetMember->Print(pOut, ' ', FALSE, TRUE, 5);
 				Col = GetTerminalIndex(pSetMember->GetSetMemberLexeme());
 				Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 				pEntryMember = new CParseTableEntryMember;
 				pEntryMember->Create(pProductionRule);
+				if (pOut)fprintf(pOut, "Add ");
+				pProductionRule->Print(pOut, TRUE, FALSE, 0);
+				if (pOut) fprintf(pOut, " ==> Table(%s, %s)\n",
+					GetRowName(Row),
+					GetColName(Col)
+				);
 				m_matParseTable(Row, Col)->AddMember(pEntryMember);
 				pSetMember = pSetMember->GetNext();
 			}
-			if (pFollowY->Contains(CLexer::GetEndOfTokenStream()))
+			if (pFollowY->Contains(pOut, CLexer::GetEndOfTokenStream()))
 			{
 				Col = GetTerminalIndex(CLexer::GetEndOfTokenStream());
 				Row = GetNonTerminalIndex(pProductionRule->GetLHS());
@@ -206,10 +218,10 @@ BOOL CParseTable::Rule2(CLexeme* pY)
 			}
 		}
 		pSetMember = FIRSTy.GetHead();
-		FIRSTy.Print(LogFile(), FALSE, TRUE, 2);
+		FIRSTy.Print(pOut, FALSE, TRUE, 2);
 		while (pSetMember)
 		{
-			pSetMember->Print(LogFile(), ' ', FALSE, TRUE, 5);
+			pSetMember->Print(pOut, ' ', FALSE, TRUE, 5);
 			pSetMember = pSetMember->GetNext();
 		}
 		pProductionRule = pProductionRule->GetNext();
@@ -219,7 +231,7 @@ BOOL CParseTable::Rule2(CLexeme* pY)
 
 int CParseTable::GetTerminalIndex(CLexeme* pLex)
 {
-	int Index = 0;
+	int Index = -1;
 	int i;
 	BOOL bLoop;
 
@@ -230,6 +242,11 @@ int CParseTable::GetTerminalIndex(CLexeme* pLex)
 			bLoop = FALSE;
 			Index = i;
 		}
+	}
+	if (Index < 0)
+	{
+		fprintf(stderr, "Could not find Terminal %s\n", pLex->GetName());
+		exit(-1);
 	}
 	return Index;
 }
@@ -308,7 +325,7 @@ int CParseTable::CheckForConflicts(FILE* pOut)
 			pEntry = m_matParseTable(i, j);
 			if (pEntry->GetNumMembers() > 1)
 			{
-				fprintf(pOut, "%d(\'%s\',\'%s\')\n",
+				if(pOut) fprintf(pOut, "%d(\'%s\',\'%s\')\n",
 					pEntry->GetNumMembers(),
 					m_ppNonTerminalSymbols[i]->GetName(),
 					m_ppTerminalSymbols[j]->GetName()
@@ -319,6 +336,17 @@ int CParseTable::CheckForConflicts(FILE* pOut)
 		}
 	}
 	return TotalConflicts;
+}
+
+char* CParseTable::GetRowName(int Row)
+{
+	return m_ppNonTerminalSymbols[Row]->GetLexemeSymbol()->GetName();
+}
+
+char* CParseTable::GetColName(int Col)
+{
+	return 	m_ppTerminalSymbols[Col]->GetLexemeSymbol()->GetName();
+	;
 }
 
 void CParseTable::Print(FILE* pO)

@@ -50,11 +50,14 @@ void CBucket::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
 	CBin* pBin;
 
-	pBin = GetHead();
-	while (pBin)
+	if (pOut)
 	{
-		pBin->Print(pOut);
-		pBin = pBin->GetNext();
+		pBin = GetHead();
+		while (pBin)
+		{
+			pBin->Print(pOut);
+			pBin = pBin->GetNext();
+		}
 	}
 }
 

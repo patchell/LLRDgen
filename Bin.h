@@ -30,10 +30,10 @@ public:
 	//		if (strcmp(m_pName, name) == 0) rV = TRUE;
 	//		return rV;
 	//}
-	virtual void Print(FILE* pOut, const char* s = 0);
-	virtual void PrintProduction(FILE* pOut, 
-		BOOL bLHS = FALSE, 
-		BOOL bEOL = TRUE, 
+	virtual void Print(
+		FILE* pOut,
+		BOOL bLHS = FALSE,
+		BOOL bEOL = TRUE,
 		int nIndentSpaces = 0
 	);
 	//------------------------------------

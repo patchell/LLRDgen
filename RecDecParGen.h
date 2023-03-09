@@ -16,9 +16,8 @@ public:
 	int CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals);
 	void CreateFirstSets(FILE* pOut);
 	void CreateFollowSets(FILE* pOut);
-	BOOL ApplyFollowRulesTo(CSymbol* pSym);
+	BOOL ApplyFollowRulesTo(FILE* pOut, CSymbol* pSym);
 	void CreateNullableSet(FILE* pOut);
-	void CreateNonTerminals(FILE* pOut);
 	void CreateNotNullablesSet(FILE* pOut);
 	CSet* GetNotNullables() { return &m_NotNullables; }
 	CSet* GetNullableSet(){return &m_Nullables; }

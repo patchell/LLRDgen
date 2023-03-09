@@ -13,9 +13,9 @@ public:
 	CParseTable();
 	virtual ~CParseTable();
 	BOOL Create(CSet* pTerm, CSet* pNon);
-	BOOL FillTable();
-	BOOL Rule1(CLexeme *pY);
-	BOOL Rule2(CLexeme* pY);
+	BOOL FillTable(FILE* pOut);
+	BOOL Rule1(FILE* pOut, CLexeme *pY);
+	BOOL Rule2(FILE* pOut, CLexeme* pY);
 	int GetTerminalIndex(CLexeme* pLex);
 	int GetTerminalIndex(CSymbol* pSym);
 	int GetNonTerminalIndex(CSymbol* pSym);
@@ -27,6 +27,8 @@ public:
 	CSet* GetNonTerminalSet() { return m_pNonTerminalSet; }
 	int GetRows() { return m_Rows; }
 	int GetCols() { return m_Cols; }
+	char* GetRowName(int Row);
+	char* GetColName(int Col);
 	void Print(FILE* pO);
 };
 

@@ -100,7 +100,7 @@ BOOL CSet::Union(CSet* pSetB, CSet& SetC)
 	return bChanged;
 }
 
-BOOL CSet::Union(CSet* pSetA)
+BOOL CSet::Union(FILE* pOut, CSet* pSetA)
 {
 	//--------------------------------------
 	// returns TRUE is anything from pSetA
@@ -109,12 +109,12 @@ BOOL CSet::Union(CSet* pSetA)
 	//--------------------------------------
 	BOOL bChanged;
 
-	Print(LogFile(), FALSE,FALSE,0);
-	fprintf(LogFile(), " U ");
-	pSetA->Print(LogFile(),FALSE,FALSE,0);
+	Print(pOut, FALSE,FALSE,0);
+	if(pOut) fprintf(pOut, " U ");
+	pSetA->Print(pOut,FALSE,FALSE,0);
 	bChanged = Copy(pSetA);
-	fprintf(LogFile(), " => ");
-	Print(LogFile(), FALSE, TRUE, 0);
+	if(pOut) fprintf(LogFile(), " => ");
+	Print(pOut, FALSE, TRUE, 0);
 
 	return bChanged;
 }
@@ -169,12 +169,12 @@ BOOL CSet::IsAlreadyInSet(CSetMember* pSetMembr)
 	return rV;
 }
 
-BOOL CSet::Contains(CSymbol* pSym)
+BOOL CSet::Contains(FILE* pOut, CSymbol* pSym)
 {
 	CSetMember* pMemBr;
 	BOOL rV = FALSE;
 
-	fprintf(LogFile(), "Is %s in Set %s\n", pSym->GetName(), GetName());
+	if(pOut) fprintf(pOut, "Is %s in Set %s\n", pSym->GetName(), GetName());
 	pMemBr = GetHead();
 	while (pMemBr && !rV)
 	{
@@ -183,16 +183,16 @@ BOOL CSet::Contains(CSymbol* pSym)
 		else
 			pMemBr = pMemBr->GetNext();
 	}
-	fprintf(LogFile(), "%s\n", rV ? "TRUE" : "FALSE");
+	if (pOut) fprintf(pOut, "%s\n", rV ? "TRUE" : "FALSE");
     return rV;
 }
 
-BOOL CSet::Contains(CLexeme* pLexeme)
+BOOL CSet::Contains(FILE* pOut, CLexeme* pLexeme)
 {
-	return Contains(pLexeme->GetLexemeSymbol());
+	return Contains(pOut, pLexeme->GetLexemeSymbol());
 }
 
-BOOL CSet::DoesNotContain(CSymbol* pSym)
+BOOL CSet::DoesNotContain(FILE* pOut, CSymbol* pSym)
 {
 	CSetMember* pMemBr;
 	BOOL rV = TRUE;
@@ -200,16 +200,16 @@ BOOL CSet::DoesNotContain(CSymbol* pSym)
 	pMemBr = GetHead();
 	if (LogFile())
 	{
-		fprintf(LogFile(), "Is \'%s\' Not Contained in \'%s\'\n",
+		if (pOut) fprintf(LogFile(), "Is \'%s\' Not Contained in \'%s\'\n",
 			pSym->GetName(),
 			GetName()
 		);
 	}
 	while (pMemBr && rV)
 	{
-		if (LogFile())
+		if (pOut)
 		{
-			fprintf(LogFile(), "\t\t\tCompare \'%s\' To \'%s\'\n",
+			fprintf(pOut, "\t\t\tCompare \'%s\' To \'%s\'\n",
 				pSym->GetName(),
 				pMemBr->GetSetMemberLexeme()->GetName()
 			);
@@ -219,7 +219,7 @@ BOOL CSet::DoesNotContain(CSymbol* pSym)
 		else
 			pMemBr = pMemBr->GetNext();
 	}
-	fprintf(LogFile(), "%s\n", rV ? "TRUE" : "FALSE");
+	if (pOut) fprintf(LogFile(), "%s\n", rV ? "TRUE" : "FALSE");
 	return rV;
 }
 
@@ -291,23 +291,35 @@ void CSet::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
 	CSetMember* pMember = GetHead();
 	int DelemiterChar;
-	char* s = new char[256];
+	int LineSize;
+	char* s;
 
-	fprintf(pOut, "%s%s {",
-		IndentString(s, nIndentSpaces),
-		GetName()
-	);
-	while (pMember)
+	if (pOut)
 	{
-		if (pMember->GetPrev())
-			DelemiterChar = ',';
-		else
-			DelemiterChar = ' ';
-		pMember->Print(pOut, DelemiterChar, FALSE, FALSE,0);
-		pMember = pMember->GetNext();
+		s = new char[256];
+		fprintf(pOut, "%s%s {",
+			IndentString(s, nIndentSpaces),
+			GetName()
+		);
+		LineSize = strlen(GetName()) + nIndentSpaces;
+		while (pMember)
+		{
+			if (pMember->GetPrev())
+				DelemiterChar = ',';
+			else
+				DelemiterChar = ' ';
+			LineSize+=pMember->Print(pOut, DelemiterChar, FALSE, FALSE, 0);
+			if (LineSize > 80)
+			{
+				LineSize = 0;
+				if (pOut)
+					fprintf(pOut, "\n");
+			}
+			pMember = pMember->GetNext();
+		}
+		fprintf(pOut, " }");
+		if (bEOL)
+			fprintf(pOut, "\n");
+		delete[]s;
 	}
-	fprintf(pOut, " }");
-	if (bEOL)
-		fprintf(pOut, "\n");
-	delete[]s;
 }

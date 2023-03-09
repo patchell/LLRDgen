@@ -22,7 +22,7 @@ BOOL CRule::Create(CSymbol* pLHS)
 }
 
 
-BOOL CRule::FIRST(CLexeme *pY1, CSet& FirstSet)
+BOOL CRule::FIRST(FILE* pOut, CLexeme *pY1, CSet& FirstSet)
 {
 	//-----------------------------------
 	//	1.	If X is a terminal then 
@@ -57,29 +57,30 @@ BOOL CRule::FIRST(CLexeme *pY1, CSet& FirstSet)
 
 	if (pY1->IsEmpty())	//Rule 2.
 	{
-		bChanged = FirstSet.Union(CLexer::GetEmpty()->GetFirstSet());
+		bChanged = FirstSet.Union(pOut,CLexer::GetEmpty()->GetFirstSet());
 	}
-	else if (pY1->GetFirstSet()->DoesNotContain(CLexer::GetEmpty()))
+	else if (pY1->GetFirstSet()->DoesNotContain(pOut, CLexer::GetEmpty()))
 	{
 		//Rule 4.1
-		bChanged = FirstSet.Union(pY1->GetFirstSet());
+		bChanged = FirstSet.Union(pOut, pY1->GetFirstSet());
 	}
 	else
 	{
 		//Rule 4.2
-		if (pY1->GetFirstSet()->Contains(CLexer::GetEmpty()))
+		if (pY1->GetFirstSet()->Contains(pOut, CLexer::GetEmpty()))
 		{
-			bChanged = this->FIRST_Y1Y2__Yk(pY1, FirstSet);
+			bChanged = FIRST_Y1Y2__Yk(pOut, pY1, FirstSet);
 		}
 	}
 	//Rule 4.3
 	if (DoAllLexemesContainEpsilong())
-		FirstSet.Union(CLexer::GetEmpty()->GetFirstSet());
+		FirstSet.Union(pOut, CLexer::GetEmpty()->GetFirstSet());
 	return bChanged;
 }
 
 
 BOOL CRule::FIRST_Y1Y2__Yk(
+	FILE* pOut,
 	CLexeme* pY1, 
 	CSet& FirstSet
 )
@@ -101,7 +102,7 @@ BOOL CRule::FIRST_Y1Y2__Yk(
 		// End of the chain, from here we
 		// will be only returning.
 		//---------------------------------
-		fprintf(LogFile(), "End of Y1Y2...Yk Chain\n");
+		if(pOut) fprintf(pOut, "End of Y1Y2...Yk Chain\n");
 	}
 	else
 	{
@@ -109,6 +110,7 @@ BOOL CRule::FIRST_Y1Y2__Yk(
 		// There are still more Lexemes
 		//-------------------------------------------
 		bChanged = FIRST_Y1Y2__Yk(
+			pOut, 
 			pY1->GetNext(), 
 			FirstSet
 		);
@@ -117,7 +119,7 @@ BOOL CRule::FIRST_Y1Y2__Yk(
 	return bChanged;
 }
 
-BOOL CRule::FOLLOW()
+BOOL CRule::FOLLOW(FILE* pOut)
 {
 	//	1.	First put $(the end of input 
 	//		marker) in Follow(S) (S is the
@@ -147,15 +149,15 @@ BOOL CRule::FOLLOW()
 	pNextToLast = pLast->GetPrev();
 	if (pNextToLast &&
 		pNextToLast->IsNonTerminal() &&
-		pLast->GetFirstSet()->Contains(CLexer::GetEmpty())
+		pLast->GetFirstSet()->Contains(pOut, CLexer::GetEmpty())
 	)
 	{
 		//------------
 		// Rule #4
 		//------------
-		fprintf(LogFile(), "Apply Rule 4\n");
+		if(pOut) fprintf(pOut, "Apply Rule 4\n");
 //		bChanged = FOLLOW_RULE4();
-		fprintf(LogFile(), "----------\n");
+		if(pOut) fprintf(pOut, "----------\n");
 	}
 	else if (pNextToLast && 
 		pNextToLast->IsNonTerminal()
@@ -164,24 +166,24 @@ BOOL CRule::FOLLOW()
 		//------------
 		// Rule #2
 		//------------
-		fprintf(LogFile(), "Apply Rule 2\n");
+		if(pOut) fprintf(pOut, "Apply Rule 2\n");
 //		bChanged = FOLLOW_RULE2();
-		fprintf(LogFile(), "----------\n");
+		if(pOut) fprintf(pOut, "----------\n");
 	}
 	else if (pLast->IsNonTerminal())
 	{
 		//------------
 		// Rule #3
 		//------------
-		fprintf(LogFile(), "Apply Rule 3\n");
+		if(pOut) fprintf(pOut, "Apply Rule 3\n");
 //		bChanged = FOLLOW_RULE3();
-		fprintf(LogFile(), "----------\n");
+		if(pOut) fprintf(pOut, "----------\n");
 	}
-	fprintf(LogFile(), "Changed?:%s\n", bChanged ? "TRUE" : "FALSE");
+	if(pOut) fprintf(pOut, "Changed?:%s\n", bChanged ? "TRUE" : "FALSE");
 	return bChanged;
 }
 
-BOOL CRule::FOLLOW_RULE2(CSymbol* pA, CSymbol* pB, CSymbol *pb)
+BOOL CRule::FOLLOW_RULE2(FILE* pOut, CSymbol* pA, CSymbol* pB, CSymbol *pb)
 {
 	//-------------------------------------------
 	//	2.	If there is a production A->aBb,
@@ -195,7 +197,7 @@ BOOL CRule::FOLLOW_RULE2(CSymbol* pA, CSymbol* pB, CSymbol *pb)
 	return bChanged;
 }
 
-BOOL CRule::FOLLOW_RULE3(CSymbol *pA, CSymbol* pB)
+BOOL CRule::FOLLOW_RULE3(FILE* pOut, CSymbol *pA, CSymbol* pB)
 {
 	//-------------------------------------------
 	//	3.	If there is a production A->aB, then
@@ -204,11 +206,16 @@ BOOL CRule::FOLLOW_RULE3(CSymbol *pA, CSymbol* pB)
 	//-------------------------------------------
 	BOOL bChanged;
 
-	bChanged = pB->GetFollowSet()->Union(pA->GetFollowSet());
+	bChanged = pB->GetFollowSet()->Union(pOut, pA->GetFollowSet());
 	return bChanged;
 }
 
-BOOL CRule::FOLLOW_RULE4(CSymbol* pA, CSymbol* pB, CSymbol *pb)
+BOOL CRule::FOLLOW_RULE4(
+	FILE* pOut, 
+	CSymbol* pA, 
+	CSymbol* pB, 
+	CSymbol *pb
+)
 {
 	//-------------------------------------------
 	//	4.	If there is a production A->aBb,
@@ -218,7 +225,7 @@ BOOL CRule::FOLLOW_RULE4(CSymbol* pA, CSymbol* pB, CSymbol *pb)
 	//-------------------------------------------
 	BOOL bChanged;
 
-	bChanged = pB->GetFollowSet()->Union(pA->GetFollowSet());
+	bChanged = pB->GetFollowSet()->Union(pOut, pA->GetFollowSet());
 	return bChanged;
 }
 
@@ -254,7 +261,7 @@ BOOL CRule::DoesThisRuleHaveEpsilon()
 	return bRuleHasEpsilon;
 }
 
-BOOL CRule::DoesThisRuleHave(CSymbol* pSym)
+BOOL CRule::DoesThisRuleHave(FILE* pOut, CSymbol* pSym)
 {
 	BOOL bYes = FALSE;
 	CLexeme* pLexemeLast;
@@ -267,24 +274,27 @@ BOOL CRule::DoesThisRuleHave(CSymbol* pSym)
 	{
 		if (pLexemeNextToLast->GetLexemeSymbol() == pSym)
 		{
-			fprintf(LogFile(), "\t%s", GetLHS()->GetName());
-			Print(LogFile());
+			if(pOut) fprintf(pOut, "\t%s", GetLHS()->GetName());
+			Print(pOut);
 			if (pLexemeNextToLast->IsNonTerminal())
 			{
-				if (pLexemeLast->GetFirstSet()->Contains(CLexer::GetEmpty()))
+				if (pLexemeLast->GetFirstSet()->Contains(pOut, CLexer::GetEmpty()))
 				{
-					fprintf(LogFile(), "Rule 2 3 4:%s", GetLHS()->GetName());
-					Print(LogFile());
+					if(pOut) fprintf(pOut, "Rule 2 3 4:%s", GetLHS()->GetName());
+					Print(pOut);
 					bYes |= FOLLOW_RULE2(
+						pOut,
 						GetLHS(),
 						pLexemeNextToLast->GetLexemeSymbol(),
 						pLexemeLast->GetLexemeSymbol()
 					);
 					bYes |= FOLLOW_RULE3(
+						pOut,
 						GetLHS(),
 						pLexemeLast->GetLexemeSymbol()
 					);
 					bYes |= FOLLOW_RULE4(
+						pOut,
 						GetLHS(), 
 						pLexemeNextToLast->GetLexemeSymbol(),
 						pLexemeLast->GetLexemeSymbol()
@@ -292,14 +302,16 @@ BOOL CRule::DoesThisRuleHave(CSymbol* pSym)
 				}
 				else 
 				{
-					fprintf(LogFile(), "Rule 2 3:%s", GetLHS()->GetName());
-					Print(LogFile());
+					if(pOut) fprintf(pOut, "Rule 2 3:%s", GetLHS()->GetName());
+					Print(pOut);
 					bYes = FOLLOW_RULE2(
+						pOut,
 						GetLHS(),
 						pLexemeNextToLast->GetLexemeSymbol(),
 						pLexemeLast->GetLexemeSymbol()
 					);
 					bYes |= FOLLOW_RULE3(
+						pOut,
 						GetLHS(),
 						pLexemeLast->GetLexemeSymbol()
 					);
@@ -307,17 +319,17 @@ BOOL CRule::DoesThisRuleHave(CSymbol* pSym)
 			}
 			else if (pLexemeLast->GetLexemeSymbol() == pSym)
 			{
-				fprintf(LogFile(), "Rule 3:%s", GetLHS()->GetName());
-				Print(LogFile());
-				bYes = FOLLOW_RULE3(GetLHS(), pLexemeLast->GetLexemeSymbol());
+				if(pOut) fprintf(pOut, "Rule 3:%s", GetLHS()->GetName());
+				Print(pOut);
+				bYes = FOLLOW_RULE3(pOut, GetLHS(), pLexemeLast->GetLexemeSymbol());
 			}
 		}
 	}
 	else if (pLexemeLast->GetLexemeSymbol() == pSym)
 	{
-		fprintf(LogFile(), "Rule 3:%s", GetLHS()->GetName());
-		Print(LogFile());
-		FOLLOW_RULE3(GetLHS(), pLexemeLast->GetLexemeSymbol());
+		if(pOut) fprintf(pOut, "Rule 3:%s", GetLHS()->GetName());
+		Print(pOut);
+		FOLLOW_RULE3(pOut, GetLHS(), pLexemeLast->GetLexemeSymbol());
 	}
 	return bYes;
 }
@@ -344,34 +356,37 @@ void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces, BOOL bLin
 {
 	CLexeme* pL = GetHead();
 	char* s = new char[256];
-
-	if (bLineNumber)
+	if (pOut)
 	{
-		fprintf(pOut, "%sLine-%d:",
-			IndentString(s, nIndentSpaces),
-			GetLHS()->GetLineWhereDefined()
-		);
-		nIndentSpaces = 0;
-	}
-	if (bLHS)
-		fprintf(pOut, "%s%s", 
-			IndentString(s, nIndentSpaces),
-			GetLHS()->GetName());
-	fprintf(pOut, "->");
-	if (pL)
-	{
-		while (pL)
+		if (bLineNumber)
 		{
-			pL->Print(pOut,FALSE,FALSE, 1);
-			pL = pL->GetNext();
+			fprintf(pOut, "%sLine-%d:",
+				IndentString(s, nIndentSpaces),
+				GetLHS()->GetLineWhereDefined()
+			);
+			nIndentSpaces = 0;
 		}
+		if (bLHS)
+			fprintf(pOut, "%s%s",
+				IndentString(s, nIndentSpaces),
+				GetLHS()->GetName());
+		fprintf(pOut, "->");
+		if (pL)
+		{
+			while (pL)
+			{
+				pL->Print(pOut, FALSE, FALSE, 1);
+				pL = pL->GetNext();
+			}
+		}
+		else
+		{
+			fprintf(pOut, " .");
+		}
+		if (bEOL)
+			fprintf(pOut, "\n");
+
 	}
-	else
-	{
-		fprintf(pOut, " .");
-	}
-	if(bEOL)
-		fprintf(pOut, "\n");
 	delete[] s;
 }
 

@@ -25,5 +25,8 @@ void CParseTableEntryMember::Print(FILE* pO,
 	int nIndentSpaces
 )
 {
-	GetProduction()->Print(pO, bLHS, bEOL, nIndentSpaces);
+	if (pO)
+	{
+		GetProduction()->Print(pO, bLHS, bEOL, nIndentSpaces);
+	}
 }

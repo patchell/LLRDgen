@@ -65,21 +65,24 @@ void CParseTableEntry::Print(
 	CParseTableEntryMember* pPTEM;
 	char* s = 0;
 
-	pPTEM = GetHead();
-	while (pPTEM)
+	if (pO)
 	{
-		if (bNumberLines)
+		pPTEM = GetHead();
+		while (pPTEM)
 		{
-			if (s == 0)
+			if (bNumberLines)
 			{
-				s = new char[256];
-				IndentString(s, nIndentSpaces);
-				nIndentSpaces = 0;
+				if (s == 0)
+				{
+					s = new char[256];
+					IndentString(s, nIndentSpaces);
+					nIndentSpaces = 0;
+				}
+				fprintf(pO, "%s%d. ", s, ++Item);
 			}
-			if(pO) fprintf(pO, "%s%d. ", s, ++Item);
+			pPTEM->Print(pO, bLHS, bEOL, 1);
+			pPTEM = pPTEM->GetNext();
 		}
-		if(pO) pPTEM->Print(pO, bLHS, bEOL, 1);
-		pPTEM = pPTEM->GetNext();
 	}
 	if(s) delete[] s;
 }
