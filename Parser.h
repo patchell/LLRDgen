@@ -12,22 +12,17 @@ class CParser
 	CSymbol* m_pCurrentNonTerminal;
 	CRule* m_pCurrentRule;
 	CLexer m_Lex;
-	FILE* m_pOut;
 	BOOL m_FirstGrammarSymbol;
 public:
 	CParser();
 	virtual ~CParser();
-	BOOL Create(FILE* pIn, FILE* pOut);
+	BOOL Create(FILE* pIn);
 	void CloseFiles();
 	virtual CLexer* GetLexer() { return &m_Lex; }
 	CSymbol* GetCurrentNonTerminal() { return m_pCurrentNonTerminal; }
 	void SetCurrentNonTerminal(CSymbol* pSym) { m_pCurrentNonTerminal = pSym; }
 	virtual CRule* GetCurrentRule() { return m_pCurrentRule; }
 	virtual void Parse();
-	//---------------------------------------
-	// Debug
-	//---------------------------------------
-	FILE* GetOutput() { return m_pOut; }
 	//-------------------------------------
 	// Parsing Methodes
 	//-------------------------------------

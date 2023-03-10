@@ -10,7 +10,7 @@ class CRecDecParGen :public CParser
 public:
 	CRecDecParGen();
 	virtual ~CRecDecParGen();
-	BOOL Create(FILE* pIn, FILE* pOut, FILE* pLog);
+	BOOL Create(FILE* pIn, FILE* pLog);
 	void CloseFiles();
 	BOOL Run();
 	int CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals);

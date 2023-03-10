@@ -116,50 +116,74 @@ FuncIdent	-> 'FUNC_IDENT';
 //------------------------------------------
 // Statements
 //------------------------------------------
-Statements		->Statement Statements_1;
-Statements_1	-> ';' Statement Statements_1
-				-> 'FI' Statement Statements_1
-				-> 'OD' Statement Statements_1
-				-> ')' Statement Statements_1
-				-> ']' Statement Statements_1
+Statements		->'BEGIN' ProcCall 'END';
+
+ProcCall		->ForStmt ProcCall_1;
+ProcCall_1		-> 'PROC_IDENT'PROCstmt ';' ForStmt ProcCall_1
 				-> .
 				;
 
-Statement		-> StructStmts
-//				-> NotStructStmts
-				;
-//NotStructStmts	-> MemContents ASSIGNstmt
-//				;
-StructStmts		-> 'PROC_IDENT' '(' IdentList
-				-> 'IF' IfStmt 
-				-> 'FOR' FORLoop 
-				-> 'WHILE' WhileLoop 
-				-> 'DO' DoLoop 
-				-> 'EXIT' 
-				-> 'RETURN' OptReturnData 
-				-> '[' CodeBlock
+ForStmt			-> IfStmt ForStmt_1;
+ForStmt_1		-> 'FOR' FORstmt 'OD' IfStmt ForStmt_1
 				-> .
 				;
 
-OptReturnData	-> '(' ArithExpr ')'
+IfStmt			-> WhileStmt IfStmt_1;
+IfStmt_1		-> 'IF' If 'FI' WhileStmt IfStmt_1
 				-> .
 				;
 
-//ASSIGNstmt	->  ':=' ArithExpr
-//			->  '==+' ArithExpr
-//			->  '==-' ArithExpr
-//			->  '==*' ArithExpr
-//			->  '==/' ArithExpr
-//			->  '==MOD' ArithExpr
-//			->  '==&' ArithExpr
-//			->  '==!' ArithExpr
-//			->  '==XOR' ArithExpr
-//			->  '==%' ArithExpr
-//			->  '==LSH' ArithExpr
-//			->  '==RSH' ArithExpr
-//			;
+WhileStmt		-> DoStmt WhileStmt_1;
+WhileStmt_1		-> 'WHILE' WhileLoop 'OD' DoStmt WhileStmt_1
+				-> .
+				;
 
-IfStmt		-> ArithExpr ThenPart;
+DoStmt			-> EXITstmt DoStmt_1;
+DoStmt_1		-> 'DO' DOstmt 'OD' EXITstmt DoStmt_1
+				-> .
+				;
+
+EXITstmt		-> RetStmt EXITstmt_1;
+EXITstmt_1		-> 'EXIT' ';' RetStmt EXITstmt_1
+				-> .
+				;
+
+RetStmt		-> CodeBlock RetStmt_1;
+RetStmt_1	-> 'RETURN' RETURNstmt ';' CodeBlock RetStmt_1
+				-> .
+				;
+
+CodeBlock		-> UntillStmt CodeBlock_1;
+CodeBlock_1		-> '[' CODEblock ']' UntillStmt CodeBlock_1
+				-> .
+				;
+
+UntillStmt		-> Assignment UntillStmt_1;
+UntillStmt_1	-> 'UNTILL' UNTILLstmt ';' Assignment UntillStmt_1
+				-> .
+				;
+
+Assignment	-> MemContents ASSIGNstmt;
+ASSIGNstmt	->  '=' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==+' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==-' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==*' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==/' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==MOD' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==&' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==!' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==XOR' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==%' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==LSH' ArithExpr ';' MemContents ASSIGNstmt
+			->  '==RSH' ArithExpr ';' MemContents ASSIGNstmt
+			-> .
+			;
+
+//-----------------------------------------------------------------
+
+PROCstmt	-> '(' IdentList ')' ;
+
+If			-> ArithExpr ThenPart;
 ThenPart	-> 'THEN' ThenPart_1;
 ThenPart_1	-> Statements ElseIfPart;
 ElseIfPart	-> 'ELSEIF' ArithExpr ThenPart
@@ -167,24 +191,27 @@ ElseIfPart	-> 'ELSEIF' ArithExpr ThenPart
 			-> .
 			;
 
-DoLoop	-> Statements UNTILLstmt;
+DOstmt	-> Statements;
+
 UNTILLstmt	-> 'UNTILL' ArithExpr;
 
 WhileLoop	-> ArithExpr 'DO' Statements;
 
-FORLoop		-> Ident '=' Start 'TO' Finish STEPoption 'DO' Statements;
+FORstmt		-> Ident '=' Start 'TO' Finish STEPoption 'DO' Statements;
 Start		-> ArithExpr;
 Finish		-> ArithExpr;
 STEPoption	-> 'STEP' ArithExpr
 			-> .
 			;
 
-CodeBlock	-> CompConst CodeBlock_1;
-CodeBlock_1	-> ',' CompConst CodeBlock_1
+CODEblock	-> CompConst CODEblock_1;
+CODEblock_1	-> ',' CompConst CODEblock_1
 			-> .
 			;
 
-
+RETURNstmt	-> '(' ArithExpr ')'
+			-> .
+			;
 //--------------------------------------
 // Arithmetic Expressions
 //--------------------------------------

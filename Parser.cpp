@@ -2,7 +2,6 @@
 
 CParser::CParser()
 {
-	m_pOut = 0;
 	m_pCurrentNonTerminal = 0;
 	m_pCurrentRule = 0;
 	m_FirstGrammarSymbol = TRUE;
@@ -13,16 +12,14 @@ CParser::~CParser()
 
 }
 
-BOOL CParser::Create(FILE* pIn, FILE* pOut)
+BOOL CParser::Create(FILE* pIn)
 {
-	m_pOut = pOut;
 	m_Lex.Create(pIn);
 	return TRUE;
 }
 
 void CParser::CloseFiles()
 {
-	fclose(m_pOut);
 	m_Lex.CloseFiles();
 }
 

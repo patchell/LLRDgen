@@ -9,10 +9,10 @@ CRecDecParGen::~CRecDecParGen()
 {
 }
 
-BOOL CRecDecParGen::Create(FILE* pIn, FILE* pOut, FILE* pLog)
+BOOL CRecDecParGen::Create(FILE* pIn,  FILE* pLog)
 {
 	m_pLog = pLog;
-	CParser::Create(pIn, pOut);
+	CParser::Create(pIn);
 	GetNullableSet()->Create("Nullables","NULLABLES");
 	GetNotNullables()->Create("NOT_Nullables", "NOTNULLABLE");
 	return TRUE;

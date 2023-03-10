@@ -1,5 +1,27 @@
 Readme.nd
 
+March 10, 2023
+Here is what I wanted to see:
+
+LLRDgen Ver 0.0.3
+InFile: action_xxx.gram
+Log File action_xxx.gram_Log.txt
+Total Left Recursions = 0
+Undefined Non Terminals:0
+Total Orphans = 0
+Terminals    :79
+Non Terminals:103
+Conflicts = 0
+Done
+
+This, however, does not mean that there are not any
+problems, but everything is working as expected.
+Now Finally, Net Up:
+Code Generation.
+
+After that: Inline semantic Code
+And after that:Abstract Syntax Tree (AST) generation
+
 March 9, 2023
 	Three more just REALLY bad blunders.  All four caused
 	by Copy-Paste.  This happens to me all the time.

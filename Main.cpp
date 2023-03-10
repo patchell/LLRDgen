@@ -36,9 +36,8 @@ const char* TrueFalse(BOOL b)
 int main(int arcg, char *argv[])
 {
 	FILE* pIN;
-	FILE* pOUT;
 	FILE* pLog;
-	char aOutFile[256];
+	char aLogFile[256];
 
 	fopen_s(&pIN,argv[1], "r");
 	if (pIN == NULL)
@@ -46,30 +45,21 @@ int main(int arcg, char *argv[])
 		printf("Cannot Open Input File\n");
 		exit(1);
 	}
-	sprintf_s(aOutFile, 256, "%s.cpp", argv[1]);
-	fopen_s(&pOUT, aOutFile, "w");
-	if (pOUT == NULL)
-	{
-		printf("Cannot Open Output File %s\n", aOutFile);
-		fclose(pIN);
-		exit(1);
-	}
-	sprintf_s(aOutFile, 256, "%s_Log.txt", argv[1]);
-	fopen_s(&pLog, aOutFile, "w");
+	sprintf_s(aLogFile, 256, "%s_Log.txt", argv[1]);
+	fopen_s(&pLog, aLogFile, "w");
 	if (pLog == NULL)
 	{
-		fprintf(stderr, "Could not open %s as the Log File\n", aOutFile);
+		fprintf(stderr, "Could not open %s as the Log File\n", aLogFile);
 		fclose(pIN);
-		fclose(pOUT);
 		exit(1);
 	}
-	fprintf(stderr, "LLRDgen Ver 0.0.2\n");
-	fprintf(stderr, "InFile:%s  OutFile:%s\n",
+	fprintf(stderr, "LLRDgen Ver 0.0.3\n");
+	fprintf(stderr, "InFile: %s\nLog File %s\n",
 		argv[1],
-		aOutFile
+		aLogFile
 	);
 
-	Parser.Create(pIN, pOUT, pLog);
+	Parser.Create(pIN, pLog);
 	Parser.Run();
 	printf("Done\n");
 	Parser.CloseFiles();
