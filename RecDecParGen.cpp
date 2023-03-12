@@ -2,7 +2,20 @@
 
 CRecDecParGen::CRecDecParGen():CParser()
 {
+	int i;
+
 	m_pLog = 0;
+	m_pParserCppFile = 0;
+	m_pParserHeaderFile = 0;
+	m_pLexerCppFile = 0;
+	m_pLexerHeaderFile = 0;
+	for (i = 0; i < 256; ++i)
+	{
+		m_aLexerCppFile[i] = 0;
+		m_aLexerHeaderFile[i] = 0;
+		m_aParserCppFile[i] = 0;
+		m_aParserHeaderFile[i] = 0;;
+	}
 }
 
 CRecDecParGen::~CRecDecParGen()
@@ -21,6 +34,10 @@ BOOL CRecDecParGen::Create(FILE* pIn,  FILE* pLog)
 void CRecDecParGen::CloseFiles()
 {
 	fclose(m_pLog);
+	if (m_pLexerCppFile) fclose(m_pLexerCppFile);
+	if (m_pLexerHeaderFile) fclose(m_pLexerHeaderFile);
+	if (m_pParserCppFile) fclose(m_pParserCppFile);
+	if (m_pParserHeaderFile) fclose(m_pParserHeaderFile);
 	CParser::CloseFiles();
 }
 
@@ -37,16 +54,6 @@ BOOL CRecDecParGen::Run()
 	Parse();
 	fprintf(LogFile(), "*************  Print Out Grammar Structure************\n");
 	PrintGrammar(NULL);
-	//----------------------------------------------------------------
-	//------------------- Check for Left recursion -------------------
-	//----------------------------------------------------------------
-	Recursions = CheckForDirectRecursion(stderr, GetLexer()->GetSymTab()->GetNonTerminalSet());
-	fprintf(stderr, "Total Left Recursions = %d\n", Recursions);
-	if (Recursions)
-	{
-		CloseAllFiles();
-		exit(12);
-	}
 	//------------------------------------
 	// Check for Undefined Non Terminals
 	//------------------------------------
@@ -64,8 +71,18 @@ BOOL CRecDecParGen::Run()
 	fprintf(stderr, "Total Orphans = %d\n", Orphans);
 	if (Orphans)
 	{
-//		CloseAllFiles();
-//		exit(11);
+		CloseAllFiles();
+		exit(11);
+	}
+	//----------------------------------------------------------------
+	//------------------- Check for Left recursion -------------------
+	//----------------------------------------------------------------
+	Recursions = CheckForDirectRecursion(stderr, GetLexer()->GetSymTab()->GetNonTerminalSet());
+	fprintf(stderr, "Total Left Recursions = %d\n", Recursions);
+	if (Recursions)
+	{
+		CloseAllFiles();
+		exit(12);
 	}
 	//----------------------------
 	// Add $ and Epsilon to terminal list
@@ -76,12 +93,12 @@ BOOL CRecDecParGen::Run()
 	pDollarSign = new CSetMember;
 	pDollarSign->Create(CLexer::GetEndOfTokenStream());
 	GetLexer()->GetSymTab()->GetTerminalSet()->AddToSet(pDollarSign);
-	GetLexer()->GetSymTab()->GetTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
+	GetLexer()->GetSymTab()->GetTerminalSet()->Print(NULL, FALSE, TRUE, 0);
 	//-----------------------------------
 	// Print the set of Non Terminals
 	//-----------------------------------
 	fprintf(LogFile(), "********** Non Terminals Set **********\n");
-	GetLexer()->GetSymTab()->GetNonTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
+	GetLexer()->GetSymTab()->GetNonTerminalSet()->Print(NULL, FALSE, TRUE, 0);
 	//------------------------------------
 	// Create Nullable Set
 	//------------------------------------
@@ -96,14 +113,14 @@ BOOL CRecDecParGen::Run()
 	//----------------------------------------------
 	fprintf(LogFile(), "----- Calc First Sets------\n");
 	CreateFirstSets(NULL);
-	GetLexer()->GetSymTab()->PrintFirstSets(LogFile());
+	GetLexer()->GetSymTab()->PrintFirstSets(NULL);
 	//---------------------------------------
 	// Create Follow Sets
 	//---------------------------------------
 	fprintf(LogFile(), "----- Calc Follow Sets------\n");
 	CreateFollowSets(NULL);
 	fprintf(LogFile(), "------------ Follow Sets ---------------\n");
-	GetLexer()->GetSymTab()->PrintFollowSets(LogFile(),FALSE,TRUE,0);
+	GetLexer()->GetSymTab()->PrintFollowSets(NULL,FALSE,TRUE,0);
 	//--------------------------------------
 	// Create Parse Table
 	//--------------------------------------
@@ -122,6 +139,10 @@ BOOL CRecDecParGen::Run()
 	fprintf(stderr , "Conflicts = %d\n",
 		GetParseTable()->CheckForConflicts(LogFile())
 	);
+	//----------------------------------------
+	// Generate Code
+	//----------------------------------------
+	CodeGeneration(LogFile());
 	return 0;
 }
 
@@ -134,6 +155,7 @@ int CRecDecParGen::CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals)
 	CRule* pLHSrules;
 	CLexeme* pLHSRuleLexeme;
 
+	pO = stderr;
 	pSetMemLHS = pNonTerminals->GetHead();
 	while (pSetMemLHS)
 	{
@@ -152,6 +174,13 @@ int CRecDecParGen::CheckForDirectRecursion(FILE* pO, CSet* pNonTerminals)
 				pRule = pSetMember->GetRule();
 				while (pRule)
 				{
+					if (pRule->GetHead() == NULL)
+					{
+						fprintf(stderr, "ERROR: Rule with No Lexemes\n");
+						fprintf(stderr, "Missing '.' Perhaps?");
+						pRule->Print(pO, TRUE, TRUE, 0, TRUE);
+						exit(14);
+					}
 					//--------------------------------------
 					// Check to see if pSetMemLHS is in
 					// the left most lexemes of the
@@ -437,6 +466,35 @@ void CRecDecParGen::CreateNotNullablesSet(FILE* pOut)
 			}
 		}
 	}
+}
+
+void CRecDecParGen::CodeGeneration(FILE* pLogFile)
+{
+	char* pParserName;
+	//---------------------------------
+	// Open Up Output Files
+	//---------------------------------
+	pParserName = GetLexer()->GetSymTab()->GetNonTerminalSet()->GetHead()->GetSetMemberSymbol()->GetName();
+	sprintf_s(m_aLexerCppFile, 256, "%s_Lexer.cpp", pParserName);
+	sprintf_s(m_aLexerHeaderFile, 256, "%s_Lexer.h", pParserName);
+	sprintf_s(m_aParserCppFile, 256, "%s_Parser.cpp", pParserName);
+	sprintf_s(m_aParserHeaderFile, 256, "%s_Parser.h", pParserName);
+	fopen_s(&m_pLexerCppFile, m_aLexerCppFile, "w");
+	fopen_s(&m_pLexerHeaderFile, m_aLexerHeaderFile, "w");
+	fopen_s(&m_pParserCppFile, m_aParserCppFile, "w");
+	fopen_s(&m_pParserHeaderFile, m_aParserHeaderFile, "w");
+	GenerateLexerFiles(pLogFile);
+	GenerateParserFiles(pLogFile);
+}
+
+void CRecDecParGen::GenerateLexerFiles(FILE* pLogFile)
+{
+	fprintf(stderr, "Generating Lexer Files\n");
+}
+
+void CRecDecParGen::GenerateParserFiles(FILE* pLogFile)
+{
+	fprintf(stderr, "Generating Lexer Files\n");
 }
 
 void CRecDecParGen::PrintGrammar(FILE* pOut)

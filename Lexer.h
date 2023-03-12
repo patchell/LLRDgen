@@ -54,6 +54,8 @@ private:
 	static inline int m_Col;
 	int m_Number;
 	CSymbol* m_pLexSymbol;
+	char* m_pEmbeddedCodeBuffer;
+	int m_nEmbeddedCodeBufferSize;
 	inline static CSymbol m_EmptySymbol;
 	inline static CSymbol m_EndOfTokenStream;
 public:
@@ -76,6 +78,10 @@ public:
 	static CSymbol* GetEmpty() { return &m_EmptySymbol; }
 	static CSymbol* GetEndOfTokenStream() {
 		return &m_EndOfTokenStream;
+	}
+	void SetEmbeddedCodeBufferSize(int Size) {
+		m_nEmbeddedCodeBufferSize = Size;
+		m_pEmbeddedCodeBuffer = new char[Size];
 	}
 	//------------------------------------------
 	// Symbol Table Methods

@@ -178,6 +178,7 @@
     <None Include="action_xxxx.gram" />
     <None Include="AS65.gram" />
     <None Include="Bin\LLRDgen.exe" />
+    <None Include="LLRDgen.gram" />
     <None Include="README.md" />
     <None Include="Test.gram" />
     <None Include="Test2.gram" />

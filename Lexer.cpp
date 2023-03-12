@@ -13,11 +13,14 @@ CLexer::CLexer()
 	m_Col = 0;
 	m_Number = 0;
 	m_pLexSymbol = 0;
+	m_pEmbeddedCodeBuffer = 0;
+	m_nEmbeddedCodeBufferSize = 0;
 }
 
 CLexer::~CLexer()
 {
-}
+	if (m_pEmbeddedCodeBuffer) delete[] m_pEmbeddedCodeBuffer;
+}	
 
 BOOL CLexer::Create(FILE* pIn)
 {

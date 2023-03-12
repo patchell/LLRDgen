@@ -37,7 +37,6 @@ BOOL CParseTable::Create(CSet* pTerm, CSet* pNon)
 		m_ppTerminalSymbols[i] = new CLexeme;
 		m_ppTerminalSymbols[i]->Create();
 		m_ppTerminalSymbols[i]->SetLexemeSymbol(pSM->GetSetMemberSymbol());
-		fprintf(LogFile(), "TerminalSymbol:%s\n", pSM->GetSetMemberSymbol()->GetName());
 		pSM = pSM->GetNext();
 	}
 	//---------------- Non Terminal Table ----------------------
@@ -100,7 +99,7 @@ BOOL CParseTable::FillTable(FILE* pOut)
 		if(pOut) fprintf(pOut, "------- Non Terminal: %s --------\n", pY->GetName());
 		Rule1(pOut, pY);
 		Rule2(pOut, pY);
-		fprintf(LogFile(), "----\n");
+		if(pOut) fprintf(pOut, "----\n");
 	}
 	Print(pOut);
 	return bConflicts;
@@ -126,7 +125,8 @@ BOOL CParseTable::Rule1(FILE* pOut, CLexeme* pY)
 
 	pProductionRule = pY->GetLexemeSymbol()->GetHead();
 	FIRSTy.Create("TempFirstY", "FIRST");
-	if(pOut) fprintf(pOut, "> Rule 1 <\n");
+	if(pOut) 
+		fprintf(pOut, "> Rule 1 <\n");
 	while (pProductionRule)
 	{
 		pProductionRule->Print(pOut,TRUE,FALSE,0);
@@ -140,11 +140,11 @@ BOOL CParseTable::Rule1(FILE* pOut, CLexeme* pY)
 			Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 			pEntryMember = new CParseTableEntryMember;
 			pEntryMember->Create(pProductionRule);
-//			if (pOut)
-				fprintf(LogFile(), "  By Rule 1 Add ");
-			pProductionRule->Print(LogFile(), TRUE, FALSE, 0);
-//			if (pOut) 
-				fprintf(LogFile(), " ==> Table(%s, %s)\n",
+			if (pOut)
+				fprintf(pOut, "  By Rule 1 Add ");
+			pProductionRule->Print(pOut, TRUE, FALSE, 0);
+			if (pOut) 
+				fprintf(pOut, " ==> Table(%s, %s)\n",
 				GetRowName(Row),
 				GetColName(Col)
 			);
@@ -202,11 +202,11 @@ BOOL CParseTable::Rule2(FILE* pOut, CLexeme* pY)
 				Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 				pEntryMember = new CParseTableEntryMember;
 				pEntryMember->Create(pProductionRule);
-//				if (pOut)
-					fprintf(LogFile(), "  By Rule 2a Add ");
-				pProductionRule->Print(LogFile(), TRUE, FALSE, 0);
-//				if (pOut) 
-					fprintf(LogFile(), " ==> Table(%s, %s)\n",
+				if (pOut)
+					fprintf(pOut, "  By Rule 2a Add ");
+				pProductionRule->Print(pOut, TRUE, FALSE, 0);
+				if (pOut) 
+					fprintf(pOut, " ==> Table(%s, %s)\n",
 						GetRowName(Row),
 						GetColName(Col)
 					);
@@ -219,9 +219,9 @@ BOOL CParseTable::Rule2(FILE* pOut, CLexeme* pY)
 				Row = GetNonTerminalIndex(pProductionRule->GetLHS());
 				pEntryMember = new CParseTableEntryMember;
 				pEntryMember->Create(pProductionRule);
-				fprintf(LogFile(), "  By Rule 2b Add ");
-				pProductionRule->Print(LogFile(), TRUE, FALSE);
-				fprintf(LogFile(), " ==> Table(%s, %s)\n",
+				if(pOut) fprintf(pOut, "  By Rule 2b Add ");
+				pProductionRule->Print(pOut, TRUE, FALSE);
+				if(pOut) fprintf(pOut, " ==> Table(%s, %s)\n",
 					GetRowName(Row),
 					GetColName(Col)
 				);

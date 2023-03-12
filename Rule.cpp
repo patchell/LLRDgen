@@ -381,7 +381,7 @@ void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces, BOOL bLin
 		}
 		else
 		{
-			fprintf(pOut, " .");
+			fprintf(pOut, "?? Null Lexeme: BAD! ??");
 		}
 		if (bEOL)
 			fprintf(pOut, "\n");

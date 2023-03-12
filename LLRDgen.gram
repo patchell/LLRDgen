@@ -1,0 +1,82 @@
+TERMINALS
+	"IDENT" = 256,
+	"STRING",
+	"NUMBER",
+	"END_TERMINALS",
+	"TERMINALS",
+	"END_TERMINALS",
+	"NONTERMINAL",
+	"GRAMMAR",
+	"END_GRAMMAR",
+	"REPLACEDBY",
+	"TERMINAL",
+	"ENDOFTOKENSTREAM",
+	",",
+	"=",
+	";",
+	":",
+	"{",
+	"}"
+END_TERMINALS
+
+GRAMMAR
+LLRDgramer -> TerminalsSection;
+
+TerminalsSection	-> GrammerSection TerminalsSection_1;
+
+TerminalsSection_1	-> 'TERMINALS' TerminalList  'END_TERMINALS' GrammerSection TerminalsSection_1
+					-> .
+					;
+
+GrammerSection		-> 'GRAMMAR' ProductionList 'END_GRAMMAR' GrammerSection
+					-> .
+					;
+
+ProductionList		-> Production ProductionList_1;
+ProductionList_1	-> ';' Production ProductionList_1
+					-> .
+					;
+
+Production			-> LHSide  Production_1;
+Production_1		-> 'REPLACEDBY' RHSide ';' LHSide Production_1
+					-> .
+					;
+
+LHSide		-> ProdType LHSideId;
+ProdType	-> 'STRING'
+			-> .
+			;
+
+Embedded	-> '{'  '}'
+			-> .
+			;
+
+LHSideId	-> 'NONTERMINAL' Embedded
+			-> 'IDENT' Embedded
+			-> .
+			;
+
+RHSide				-> 'NONTERMINAL' Embedded RHSide
+					-> 'TERMINAL' Embedded RHSide
+					-> 'IDENT' Embedded RHSide
+					-> .
+					;
+
+ReturnValue			-> ':' 'IDENT'
+					-> .
+					;
+
+TerminalList	-> Terminal TerminalList_1;
+TerminalList_1	-> ',' Terminal TerminalList_1
+				-> .
+				;
+
+Terminal		-> 'STRING' OptInit
+				-> .
+				;
+
+OptInit	-> '=' 'NUMBER'
+		-> .
+		;
+
+END_GRAMMAR
