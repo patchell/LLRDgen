@@ -13,8 +13,10 @@ CRecDecParGen::CRecDecParGen():CParser()
 	{
 		m_aLexerCppFile[i] = 0;
 		m_aLexerHeaderFile[i] = 0;
+		m_aLexerClassName[i] = 0;
 		m_aParserCppFile[i] = 0;
-		m_aParserHeaderFile[i] = 0;;
+		m_aParserHeaderFile[i] = 0;
+		m_aParserClassName[i] = 0;
 	}
 }
 
@@ -477,8 +479,10 @@ void CRecDecParGen::CodeGeneration(FILE* pLogFile)
 	pParserName = GetLexer()->GetSymTab()->GetNonTerminalSet()->GetHead()->GetSetMemberSymbol()->GetName();
 	sprintf_s(m_aLexerCppFile, 256, "%s_Lexer.cpp", pParserName);
 	sprintf_s(m_aLexerHeaderFile, 256, "%s_Lexer.h", pParserName);
+	sprintf_s(m_aLexerClassName, 256, "C%sLexer", pParserName);
 	sprintf_s(m_aParserCppFile, 256, "%s_Parser.cpp", pParserName);
 	sprintf_s(m_aParserHeaderFile, 256, "%s_Parser.h", pParserName);
+	sprintf_s(m_aParserClassName, 256, "C%s_Parser", pParserName);
 	fopen_s(&m_pLexerCppFile, m_aLexerCppFile, "w");
 	fopen_s(&m_pLexerHeaderFile, m_aLexerHeaderFile, "w");
 	fopen_s(&m_pParserCppFile, m_aParserCppFile, "w");
@@ -494,7 +498,178 @@ void CRecDecParGen::GenerateLexerFiles(FILE* pLogFile)
 
 void CRecDecParGen::GenerateParserFiles(FILE* pLogFile)
 {
-	fprintf(stderr, "Generating Lexer Files\n");
+	CSet* pNonTerminalsSet;
+	CSetMember* pNonTerminal;
+	char* pClassName = new char[256];
+	int Kind;
+	CRule* pRule;
+
+	fprintf(stderr, "Generating Parser Files\n");
+	pNonTerminalsSet = this->GetLexer()->GetSymTab()->GetNonTerminalSet();
+	pNonTerminal = pNonTerminalsSet->GetHead();
+	ParserHeaderCommon(pLogFile, m_aParserClassName);
+	while (pNonTerminal)
+	{
+		//---------------------------------------
+		// Parser Header File
+		//---------------------------------------
+		fprintf(m_pParserHeaderFile, "\t%s::Token %s(%s::Token LookaHeadToken);\n",
+			m_aLexerClassName,
+			pNonTerminal->GetSetMemberSymbol()->GetName(),
+			m_aLexerClassName
+		);
+		//---------------------------------------
+		// Parser C++ File
+		//---------------------------------------
+		fprintf(m_pParserCppFile, "%s::Token %s::%s(%s::Token LookaHeadToken);\n",
+			m_aLexerClassName,
+			m_aParserClassName,
+			pNonTerminal->GetSetMemberSymbol()->GetName(),
+			m_aLexerClassName
+		);
+		fprintf(m_pParserCppFile, "{\n");
+		Kind = KindOfProduction(pLogFile, pNonTerminal->GetSetMemberSymbol());
+		pRule = pNonTerminal->GetSetMemberSymbol()->GetHead();
+		GenerateParserMethodBody(pLogFile, pRule, Kind);
+		fprintf(m_pParserCppFile, "}\n");
+		pNonTerminal = pNonTerminal->GetNext();
+	}
+	fprintf(m_pParserHeaderFile, "};\n");
+}
+
+void CRecDecParGen::GenerateParserMethodBody(FILE* pLogFile, CRule* pRule, int Kind)
+{
+	CRule* pRuleLoop;
+	CLexeme* pLexeme;
+
+	switch (Kind)
+	{
+	case KINDOF_RULE_MIXED:
+		break;
+	case KINDOF_RULE_ALL_TERMINALS:
+		fprintf(m_pParserCppFile, "\tswitch(LookaHeadToken)\n\t{\n");
+		pRuleLoop = pRule;
+		while (pRuleLoop)
+		{
+			if (pRuleLoop->IsRuleNotEmpty())
+			{
+				pLexeme = pRuleLoop->GetHead();
+				fprintf(m_pParserCppFile, "\tcase %s::%s:\n", m_aLexerClassName, pLexeme->GetName());
+				TargetExpect(pLogFile, pLexeme);
+				pLexeme = pLexeme->GetNext();
+				while (pLexeme)
+				{
+					if (pLexeme->GetLexemeSymbol()->IsTerminal())
+					{
+						TargetExpect(pLogFile, pLexeme);
+					}
+					else
+					{
+						NonTerminalFunction(pLexeme);
+					}
+					pLexeme = pLexeme->GetNext();
+				}
+				fprintf(m_pParserCppFile, "\t\tbreak;\n");
+			}
+			pRuleLoop = pRuleLoop->GetNext();
+		}
+		fprintf(m_pParserCppFile, "\t}\n");
+		break;
+	case KINDOF_RULE_ALL_NONTERMINALS:
+		break;
+	}
+}
+
+int CRecDecParGen::KindOfProduction(FILE* pLogFile, CSymbol* pSym)
+{
+	//------------------------------------------
+	// KindOfProduction
+	//	Does this production have rules that
+	// all start with a Terminal, Non Terminal,
+	// or a mix of both.
+	// Also do double duty here.  Also print
+	// out a comment header for the method
+	// 
+	// Parameters
+	//	pLogFile....Pointer to Log File Stream
+	//	pSym........Pointer to LHS of RULE
+	// 
+	// Return Values:
+	//  KINDOF_RULE_MIXED if first symbol are
+	//		Terminal and NonTerminal Symbols
+	//	KINDOF_RULE_ALL_TERMINALS if the first
+	//		Symbols are all Terminals
+	// KINDOF_RULE_ALL_NONTERMINALS if the first
+	//		Symbols are all non Terminals
+	//------------------------------------------
+	CRule* pRule;
+	int TerminalCount = 0;
+	int NonTerminalCount = 0;
+	int NumOfRules;
+	int Kind;
+	BOOL bLHS = TRUE;
+	int nLHSLen;
+
+	NumOfRules = pSym->GetNumberOfRules();
+	fprintf(m_pParserCppFile, "\t//---------------------------------\n");
+	fprintf(m_pParserCppFile, "\t//\t\t%s\n", pSym->GetName());;
+	pRule = pSym->GetHead();
+	nLHSLen = strlen(pRule->GetLHS()->GetName());
+	while (pRule)
+	{
+		fprintf(m_pParserCppFile, "\t//\t\t");
+		pRule->Print(m_pParserCppFile, bLHS, TRUE, bLHS?0: nLHSLen);
+		bLHS = FALSE;
+		if (pRule->GetHead()->GetLexemeSymbol()->IsTerminal())
+		{
+			++TerminalCount;
+		}
+		else
+		{
+			++NonTerminalCount;
+		}
+		pRule = pRule->GetNext();
+	}
+//	fprintf(m_pParserCppFile, "    Terminals=%d  NonTerminals=%d\n",
+//		TerminalCount,
+//		NonTerminalCount
+//	);
+	if (TerminalCount == 0) Kind = KINDOF_RULE_ALL_NONTERMINALS;
+	else if (NonTerminalCount == 0) Kind = KINDOF_RULE_ALL_TERMINALS;
+	else Kind = KINDOF_RULE_MIXED;
+	fprintf(m_pParserCppFile, "\t//---------------------------------\n");
+		return Kind;
+}
+
+void CRecDecParGen::TargetExpect(FILE* pOut, CLexeme* pLex)
+{
+	fprintf(
+		m_pParserCppFile,
+		"\t\tLookaHeadToken = GetLexer()->Expect(LookaHeadToken,%s::%s)\n",
+		m_aLexerClassName,
+		pLex->GetName()
+	);
+}
+
+void CRecDecParGen::NonTerminalFunction(CLexeme* pLex)
+{
+	fprintf(m_pParserCppFile,
+		"\t\tLookaHeadToken = %s(LookaHeadToken);\n",
+		pLex->GetName()
+	);
+}
+
+void CRecDecParGen::ParserHeaderCommon(FILE* pLogFile, char *pClassName)
+{
+	fprintf(m_pParserHeaderFile, "#pragma once\n\n");
+	fprintf(m_pParserHeaderFile, "class %s\n{\n", pClassName);
+	fprintf(m_pParserHeaderFile, "public:\n");
+	fprintf(m_pParserHeaderFile, "\t%s();\n", pClassName);
+	fprintf(m_pParserHeaderFile, "\tvirtual ~%s();\n", pClassName);
+	fprintf(m_pParserHeaderFile, "\tBOOL Create();\n");
+	fprintf(m_pParserHeaderFile, "\t//------------------------------\n");
+	fprintf(m_pParserHeaderFile, "\t//      Parsing Methods\n");
+	fprintf(m_pParserHeaderFile, "\t//------------------------------\n");
 }
 
 void CRecDecParGen::PrintGrammar(FILE* pOut)

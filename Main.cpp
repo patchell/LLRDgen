@@ -42,7 +42,7 @@ int main(int arcg, char *argv[])
 	fopen_s(&pIN,argv[1], "r");
 	if (pIN == NULL)
 	{
-		printf("Cannot Open Input File\n");
+		printf("Cannot Open Input File %s\n", argv[1]);
 		exit(1);
 	}
 	sprintf_s(aLogFile, 256, "%s_Log.txt", argv[1]);

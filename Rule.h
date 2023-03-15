@@ -7,7 +7,6 @@ class CRule
 	CLexeme* m_pHead;
 	CLexeme* m_pTail;
 	int m_nLexemes;
-	BOOL m_NULL;
 	CSymbol* m_pLHS;
 public:
 	CRule();
@@ -27,12 +26,13 @@ public:
 	BOOL DoAllLexemesContainEpsilong();
 	BOOL DoesThisRuleHaveEpsilon();
 	BOOL DoesThisRuleHave(FILE* pOut, CSymbol* pSym);
-	BOOL IsNull() {
-		return m_NULL;
-	}
 	int GetNumLexemes() { return m_nLexemes;}
 	int IncNumLexemes() { return m_nLexemes++; }
 	BOOL RuleTotallyNullable();
+	BOOL IsRuleEmpty();
+	BOOL IsRuleNotEmpty() {
+		return !IsRuleEmpty();
+	}
 	//-----------------------------
 	// Debug
 	//-----------------------------

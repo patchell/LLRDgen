@@ -56,9 +56,9 @@ LHSideId	-> 'NONTERMINAL' Embedded
 			-> .
 			;
 
-RHSide				-> 'NONTERMINAL' Embedded RHSide
+RHSide				-> 'NONTERMINAL' ReturnValue Embedded RHSide
 					-> 'TERMINAL' Embedded RHSide
-					-> 'IDENT' Embedded RHSide
+					-> 'IDENT' ReturnValue Embedded RHSide
 					-> .
 					;
 

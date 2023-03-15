@@ -1,5 +1,11 @@
 Readme.nd
 
+March 15, 2023
+
+Starting to generate code.  Not done yet
+and can't even be compiled yet, but it
+is getting there.
+
 March 10, 2023
 Here is what I wanted to see:
 

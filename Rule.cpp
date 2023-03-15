@@ -7,7 +7,6 @@ CRule::CRule()
 	m_pNext = 0;
 	m_pPrev = 0;
 	m_nLexemes = 0;
-	m_NULL = 0;
 	m_pLHS = 0;
 }
 
@@ -352,6 +351,14 @@ BOOL CRule::RuleTotallyNullable()
 	return 0;
 }
 
+BOOL CRule::IsRuleEmpty()
+{
+	BOOL rV;
+	
+	rV = GetHead()->IsEmpty();
+	return rV;
+}
+
 void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces, BOOL bLineNumber)
 {
 	CLexeme* pL = GetHead();
@@ -367,10 +374,11 @@ void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces, BOOL bLin
 			nIndentSpaces = 0;
 		}
 		if (bLHS)
-			fprintf(pOut, "%s%s",
+			fprintf(pOut, "%s%s ->",
 				IndentString(s, nIndentSpaces),
 				GetLHS()->GetName());
-		fprintf(pOut, "->");
+		else
+			fprintf(pOut, "%s ->", IndentString(s, nIndentSpaces));
 		if (pL)
 		{
 			while (pL)
