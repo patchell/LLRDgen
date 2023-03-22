@@ -38,10 +38,10 @@ BOOL CLexer::Create(FILE* pIn)
 	// Create the empty (epsilon)
 	// symbol
 	//--------------------------------
-	m_EmptySymbol.Create(Epsilon);
+	m_EmptySymbol.Create(Epsilon, CSymbol::TokenType::PREDEFINED);
 	m_EmptySymbol.SetEmpty(TRUE);
 	m_EmptySymbol.SetNullable(TRUE);
-	m_EmptySymbol.SetTokenValue(UINT(Token::TERMINAL));
+	m_EmptySymbol.SetTokenValue(CToken::LLRD_Token::TERMINAL, CSymbol::TokenType::PREDEFINED);
 	pLexeme = new CLexeme;
 	pLexeme->Create(&m_EmptySymbol);
 	pSM = new CSetMember;
@@ -55,9 +55,9 @@ BOOL CLexer::Create(FILE* pIn)
 	// Create the End of Token Stream
 	// symbol - $
 	//----------------------------------
-	m_EndOfTokenStream.Create(Dollar);
+	m_EndOfTokenStream.Create(Dollar, CSymbol::TokenType::PREDEFINED);
 	m_EndOfTokenStream.SetEmpty(FALSE);
-	m_EndOfTokenStream.SetTokenValue(UINT(Token::TERMINAL));
+	m_EndOfTokenStream.SetTokenValue(CToken::LLRD_Token::TERMINAL, CSymbol::TokenType::PREDEFINED);
 	m_EndOfTokenStream.SetEndOfTokenStream();
 	m_EndOfTokenStream.SetNullable(FALSE);
 	pLexeme = new CLexeme;
@@ -152,12 +152,12 @@ BOOL CLexer::IsWhiteSpace(int c)
 	return IsValid;
 }
 
-CLexer::Token CLexer::Lex()
+CToken::LLRD_Token CLexer::Lex()
 {
 	BOOL Loop = TRUE;
 	BOOL auxLoop = TRUE;
 	int c;
-	Token TokenValue = Token(0);
+	CToken::LLRD_Token TokenValue = CToken::LLRD_Token(0);
 
 //	if (m_Line >= 285)
 //		printf("Boo-Boo Line:%d\n", m_Line);
@@ -172,7 +172,7 @@ CLexer::Token CLexer::Lex()
 		switch (c)
 		{
 		case EOF:
-			TokenValue = Token(EOF);
+			TokenValue = CToken::LLRD_Token(EOF);
 			Loop = FALSE;
 			break;
 		case '\n':	//white space
@@ -211,7 +211,7 @@ CLexer::Token CLexer::Lex()
 			m_aLexBuff[m_LexBuffIndex] = 0;
 			m_Number = atoi(m_aLexBuff);
 			Loop = FALSE;
-			TokenValue = Token::NUMBER;
+			TokenValue = CToken::LLRD_Token::NUMBER;
 			LexUnGet(c);
 			break;
 		case '-':
@@ -220,13 +220,13 @@ CLexer::Token CLexer::Lex()
 			{
 				m_aLexBuff[1] = c;
 				m_aLexBuff[2] = 0;
-				TokenValue = Token::REPLACED_BY;
+				TokenValue = CToken::LLRD_Token::REPLACED_BY;
 				Loop = 0;
 			}
 			else
 			{
 				LexUnGet(c);
-				TokenValue = Token('-');
+				TokenValue = CToken::LLRD_Token('-');
 				Loop = FALSE;
 			}
 			break;
@@ -243,7 +243,7 @@ CLexer::Token CLexer::Lex()
 				{
 					auxLoop = FALSE;
 					m_aLexBuff[m_LexBuffIndex] = 0;
-					TokenValue = Token::STRING;
+					TokenValue = CToken::LLRD_Token::STRING;
 				}
 				else
 					m_aLexBuff[m_LexBuffIndex++] = c;
@@ -251,19 +251,19 @@ CLexer::Token CLexer::Lex()
 			Loop = FALSE;
 			break;
 		case '.':	//empty rule
-			TokenValue = Token::EMPTY;
+			TokenValue = CToken::LLRD_Token::EMPTY;
 			m_pLexSymbol = GetEmpty();
 			Loop = FALSE;
 			break;
 		case '$':
 			m_pLexSymbol = GetEndOfTokenStream();
-			TokenValue = Token::ENDOFTOKENSTREAM;
+			TokenValue = CToken::LLRD_Token::ENDOFTOKENSTREAM;
 			Loop = FALSE;
 			break;
 		case '=':	//misc tokens
 		case ';':
 		case ',':
-			TokenValue = Token(c);
+			TokenValue = CToken::LLRD_Token(c);
 			Loop = FALSE;
 			break;
 		case '\'':	// Target Terminal Token
@@ -285,8 +285,8 @@ CLexer::Token CLexer::Lex()
 			m_pLexSymbol = (CSymbol*)LookupSymbol(m_aLexBuff);
 			if (m_pLexSymbol)
 			{
-				TokenValue = Token(m_pLexSymbol->GetTokenValue());
-				if (TokenValue == Token::NONTERMINAL)
+				TokenValue = CToken::LLRD_Token(m_pLexSymbol->GetTokenValue());
+				if (TokenValue == CToken::LLRD_Token::NONTERMINAL)
 				{
 					//------------------------------
 					// Sometbing wrong if this is
@@ -310,8 +310,11 @@ CLexer::Token CLexer::Lex()
 				// symbol table and terminal set
 				//-----------------------------------------
 				m_pLexSymbol = new CSymbol;
-				m_pLexSymbol->Create(m_aLexBuff);
-				m_pLexSymbol->SetTokenValue(UINT(CLexer::Token::TERMINAL));
+				m_pLexSymbol->Create(m_aLexBuff, CSymbol::TokenType::POSTDEFINED);
+				m_pLexSymbol->SetTokenValue(
+					CToken::LLRD_Token::TERMINAL, 
+					CSymbol::TokenType::POSTDEFINED
+				);
 				m_pLexSymbol->SetTargetTokenValue(m_aLexBuff[0]);
 				GetSymTab()->AddSymbol(m_pLexSymbol);
 				pSM = new CSetMember;
@@ -320,7 +323,7 @@ CLexer::Token CLexer::Lex()
 				pSM = new CSetMember;
 				pSM->Create(m_pLexSymbol);
 				GetSymTab()->GetTerminalSet()->AddToSet(pSM);
-				TokenValue = CLexer::Token::TERMINAL;
+				TokenValue = CToken::LLRD_Token::TERMINAL;
 				Loop = FALSE;
 			}
 			break;
@@ -361,9 +364,9 @@ CLexer::Token CLexer::Lex()
 				m_pLexSymbol = (CSymbol*)LookupSymbol(m_aLexBuff);
 				if (m_pLexSymbol)
 				{
-					TokenValue = Token(m_pLexSymbol->GetTokenValue());
+					TokenValue = m_pLexSymbol->GetTokenValue();
 					Loop = FALSE;
-					if (TokenValue == Token::TERMINAL)
+					if (TokenValue == CToken::LLRD_Token::TERMINAL)
 					{
 						fprintf(stderr, "Line %d  Col %d\n", m_Line, m_Col);
 						fprintf(stderr, "Terminal %s Not used properly\n", m_aLexBuff);
@@ -380,9 +383,9 @@ CLexer::Token CLexer::Lex()
 					// Identifier is New/Undefined
 					//-------------------------------------
 					m_pLexSymbol = new CSymbol;
-					m_pLexSymbol->Create(m_aLexBuff);
-					TokenValue = Token::IDENT;
-					m_pLexSymbol->SetTokenValue(UINT(Token::IDENT));
+					m_pLexSymbol->Create(m_aLexBuff, CSymbol::TokenType::NOT_TOKEN);
+					TokenValue = CToken::LLRD_Token::IDENT;
+					m_pLexSymbol->SetTokenValue(CToken::LLRD_Token::IDENT, CSymbol::TokenType::PREDEFINED);
 					Loop = FALSE;
 				}
 			}
@@ -406,7 +409,7 @@ CLexer::Token CLexer::Lex()
 //	reutnrs 0 or negative if we did not get what we Expected
 //*********************************************
 
-CLexer::Token CLexer::Expect(CLexer::Token LookaHeadToken, CLexer::Token Expected)
+CToken::LLRD_Token CLexer::Expect(CToken::LLRD_Token LookaHeadToken, CToken::LLRD_Token Expected)
 {
 	if (Accept(LookaHeadToken, Expected))
 		LookaHeadToken = Lex();
@@ -415,7 +418,7 @@ CLexer::Token CLexer::Expect(CLexer::Token LookaHeadToken, CLexer::Token Expecte
 		char* pExp = new char[256], * pGot = new char[256];
 		CLexer::KeyWord* pKY = 0;
 		
-		if (LookaHeadToken >= Token(256))
+		if (LookaHeadToken >= CToken::LLRD_Token(256))
 		{
 			pKY = FindKeyword(LookaHeadToken);
 			if (pKY)
@@ -438,7 +441,7 @@ CLexer::Token CLexer::Expect(CLexer::Token LookaHeadToken, CLexer::Token Expecte
 			pGot[0] = int(LookaHeadToken);
 			pGot[1] = 0;
 		}
-		if (Expected >= Token(256))
+		if (Expected >= CToken::LLRD_Token(256))
 		{
 			pKY = FindKeyword(Expected);
 			if (pKY)
@@ -481,7 +484,7 @@ CLexer::Token CLexer::Expect(CLexer::Token LookaHeadToken, CLexer::Token Expecte
 //	returns 0 or negative if we don't get the token we want
 //**********************************************
 
-BOOL CLexer::Accept(Token Lookahead, Token Expected)
+BOOL CLexer::Accept(CToken::LLRD_Token Lookahead, CToken::LLRD_Token Expected)
 {
 	BOOL rv = FALSE;
 
@@ -498,13 +501,13 @@ CBin* CLexer::LookupSymbol(const char* pName)
 	return pSym;
 }
 
-CLexer::Token CLexer::LookupKeyword(const char* pKeyword)
+CToken::LLRD_Token CLexer::LookupKeyword(const char* pKeyword)
 {
 	int i;
-	Token KeywordToken = Token(0);
+	CToken::LLRD_Token KeywordToken = CToken::LLRD_Token(0);
 	BOOL Loop = TRUE;
 
-	for (i = 0; Loop && KeyWords[i].m_TokenID != Token::ENDOFTOKENS; ++i)
+	for (i = 0; Loop && KeyWords[i].m_TokenID != CToken::LLRD_Token::ENDOFTOKENS; ++i)
 	{
 		if (strcmp(pKeyword, KeyWords[i].m_Name) == 0)
 		{
@@ -515,7 +518,7 @@ CLexer::Token CLexer::LookupKeyword(const char* pKeyword)
 	return KeywordToken;
 }
 
-CLexer::KeyWord* CLexer::FindKeyword(Token KeywordToken)
+CLexer::KeyWord* CLexer::FindKeyword(CToken::LLRD_Token KeywordToken)
 {
 	KeyWord* pKeyword = 0;
 	BOOL Loop = TRUE;
@@ -523,7 +526,7 @@ CLexer::KeyWord* CLexer::FindKeyword(Token KeywordToken)
 
 	while (Loop)
 	{
-		if (KeyWords[i].m_TokenID != Token::ENDOFTOKENS)
+		if (KeyWords[i].m_TokenID != CToken::LLRD_Token::ENDOFTOKENS)
 		{
 			if (KeyWords[i].m_TokenID == KeywordToken)
 			{
@@ -539,32 +542,4 @@ CLexer::KeyWord* CLexer::FindKeyword(Token KeywordToken)
 	return pKeyword;
 }
 
-const char* CLexer::LookupTokenName(Token TheToken)
-{
-	int i;
-	BOOL Loop = TRUE;
-	const char* rV = 0;
-	static char AltString[16];
-
-	for (i = 0; Loop && TokenNames[i].m_TokenID != Token::ENDOFTOKENS; ++i)
-	{
-		if (TokenNames[i].m_TokenID == TheToken)
-		{
-			Loop = FALSE;
-			rV = TokenNames[i].m_Name;
-		}
-	}
-	if (rV == 0)
-	{
-		if (isprint(int(TheToken)))
-		{
-			AltString[0] = int(TheToken);
-			AltString[1] = 0;
-			rV = (const char*)AltString;
-		}
-		else
-			rV = "?";
-	}
-    return rV;
-}
 

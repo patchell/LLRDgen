@@ -27,22 +27,22 @@ public:
 	// Parsing Methodes
 	//-------------------------------------
 private:
-	CLexer::Token LLRDgramer(CLexer::Token LookaHeadToken);
-	CLexer::Token TokenDef(CLexer::Token LookaHeadToken);
-	CLexer::Token TokenDef_1(CLexer::Token LookaHeadToken);
-	CLexer::Token GrammarSection(CLexer::Token LookaHeadToken);
-	CLexer::Token GrammarStmts(CLexer::Token LookaHeadToken);
-	CLexer::Token GrammarStmts_1(CLexer::Token LookaHeadToken);
-	CLexer::Token GrammarStmt(CLexer::Token LookaHeadToken);
-	CLexer::Token RHSide(CLexer::Token LookaHeadToken);
-	CLexer::Token RHSide_1(CLexer::Token LookaHeadToken);
-	CLexer::Token Rule(CLexer::Token LookaHeadToken);
-	CLexer::Token Embedded(CLexer::Token LookaHeadToken);
-	CLexer::Token ReturnValue(CLexer::Token LookaHeadToken);
-	CLexer::Token TokenIdent(CLexer::Token LookaHeadToken);
-	CLexer::Token TokenIdent_1(CLexer::Token LookaHeadToken);
-	CLexer::Token OptInit(CLexer::Token LookaHeadToken);
-	CLexer::Token TokenToken(CLexer::Token LookaHeadToken);
-	void UnexpectedToken(CLexer::Token Tokenvalue);
+	CToken::LLRD_Token LLRDgramer(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token TokenDef(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token TokenDef_1(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token GrammarSection(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token GrammarStmts(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token GrammarStmts_1(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token GrammarStmt(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token RHSide(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token RHSide_1(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token Rule(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token Embedded(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token ReturnValue(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token TokenIdent(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token TokenIdent_1(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token OptInit(CToken::LLRD_Token LookaHeadToken);
+	CToken::LLRD_Token TokenToken(CToken::LLRD_Token LookaHeadToken);
+	void UnexpectedToken(CToken::LLRD_Token Tokenvalue);
 };
 

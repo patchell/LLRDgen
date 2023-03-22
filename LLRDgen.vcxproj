@@ -150,6 +150,7 @@
     <ClCompile Include="StackItem.cpp" />
     <ClCompile Include="Symbol.cpp" />
     <ClCompile Include="SymTab.cpp" />
+    <ClCompile Include="Token.cpp" />
     <ClCompile Include="Value.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -172,6 +173,7 @@
     <ClInclude Include="StackItem.h" />
     <ClInclude Include="symbol.h" />
     <ClInclude Include="SymTab.h" />
+    <ClInclude Include="Token.h" />
     <ClInclude Include="Value.h" />
   </ItemGroup>
   <ItemGroup>

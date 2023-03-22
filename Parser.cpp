@@ -26,7 +26,7 @@ void CParser::CloseFiles()
 
 void CParser::Parse()
 {
-	CLexer::Token LookaHeadToken;
+	CToken::LLRD_Token LookaHeadToken;
 //	CRule* pRule;
 	CSetMember* pSM, *pSM_EOT;
 //	CLexeme* pLexeme;
@@ -47,7 +47,7 @@ void CParser::Parse()
 // Parsing Methodes
 //-------------------------------------
 
-CLexer::Token CParser::LLRDgramer(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::LLRDgramer(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// LLRDgramer -> TokenDef;
@@ -56,7 +56,7 @@ CLexer::Token CParser::LLRDgramer(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::TokenDef(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::TokenDef(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// TokenDef	-> GrammarSection TokenDef_1;
@@ -66,7 +66,7 @@ CLexer::Token CParser::TokenDef(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::TokenDef_1(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::TokenDef_1(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// TokenDef_1	-> TOKEN TokenIdent GrammarSection TokenDef_1
@@ -76,14 +76,14 @@ CLexer::Token CParser::TokenDef_1(CLexer::Token LookaHeadToken)
 	//------------------------------------------------
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token::TOKEN:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::TOKEN);
+	case CToken::LLRD_Token::TOKEN:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::TOKEN);
 		LookaHeadToken = TokenIdent(LookaHeadToken);
 		LookaHeadToken = GrammarSection(LookaHeadToken);
 		LookaHeadToken = TokenDef_1(LookaHeadToken);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -91,7 +91,7 @@ CLexer::Token CParser::TokenDef_1(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::GrammarSection(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::GrammarSection(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// GrammarSection	-> GRAMMAR GrammarStmts
@@ -100,12 +100,12 @@ CLexer::Token CParser::GrammarSection(CLexer::Token LookaHeadToken)
 	//------------------------------------------------
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token::GRAMMAR:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::GRAMMAR);
+	case CToken::LLRD_Token::GRAMMAR:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::GRAMMAR);
 		LookaHeadToken = GrammarStmts(LookaHeadToken);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -113,7 +113,7 @@ CLexer::Token CParser::GrammarSection(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::GrammarStmts(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::GrammarStmts(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// GrammarStmts	-> GrammarStmt GrammarStmts_1;
@@ -123,7 +123,7 @@ CLexer::Token CParser::GrammarStmts(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::GrammarStmts_1(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::GrammarStmts_1(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// GrammarStmts_1	-> ';' GrammarStmt GrammarStmts_1
@@ -132,13 +132,13 @@ CLexer::Token CParser::GrammarStmts_1(CLexer::Token LookaHeadToken)
 	//------------------------------------------------
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token(';'):
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token(';'));
+	case CToken::LLRD_Token(';'):
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token(';'));
 		LookaHeadToken = GrammarStmt(LookaHeadToken);
 		LookaHeadToken = GrammarStmts_1(LookaHeadToken);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -146,7 +146,7 @@ CLexer::Token CParser::GrammarStmts_1(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::GrammarStmt(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::GrammarStmt(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// GrammarStmt		-> IDENT RHSide
@@ -160,9 +160,9 @@ CLexer::Token CParser::GrammarStmt(CLexer::Token LookaHeadToken)
 
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token::IDENT:
+	case CToken::LLRD_Token::IDENT:
 		pSym = GetLexer()->GetSymbol();
-		GetLexer()->GetSymbol()->SetTokenValue(UINT(CLexer::Token::NONTERMINAL));
+		GetLexer()->GetSymbol()->SetTokenValue(CToken::LLRD_Token::NONTERMINAL, CSymbol::TokenType::NOT_TOKEN);
 		if (m_FirstGrammarSymbol)
 		{
 			m_FirstGrammarSymbol = FALSE;
@@ -175,13 +175,13 @@ CLexer::Token CParser::GrammarStmt(CLexer::Token LookaHeadToken)
 		pSM = new CSetMember;
 		pSM->Create(pSym);
 		GetLexer()->GetSymTab()->GetNonTerminalSet()->AddToSet(pSM);
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::IDENT);
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::IDENT);
 		pSI = new CStackItem();
 		pSI->Create(CStackItem::ValueType::pSYMBOL, pSym);
 		GetValueStack()->Push(pSI);
 		LookaHeadToken = RHSide(LookaHeadToken);
 		break;
-	case CLexer::Token::NONTERMINAL:
+	case CToken::LLRD_Token::NONTERMINAL:
 		pSym = GetLexer()->GetSymbol();
 		//--------------------------------------------
 		// Add To Non Terminal List (set)
@@ -190,14 +190,14 @@ CLexer::Token CParser::GrammarStmt(CLexer::Token LookaHeadToken)
 		pSM->Create(pSym);
 		GetLexer()->GetSymTab()->GetNonTerminalSet()->AddToSet(pSM);
 		//-------------------------------------------------------
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::NONTERMINAL);
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::NONTERMINAL);
 		pSI = new CStackItem();
 		pSI->Create(CStackItem::ValueType::pSYMBOL, pSym);
 		GetValueStack()->Push(pSI);
 		LookaHeadToken = RHSide(LookaHeadToken);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -205,7 +205,7 @@ CLexer::Token CParser::GrammarStmt(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::RHSide(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::RHSide(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// RHSide			-> Rule RHSide_1;
@@ -215,7 +215,7 @@ CLexer::Token CParser::RHSide(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::RHSide_1(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::RHSide_1(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// RHSide_1		-> REPLACED_BY Rule RHSide_1
@@ -228,8 +228,8 @@ CLexer::Token CParser::RHSide_1(CLexer::Token LookaHeadToken)
 
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token::REPLACED_BY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::REPLACED_BY);
+	case CToken::LLRD_Token::REPLACED_BY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::REPLACED_BY);
 		pSI = GetValueStack()->Look(CStack::StackPosition::STACK_TOP);
 		CStackItem::CheckStackItem(pSI, CStackItem::ValueType::pSYMBOL);
 		pSym = (CSymbol*)pSI->GetPointerData();
@@ -243,8 +243,8 @@ CLexer::Token CParser::RHSide_1(CLexer::Token LookaHeadToken)
 		GetValueStack()->Pop();
 		LookaHeadToken = RHSide_1(LookaHeadToken);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -252,7 +252,7 @@ CLexer::Token CParser::RHSide_1(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::Rule(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::Rule(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// Rule			-> IDENT Rule
@@ -271,9 +271,9 @@ CLexer::Token CParser::Rule(CLexer::Token LookaHeadToken)
 	{
 		switch (LookaHeadToken)
 		{
-		case CLexer::Token::IDENT:
+		case CToken::LLRD_Token::IDENT:
 			pSym = GetLexer()->GetSymbol();
-			pSym->SetTokenValue(UINT(CLexer::Token::NONTERMINAL));
+			pSym->SetTokenValue(CToken::LLRD_Token::NONTERMINAL, CSymbol::TokenType::NOT_TOKEN);
 			pLexeme = new CLexeme;
 			pLexeme->Create(pSym);
 			pSI = GetValueStack()->Look(CStack::StackPosition::STACK_TOP);
@@ -281,9 +281,9 @@ CLexer::Token CParser::Rule(CLexer::Token LookaHeadToken)
 			pRule = (CRule*)pSI->GetPointerData();
 			pRule->AddLexeme(pLexeme);
 			GetLexer()->GetSymTab()->AddSymbol(pSym);
-			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::IDENT);
+			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::IDENT);
 			break;
-		case CLexer::Token::NONTERMINAL:
+		case CToken::LLRD_Token::NONTERMINAL:
 			pSym = GetLexer()->GetSymbol();
 			pLexeme = new CLexeme;
 			pLexeme->Create(pSym);
@@ -291,9 +291,9 @@ CLexer::Token CParser::Rule(CLexer::Token LookaHeadToken)
 			CStackItem::CheckStackItem(pSI, CStackItem::ValueType::pRULE);
 			pRule = (CRule*)pSI->GetPointerData();
 			pRule->AddLexeme(pLexeme);
-			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::NONTERMINAL);
+			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::NONTERMINAL);
 			break;
-		case CLexer::Token::TERMINAL:
+		case CToken::LLRD_Token::TERMINAL:
 			pSym = GetLexer()->GetSymbol();
 			pLexeme = new CLexeme;
 			pLexeme->Create(pSym);
@@ -301,9 +301,9 @@ CLexer::Token CParser::Rule(CLexer::Token LookaHeadToken)
 			CStackItem::CheckStackItem(pSI, CStackItem::ValueType::pRULE);
 			pRule = (CRule*)pSI->GetPointerData();
 			pRule->AddLexeme(pLexeme);
-			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::TERMINAL);
+			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::TERMINAL);
 			break;
-		case CLexer::Token::EMPTY:
+		case CToken::LLRD_Token::EMPTY:
 			pSym = GetLexer()->GetEmpty();
 			pLexeme = new CLexeme;
 			pLexeme->Create(pSym);
@@ -311,7 +311,7 @@ CLexer::Token CParser::Rule(CLexer::Token LookaHeadToken)
 			CStackItem::CheckStackItem(pSI, CStackItem::ValueType::pRULE);
 			pRule = (CRule*)pSI->GetPointerData();
 			pRule->AddLexeme(pLexeme);
-			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+			LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 			Loop = FALSE;
 			break;
 		default:
@@ -322,7 +322,7 @@ CLexer::Token CParser::Rule(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::Embedded(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::Embedded(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// Embedded	-> '{'  '}'
@@ -331,12 +331,12 @@ CLexer::Token CParser::Embedded(CLexer::Token LookaHeadToken)
 	//------------------------------------------------
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token('{'):
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token('{'));
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token('}'));
+	case CToken::LLRD_Token('{'):
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token('{'));
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token('}'));
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -344,7 +344,7 @@ CLexer::Token CParser::Embedded(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::ReturnValue(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::ReturnValue(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// ReturnValue	-> ':' 'IDENT'
@@ -354,13 +354,13 @@ CLexer::Token CParser::ReturnValue(CLexer::Token LookaHeadToken)
 	//------------------------------------------------
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token(':'):
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token(':'));
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token('{'));
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token('}'));
+	case CToken::LLRD_Token(':'):
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token(':'));
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token('{'));
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token('}'));
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -369,7 +369,7 @@ CLexer::Token CParser::ReturnValue(CLexer::Token LookaHeadToken)
 }
 
 
-CLexer::Token CParser::TokenIdent(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::TokenIdent(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// TokenIdent		-> TokenToken TokenIdent_1;
@@ -379,7 +379,7 @@ CLexer::Token CParser::TokenIdent(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::TokenIdent_1(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::TokenIdent_1(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// TokenIdent_1		-> IDENT OptInit TokenToken TokenIdent_1
@@ -394,10 +394,12 @@ CLexer::Token CParser::TokenIdent_1(CLexer::Token LookaHeadToken)
 
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token::IDENT:
+	case CToken::LLRD_Token::IDENT:
 		pSym = GetLexer()->GetSymbol();
-		pSym->Create(GetLexer()->GetLexbuff());
-		pSym->SetTokenValue(UINT(CLexer::Token::TERMINAL));
+		pSym->SetTokenValue(
+			CToken::LLRD_Token::TERMINAL, 
+			CSymbol::TokenType::PREDEFINED
+		);
 		pMember = new CSetMember;
 		pMember->Create(pSym);
 		pRule = new CRule;
@@ -417,13 +419,13 @@ CLexer::Token CParser::TokenIdent_1(CLexer::Token LookaHeadToken)
 		pMember->Create(pSym);
 		GetLexer()->GetSymTab()->GetTerminalSet()->AddToSet(pMember);
 		
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::IDENT);
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::IDENT);
 		LookaHeadToken = OptInit(LookaHeadToken);
 		LookaHeadToken = TokenToken(LookaHeadToken);
 		LookaHeadToken = TokenIdent_1(LookaHeadToken);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -431,7 +433,7 @@ CLexer::Token CParser::TokenIdent_1(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::OptInit(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::OptInit(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// OptInit	-> '=' NUMBER
@@ -444,18 +446,18 @@ CLexer::Token CParser::OptInit(CLexer::Token LookaHeadToken)
 
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token('='):
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token('='));
+	case CToken::LLRD_Token('='):
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token('='));
 		pSI = GetValueStack()->Look(CStack::StackPosition::STACK_TOP);
 		CStackItem::CheckStackItem(pSI, CStackItem::ValueType::pSYMBOL);
 		pSym = (CSymbol*)pSI->GetPointerData();
 		NumberValue = GetLexer()->GetNumber();
 		pSym->SetTargetTokenValue(NumberValue);
 		SetAutoIncTokenValue(NumberValue);
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::NUMBER);
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::NUMBER);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		pSI = GetValueStack()->Look(CStack::StackPosition::STACK_TOP);
 		CStackItem::CheckStackItem(pSI, CStackItem::ValueType::pSYMBOL);
 		pSym = (CSymbol*)pSI->GetPointerData();
@@ -468,7 +470,7 @@ CLexer::Token CParser::OptInit(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-CLexer::Token CParser::TokenToken(CLexer::Token LookaHeadToken)
+CToken::LLRD_Token CParser::TokenToken(CToken::LLRD_Token LookaHeadToken)
 {
 	//------------------------------------------------
 	// TokenToken	-> STRING
@@ -484,7 +486,7 @@ CLexer::Token CParser::TokenToken(CLexer::Token LookaHeadToken)
 
 	switch (LookaHeadToken)
 	{
-	case CLexer::Token::STRING:
+	case CToken::LLRD_Token::STRING:
 		pSI = GetValueStack()->Look(CStack::StackPosition::STACK_TOP);
 		if (pSI)
 		{
@@ -508,10 +510,10 @@ CLexer::Token CParser::TokenToken(CLexer::Token LookaHeadToken)
 			exit(-2);
 		}
 		pSym->SetName(GetLexer()->GetLexbuff());
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::STRING);
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::STRING);
 		break;
-	case CLexer::Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CLexer::Token::EMPTY);
+	case CToken::LLRD_Token::EMPTY:
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
 		break;
 	default:
 		break;
@@ -519,13 +521,13 @@ CLexer::Token CParser::TokenToken(CLexer::Token LookaHeadToken)
 	return LookaHeadToken;
 }
 
-void CParser::UnexpectedToken(CLexer::Token Tokenvalue)
+void CParser::UnexpectedToken(CToken::LLRD_Token Tokenvalue)
 {
 	char* s;
 
 	s = new char[256];
 	sprintf_s(s, 256, "Unexpected Token %s\n",
-		CLexer::LookupTokenName(Tokenvalue)
+		CToken::LookupTokenName(Tokenvalue)
 	);
 	GetLexer()->Error(stderr, s);
 	delete[] s;

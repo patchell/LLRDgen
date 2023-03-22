@@ -10,6 +10,7 @@
 #include <ctype.h>
 #include <Windows.h>
 
+#include "Token.h"
 #include "StackItem.h"
 #include "Stack.h"
 #include "Value.h"

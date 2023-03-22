@@ -1,9 +1,10 @@
 #include "Global.h"
 
-BOOL CSymbol::Create(const char* pName)
+BOOL CSymbol::Create(const char* pName, TokenType TokType)
 {
 	m_FirstSet.Create(pName, "FIRST");
 	m_FollowSet.Create(pName,"FOLLOW");
+	m_TokenType = TokType;
 	CBin::SetName(pName);
 	return TRUE;
 }
@@ -68,7 +69,7 @@ void CSymbol::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 	{
 		fprintf(pOut, "%s: Token:%s TargetValue:%d NULLABLE(%d) START(%d)\n",
 			GetName(),
-			CLexer::LookupTokenName(CLexer::Token(GetTokenValue())),
+			CToken::LookupTokenName(CToken::LLRD_Token(GetTokenValue())),
 			GetTargetTokenValue(),
 			IsNullable(),
 			IsStartSymbol()
@@ -80,7 +81,7 @@ void CSymbol::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 
 void CSymbol::SetNullable(BOOL bF)
 {
-	if (CLexer::Token::TERMINAL == CLexer::Token(GetTokenValue()))
+	if (CToken::LLRD_Token::TERMINAL == CToken::LLRD_Token(GetTokenValue()))
 	{
 		fprintf(LogFile(), "???????? %s Nullable Set(%d)\n", GetName(), bF);
 	}
@@ -92,7 +93,7 @@ BOOL CSymbol::IsTerminal()
 {
 	BOOL rV = FALSE;
 
-	if (m_TokenValue == UINT(CLexer::Token::TERMINAL))
+	if (m_TokenValue == CToken::LLRD_Token::TERMINAL)
 	{
 		rV = TRUE;
 	}

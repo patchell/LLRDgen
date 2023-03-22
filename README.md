@@ -2,6 +2,12 @@ Readme.nd
 
 March 22, 2023
 
+Created a Token class to solve a messy problem.
+Fixed bug (thanks to above) in generating the
+switch statements and the Expect calls.
+
+March 22, 2023
+
 Started the code generation back there on the 15th
 and it seemed clear I needed to add some features to
 the parser generator, which ment adding to it's parser.

@@ -6,41 +6,16 @@ constexpr auto UNGET_STACK_DEPTH = 16;
 
 class CLexer
 {
-public:
-	enum  class Token {
-		IDENT = 256,
-		NUMBER,
-		STRING,
-		TOKEN,
-		REPLACED_BY,
-		GRAMMAR,
-		TERMINAL,
-		NONTERMINAL,
-		EMPTY,
-		ENDOFTOKENSTREAM,
-		ENDOFTOKENS
-	};
 private:
 	struct KeyWord {
-		Token m_TokenID;	//token value
+		CToken::LLRD_Token m_TokenID;	//token value
 		const char* m_Name;	//token name
 	};
-	static inline KeyWord TokenNames[] = {
-		{Token::IDENT,"IDENT"},
-		{Token::NUMBER,"NUMBER"},
-		{Token::STRING,"STRING"},
-		{Token::TOKEN,"TOKEN"},
-		{Token::REPLACED_BY,"REPLACED_BY"},
-		{Token::GRAMMAR,"GRAMMAR"},
-		{Token::TERMINAL,"TERMINAL"},
-		{Token::NONTERMINAL,"NONTERMINAL"},
-		{Token::ENDOFTOKENS,"ENDOFTOKENS"}
-	};
 	static inline KeyWord KeyWords[] = {
-		{Token::REPLACED_BY, "REPLACED_BY"},
-		{Token::TOKEN,"TOKEN"},
-		{Token::GRAMMAR, "GRAMMAR"},
-		{Token::ENDOFTOKENS,"$"}
+		{CToken::LLRD_Token::REPLACED_BY, "REPLACED_BY"},
+		{CToken::LLRD_Token::TOKEN,"TOKEN"},
+		{CToken::LLRD_Token::GRAMMAR, "GRAMMAR"},
+		{CToken::LLRD_Token::ENDOFTOKENS,"$"}
 	};
 	CSymTab m_SymbolTable;
 	FILE* m_pInputFile;
@@ -67,9 +42,9 @@ public:
 	BOOL IsValidNumber(int c);
 	BOOL IsValidNameChar(int c);
 	BOOL IsWhiteSpace(int c);
-	Token Lex();
-	Token Expect(CLexer::Token Lookahead, CLexer::Token Expected);
-	BOOL Accept(Token Lookahead, Token Expected);
+	CToken::LLRD_Token Lex();
+	CToken::LLRD_Token Expect(CToken::LLRD_Token Lookahead, CToken::LLRD_Token Expected);
+	BOOL Accept(CToken::LLRD_Token Lookahead, CToken::LLRD_Token Expected);
 	static CSymbol* GetEmpty() { return &m_EmptySymbol; }
 	static CSymbol* GetEndOfTokenStream() {
 		return &m_EndOfTokenStream;
@@ -86,8 +61,8 @@ public:
 	//------------------------------------------
 	// Keyword Lookup Methods
 	//------------------------------------------
-	Token LookupKeyword(const char* pKeyword);
-	KeyWord* FindKeyword(Token KeywordToken);
+	KeyWord* FindKeyword(CToken::LLRD_Token KeywordToken);
+	CToken::LLRD_Token LookupKeyword(const char* pKW);
 	//--------------------------------------
 	// Symbol Methods
 	//--------------------------------------
@@ -96,6 +71,5 @@ public:
 	char* GetLexbuff() { return m_aLexBuff; }
 	int GetLineNumber() { return m_Line; }
 	int GetColunm() { return m_Col; }
-	static const char* LookupTokenName(Token TheToken);
 };
 

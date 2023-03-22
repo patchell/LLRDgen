@@ -552,7 +552,10 @@ void CRecDecParGen::GenerateParserMethodBody(FILE* pLogFile, CRule* pRule, int K
 			if (pRuleLoop->IsRuleNotEmpty())
 			{
 				pLexeme = pRuleLoop->GetHead();
-				fprintf(m_pParserCppFile, "\tcase %s::%s:\n", m_aLexerClassName, pLexeme->GetName());
+				if(pLexeme->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::POSTDEFINED)
+					fprintf(m_pParserCppFile, "\tcase %s(\'%s\'):\n", m_aLexerClassName, pLexeme->GetName());
+				else
+					fprintf(m_pParserCppFile, "\tcase %s::%s:\n", m_aLexerClassName, pLexeme->GetName());
 				TargetExpect(pLogFile, pLexeme);
 				pLexeme = pLexeme->GetNext();
 				while (pLexeme)
@@ -641,12 +644,20 @@ int CRecDecParGen::KindOfProduction(FILE* pLogFile, CSymbol* pSym)
 
 void CRecDecParGen::TargetExpect(FILE* pOut, CLexeme* pLex)
 {
-	fprintf(
-		m_pParserCppFile,
-		"\t\tLookaHeadToken = GetLexer()->Expect(LookaHeadToken,%s::%s)\n",
-		m_aLexerClassName,
-		pLex->GetName()
-	);
+	if(pLex->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::POSTDEFINED)
+		fprintf(
+			m_pParserCppFile,
+			"\t\tLookaHeadToken = GetLexer()->Expect(LookaHeadToken,%s(\'%s\'));\n",
+			m_aLexerClassName,
+			pLex->GetName()
+		);
+	else
+		fprintf(
+			m_pParserCppFile,
+			"\t\tLookaHeadToken = GetLexer()->Expect(LookaHeadToken,%s::%s);\n",
+			m_aLexerClassName,
+			pLex->GetName()
+		);
 }
 
 void CRecDecParGen::NonTerminalFunction(CLexeme* pLex)

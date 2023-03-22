@@ -170,7 +170,7 @@ int CSymTab::CheckForUnUsedNonTerminala(FILE* pOut)
 			while (pBin)
 			{
 				pSym = (CSymbol *) (pBin);
-				if (CLexer::Token(pSym->GetTokenValue()) == CLexer::Token::NONTERMINAL)
+				if (pSym->GetTokenValue() == CToken::LLRD_Token::NONTERMINAL)
 				{
 					if (pSym->GetHead() == NULL)
 					{

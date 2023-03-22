@@ -21,8 +21,8 @@ CgrammarLexer::Token Cgrammar_Parser::expr_1(CgrammarLexer::Token LookaHeadToken
 	//---------------------------------
 	switch(LookaHeadToken)
 	{
-	case CgrammarLexer::+:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer::+)
+	case CgrammarLexer('+'):
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer('+'));
 		LookaHeadToken = term(LookaHeadToken);
 		LookaHeadToken = expr_1(LookaHeadToken);
 		break;
@@ -44,8 +44,8 @@ CgrammarLexer::Token Cgrammar_Parser::term_1(CgrammarLexer::Token LookaHeadToken
 	//---------------------------------
 	switch(LookaHeadToken)
 	{
-	case CgrammarLexer::*:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer::*)
+	case CgrammarLexer('*'):
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer('*'));
 		LookaHeadToken = factor(LookaHeadToken);
 		LookaHeadToken = term_1(LookaHeadToken);
 		break;
@@ -61,12 +61,12 @@ CgrammarLexer::Token Cgrammar_Parser::factor(CgrammarLexer::Token LookaHeadToken
 	switch(LookaHeadToken)
 	{
 	case CgrammarLexer::IDENT:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer::IDENT)
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer::IDENT);
 		break;
-	case CgrammarLexer::(:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer::()
+	case CgrammarLexer('('):
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer('('));
 		LookaHeadToken = expr(LookaHeadToken);
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer::))
+		LookaHeadToken = GetLexer()->Expect(LookaHeadToken,CgrammarLexer(')'));
 		break;
 	}
 }
