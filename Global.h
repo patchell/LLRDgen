@@ -10,7 +10,9 @@
 #include <ctype.h>
 #include <Windows.h>
 
+#include "StackItem.h"
 #include "Stack.h"
+#include "Value.h"
 #include "Bin.h"
 #include "Bucket.h"
 #include "Lexeme.h"
@@ -32,6 +34,7 @@ extern FILE* LogFile();
 extern const char* TrueFalse(BOOL b);
 extern char* IndentString(char* s, int nSpaces);
 extern void CloseAllFiles();
+extern CRecDecParGen* GetParser();
 
 #endif
 

@@ -5,6 +5,10 @@
 
 CRecDecParGen Parser;	//BARF a global
 
+CRecDecParGen* GetParser()
+{
+	return &Parser;
+}
 void CloseAllFiles()
 {
 	Parser.CloseFiles();
@@ -53,7 +57,7 @@ int main(int arcg, char *argv[])
 		fclose(pIN);
 		exit(1);
 	}
-	fprintf(stderr, "LLRDgen Ver 0.1.0\n");
+	fprintf(stderr, "LLRDgen Ver 0.2.0\n");
 	fprintf(stderr, "InFile: %s\nLog File %s\n",
 		argv[1],
 		aLogFile

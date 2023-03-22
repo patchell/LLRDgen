@@ -1,0 +1,39 @@
+???????? $ Nullable Set(0)
+*************  Print Out Grammar Structure************
+grammar
+ -> expr
+expr
+ -> term expr_1
+expr_1
+ -> + term expr_1
+ -> e
+term
+ -> factor term_1
+term_1
+ -> * factor term_1
+ -> e
+factor
+ -> IDENT
+ -> ( expr )
+TERMINALS['Terminals'] { 'IDENT','NUMBER','+','*','(',')','e','$' }
+NONTERMINALS['Non Terminals'] { 'grammar','expr','expr_1','term','term_1','factor' }
+*********** Build Nullable Set **********
+****************Create NOT nullable set ************************
+----- Calc First Sets------
+FIRST['grammar'] { 'IDENT','(' }
+FIRST['expr'] { 'IDENT','(' }
+FIRST['expr_1'] { '+','e' }
+FIRST['term'] { 'IDENT','(' }
+FIRST['term_1'] { '*','e' }
+FIRST['factor'] { 'IDENT','(' }
+----- Calc Follow Sets------
+------------ Follow Sets ---------------
+FOLLOW['grammar'] { '$' }
+FOLLOW['expr'] { '$',')' }
+FOLLOW['expr_1'] { '$',')' }
+FOLLOW['term'] { '+','$',')' }
+FOLLOW['term_1'] { '+','$',')' }
+FOLLOW['factor'] { '*','+','$',')' }
+---------------- Create Parse Table --------------
+Table Entries = 17
+------------ Check For Conflicts-------------

@@ -55,7 +55,7 @@ BOOL CRecDecParGen::Run()
 	//-----------------------------------
 	Parse();
 	fprintf(LogFile(), "*************  Print Out Grammar Structure************\n");
-	PrintGrammar(NULL);
+	PrintGrammar(LogFile());
 	//------------------------------------
 	// Check for Undefined Non Terminals
 	//------------------------------------
@@ -95,19 +95,17 @@ BOOL CRecDecParGen::Run()
 	pDollarSign = new CSetMember;
 	pDollarSign->Create(CLexer::GetEndOfTokenStream());
 	GetLexer()->GetSymTab()->GetTerminalSet()->AddToSet(pDollarSign);
-	GetLexer()->GetSymTab()->GetTerminalSet()->Print(NULL, FALSE, TRUE, 0);
 	//-----------------------------------
 	// Print the set of Non Terminals
 	//-----------------------------------
-	fprintf(LogFile(), "********** Non Terminals Set **********\n");
-	GetLexer()->GetSymTab()->GetNonTerminalSet()->Print(NULL, FALSE, TRUE, 0);
+	GetLexer()->GetSymTab()->GetTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
+	GetLexer()->GetSymTab()->GetNonTerminalSet()->Print(LogFile(), FALSE, TRUE, 0);
 	//------------------------------------
 	// Create Nullable Set
 	//------------------------------------
 	fprintf(LogFile(), "*********** Build Nullable Set **********\n");
 	CreateNullableSet(NULL);
 	GetNullableSet()->Print(NULL,FALSE,TRUE,0);
-	GetLexer()->GetSymTab()->GetNonTerminalSet()->Print(NULL,FALSE,TRUE,0);
 	fprintf(LogFile(), "****************Create NOT nullable set ************************\n");
 	CreateNotNullablesSet(NULL);
 	//----------------------------------------------
@@ -115,14 +113,14 @@ BOOL CRecDecParGen::Run()
 	//----------------------------------------------
 	fprintf(LogFile(), "----- Calc First Sets------\n");
 	CreateFirstSets(NULL);
-	GetLexer()->GetSymTab()->PrintFirstSets(NULL);
+	GetLexer()->GetSymTab()->PrintFirstSets(LogFile());
 	//---------------------------------------
 	// Create Follow Sets
 	//---------------------------------------
 	fprintf(LogFile(), "----- Calc Follow Sets------\n");
 	CreateFollowSets(NULL);
 	fprintf(LogFile(), "------------ Follow Sets ---------------\n");
-	GetLexer()->GetSymTab()->PrintFollowSets(NULL,FALSE,TRUE,0);
+	GetLexer()->GetSymTab()->PrintFollowSets(LogFile(), FALSE, TRUE, 0);
 	//--------------------------------------
 	// Create Parse Table
 	//--------------------------------------
@@ -675,27 +673,18 @@ void CRecDecParGen::ParserHeaderCommon(FILE* pLogFile, char *pClassName)
 void CRecDecParGen::PrintGrammar(FILE* pOut)
 {
 	CSymTab* pSymTab = 0;
-	CBucket* pBucket = 0;
-	CSymbol* pSym = 0;
-	CBin* pBin;
-	int i;
+	CSet* pNonTerm;
+	CSetMember* pNonTermSetMember;
 
-	pSymTab = GetLexer()->GetSymTab();
-	for (i = 0; i < SYMTAB_SIZE; ++i)
+	pNonTerm = GetLexer()->GetSymTab()->GetNonTerminalSet();
+	pNonTermSetMember = pNonTerm->GetHead();
+	while (pNonTermSetMember)
 	{
-		if (pSymTab->GetBucket(i))
+		if (pNonTermSetMember->GetSetMemberSymbol()->IsNonTerminal())
 		{
-			pBin = pSymTab->GetBucket(i)->GetHead();
-			while (pBin)
-			{
-				pSym = (CSymbol*)pBin;
-				if (CLexer::Token(pSym->GetTokenValue()) == CLexer::Token::NONTERMINAL)
-				{
-					pSym->PrintProduction(pOut);
-				}
-				pBin = pBin->GetNext();
-			}
+			pNonTermSetMember->GetSetMemberSymbol()->PrintProduction(pOut, TRUE, TRUE, 0);
 		}
+		pNonTermSetMember = pNonTermSetMember->GetNext();
 	}
 }
 

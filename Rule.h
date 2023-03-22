@@ -55,7 +55,9 @@ public:
 	void SetHead(CLexeme* pH) { m_pHead = pH; }
 	CLexeme* GetHead() { return m_pHead; }
 	void SetTail(CLexeme* pT) { m_pTail = pT; }
-	CLexeme* GetTail() { return m_pTail; }
+	CLexeme* GetTail() { 
+		return m_pTail; 
+	}
 	int AddLexeme(CLexeme* pRO);
 };
 

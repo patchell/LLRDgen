@@ -1,27 +1,22 @@
+// Test Grammar
 
-//	LLgrammar -> Terminals Grammar eof
-//	        -> eof
+TOKEN IDENT = 300 "IDENT"
+TOKEN NUMBER "NUMBER"
 
-//	Terminals	-> TERMINALS TerminalList END_TERMINALS
-//	TerminalList	-> Terminal TerminalList_1
-//	TerminalList_1	-> ',' Terminal TerminalList_1
-//					-> .
+GRAMMAR
+grammar -> expr;
 
-//	Terminal	-> IDENT
 
-//	Grammar		-> GRAMMAR ProductionList END_GRAMMAR
+expr	-> term expr_1;
+expr_1	-> '+' term expr_1
+		-> .
+		;
 
-//	ProductionList	-> Production ProductionList_1
-//	ProductionList_1-> ';' Production ProductionList_1
-//					->  .
+term	-> factor term_1;
+term_1	-> '*' factor term_1
+		-> .
+		;
 
-//	Production		-> LHSide RHSide
-
-//	LHSide	-> NONTERMINAL
-
-//	RHSide	-> REPLACEDBYH TermNonTermList RHSide
-//			-> .
-
-//	TermNonTermList	-> TERMINAL TermNonTermList
-//					-> NONTERMINAL TermNonTermList
-//					-> .
+factor -> 'IDENT'
+       -> '(' expr ')'
+       ;

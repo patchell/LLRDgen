@@ -5,6 +5,7 @@ class CSymbol: public CBin
 {
 	class CLexer friend;
 	UINT m_TokenValue;
+	UINT m_TargetTokenValue;
 	BOOL m_IsEmpty;
 	BOOL m_IsNullable;
 	BOOL m_StartSymbol;
@@ -22,6 +23,7 @@ public:
 		m_StartSymbol = FALSE;
 		m_EndOfTokenStream = FALSE;
 		m_TokenValue = 0;
+		m_TargetTokenValue = 0;
 		m_pHead = 0;
 		m_pTail = 0;
 		m_nTotalRules = 0;
@@ -52,6 +54,10 @@ public:
 	//-----------------------------
 	// Accessor Methods
 	//-----------------------------
+	UINT GetTargetTokenValue() {
+		return m_TargetTokenValue;
+	}
+	void SetTargetTokenValue(UINT v) { m_TargetTokenValue = v; }
 	int GetLineWhereDefined() { return m_LineNumber; }
 	void SetLineWhereDefined(int ln) { m_LineNumber = ln; }
 	UINT GetTokenValue() { return m_TokenValue; }

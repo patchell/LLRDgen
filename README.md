@@ -1,5 +1,14 @@
 Readme.nd
 
+March 22, 2023
+
+Started the code generation back there on the 15th
+and it seemed clear I needed to add some features to
+the parser generator, which ment adding to it's parser.
+Well, that was a lot more difficult than I thought, so
+I rewote the parser.  Finally got the thing back to
+where it was, so, on with code generation.
+
 March 15, 2023
 
 Starting to generate code.  Not done yet

@@ -1,6 +1,9 @@
 #pragma once
 
 constexpr auto EPSILON = 238;
+constexpr auto LEX_BUFFER_SIZE = 4096;
+constexpr auto UNGET_STACK_DEPTH = 16;
+
 class CLexer
 {
 public:
@@ -8,11 +11,9 @@ public:
 		IDENT = 256,
 		NUMBER,
 		STRING,
-		TERMINALS,
-		END_TERMINALS,
+		TOKEN,
 		REPLACED_BY,
 		GRAMMAR,
-		END_GRAMMAR,
 		TERMINAL,
 		NONTERMINAL,
 		EMPTY,
@@ -28,47 +29,41 @@ private:
 		{Token::IDENT,"IDENT"},
 		{Token::NUMBER,"NUMBER"},
 		{Token::STRING,"STRING"},
-		{Token::TERMINALS,"TERMINALS"},
-		{Token::END_TERMINALS,"END_TERMINALS"},
+		{Token::TOKEN,"TOKEN"},
 		{Token::REPLACED_BY,"REPLACED_BY"},
 		{Token::GRAMMAR,"GRAMMAR"},
-		{Token::END_GRAMMAR,"END_GRAMMAR"},
 		{Token::TERMINAL,"TERMINAL"},
 		{Token::NONTERMINAL,"NONTERMINAL"},
 		{Token::ENDOFTOKENS,"ENDOFTOKENS"}
 	};
 	static inline KeyWord KeyWords[] = {
-		{Token::TERMINALS, "TERMINALS"},
-		{Token::END_TERMINALS, "END_TERMINALS"},
 		{Token::REPLACED_BY, "REPLACED_BY"},
+		{Token::TOKEN,"TOKEN"},
 		{Token::GRAMMAR, "GRAMMAR"},
-		{Token::END_GRAMMAR, "END_GRAMMAR"},
-		{Token::ENDOFTOKENS,NULL}
+		{Token::ENDOFTOKENS,"$"}
 	};
 	CSymTab m_SymbolTable;
 	FILE* m_pInputFile;
-	int m_UngetBuffer;
-	char m_aLexBuff[4096];
+	char m_aLexBuff[LEX_BUFFER_SIZE];
 	int m_LexBuffIndex;
-	static inline int m_Line;
-	static inline int m_Col;
+	static inline int m_Line = 1;
+	static inline int m_Col = 0;
 	int m_Number;
 	CSymbol* m_pLexSymbol;
 	char* m_pEmbeddedCodeBuffer;
 	int m_nEmbeddedCodeBufferSize;
 	inline static CSymbol m_EmptySymbol;
 	inline static CSymbol m_EndOfTokenStream;
+	int m_aUngetStack[UNGET_STACK_DEPTH];
+	int m_nUngetStackPointer;
 public:
 	CLexer();
 	virtual ~CLexer();
-	BOOL Create(FILE *pIn);
+	BOOL Create(FILE* pIn);
 	void CloseFiles();
 	static void Error(FILE* pO, const char* pErrorString);
 	int LexGet();
-	void LexUnGet(int Value) {
-		m_UngetBuffer = Value;
-		m_Col--;
-	}
+	void LexUnGet(int Value);
 	BOOL IsValidNumber(int c);
 	BOOL IsValidNameChar(int c);
 	BOOL IsWhiteSpace(int c);

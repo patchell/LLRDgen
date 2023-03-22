@@ -1,82 +1,65 @@
-TERMINALS
-	"IDENT" = 256,
-	"STRING",
-	"NUMBER",
-	"END_TERMINALS",
-	"TERMINALS",
-	"END_TERMINALS",
-	"NONTERMINAL",
-	"GRAMMAR",
-	"END_GRAMMAR",
-	"REPLACEDBY",
-	"TERMINAL",
-	"ENDOFTOKENSTREAM",
-	",",
-	"=",
-	";",
-	":",
-	"{",
-	"}"
-END_TERMINALS
+TOKEN	IDENT = 256		"IDENT" ;
+TOKEN	STRING			"STRING";
+TOKEN	NUMBER			"NUMBER";
+TOKEN	NONTERMINAL		"NONTERMINAL";
+TOKEN	TERMINAL		"TERMINAL";
+TOKEN	GRAMMAR			"GRAMMAR";
+TOKEN	REPLACEDBY		"->";
+
 
 GRAMMAR
-LLRDgramer -> TerminalsSection;
+LLRDgramer -> TokenDef;
 
-TerminalsSection	-> GrammerSection TerminalsSection_1;
-
-TerminalsSection_1	-> 'TERMINALS' TerminalList  'END_TERMINALS' GrammerSection TerminalsSection_1
-					-> .
-					;
-
-GrammerSection		-> 'GRAMMAR' ProductionList 'END_GRAMMAR' GrammerSection
-					-> .
-					;
-
-ProductionList		-> Production ProductionList_1;
-ProductionList_1	-> ';' Production ProductionList_1
-					-> .
-					;
-
-Production			-> LHSide  Production_1;
-Production_1		-> 'REPLACEDBY' RHSide ';' LHSide Production_1
-					-> .
-					;
-
-LHSide		-> ProdType LHSideId;
-ProdType	-> 'STRING'
+TokenDef	-> GrammarSection TokenDef_1;
+TokenDef_1	-> TOKEN TokenIdent GrammarSection TokenDef_1
 			-> .
 			;
+
+GrammarSection	-> GRAMMAR GrammarStmts
+				-> .
+				;
+
+GrammarStmts	-> GrammarStmt GrammarStmts_1;
+GrammarStmts_1	-> ';' GrammarStmt GrammarStmts_1
+				-> .
+				;
+
+GrammarStmt		-> IDENT RHSide
+				-> NONTERMINAL RHSide
+				-> .
+				;
+
+RHSide			-> Rule RHSide_1;
+RHSide_1		-> REPLACED_BY Rule RHSide_1
+				-> .
+				;
+
+Rule			-> IDENT Rule
+				-> NONTERMINAL Rule
+				-> TERMINAL Rule
+				-> .
+				;
+
 
 Embedded	-> '{'  '}'
 			-> .
 			;
 
-LHSideId	-> 'NONTERMINAL' Embedded
-			-> 'IDENT' Embedded
-			-> .
-			;
-
-RHSide				-> 'NONTERMINAL' ReturnValue Embedded RHSide
-					-> 'TERMINAL' Embedded RHSide
-					-> 'IDENT' ReturnValue Embedded RHSide
-					-> .
-					;
 
 ReturnValue			-> ':' 'IDENT'
 					-> .
 					;
 
-TerminalList	-> Terminal TerminalList_1;
-TerminalList_1	-> ',' Terminal TerminalList_1
+TokenIdent		-> TokenToken TokenIdent_1;
+TokenIdent_1		-> IDENT OptInit TokenToken TokenIdent_1
 				-> .
 				;
 
-Terminal		-> 'STRING' OptInit
+OptInit			-> '=' NUMBER
 				-> .
 				;
 
-OptInit	-> '=' 'NUMBER'
-		-> .
-		;
-
-END_GRAMMAR
+TokenToken		-> STRING
+				-> .
+				;
+	

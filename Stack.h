@@ -1,10 +1,25 @@
 #pragma once
 
+
 class CStack
 {
 public:
-	int m_StackPointer;
-	char* m_pStack;
-	int Push(void* pV);
+	enum class StackPosition{
+		STACK_TOP,
+		STACK_$$,
+		STACK_$$$
+	};
+private:
+	CStackItem* m_pHead;
+	int m_nItems;
+public:
+	CStack();
+	virtual ~CStack();
+	BOOL Create();
+	virtual void Push(CStackItem* pItem);
+	virtual CStackItem* Pop();
+	virtual CStackItem* Look(StackPosition Depth);
+	virtual CStackItem* GetHead() { return m_pHead; }
+	virtual void SetHead(CStackItem* pSI) { m_pHead = pSI; }
 };
 

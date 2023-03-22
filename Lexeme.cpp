@@ -11,8 +11,9 @@ CLexeme::~CLexeme()
 {
 }
 
-BOOL CLexeme::Create()
+BOOL CLexeme::Create(CSymbol* pSym)
 {
+	m_pLexemeSymbol = pSym;
 	return 0;
 }
 
@@ -31,7 +32,7 @@ char* CLexeme::GetName()
 
 void CLexeme::Copy(CLexeme* pLexemeSource)
 {
-	SetLexemeSymbol(pLexemeSource->GetLexemeSymbol());
+	m_pLexemeSymbol = pLexemeSource->GetLexemeSymbol();
 }
 
 CSet* CLexeme::GetFollowSet()

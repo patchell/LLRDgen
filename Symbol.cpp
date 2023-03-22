@@ -66,10 +66,10 @@ void CSymbol::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
 	if (pOut)
 	{
-		fprintf(pOut, "%s:  Token:%s Value:%d NULLABLE(%d) START(%d)\n",
+		fprintf(pOut, "%s: Token:%s TargetValue:%d NULLABLE(%d) START(%d)\n",
 			GetName(),
 			CLexer::LookupTokenName(CLexer::Token(GetTokenValue())),
-			GetTokenValue(),
+			GetTargetTokenValue(),
 			IsNullable(),
 			IsStartSymbol()
 		);

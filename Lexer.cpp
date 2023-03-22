@@ -4,17 +4,17 @@ CLexer::CLexer()
 {
 	int i;
 
-	for (i = 0; i < 256; ++i)
+	for (i = 0; i < LEX_BUFFER_SIZE; ++i)
 		m_aLexBuff[i] = 0;
+	for (i = 0; i < UNGET_STACK_DEPTH; ++i)
+		m_aUngetStack[i] = 0;
 	m_pInputFile = 0;
-	m_UngetBuffer = 0;
 	m_LexBuffIndex = 0;
-	m_Line = 1;
-	m_Col = 0;
 	m_Number = 0;
 	m_pLexSymbol = 0;
 	m_pEmbeddedCodeBuffer = 0;
 	m_nEmbeddedCodeBufferSize = 0;
+	m_nUngetStackPointer = 0;
 }
 
 CLexer::~CLexer()
@@ -24,7 +24,8 @@ CLexer::~CLexer()
 
 BOOL CLexer::Create(FILE* pIn)
 {
-	char Epsilon[3] = { char(207),char(181 ), 0};
+//	char Epsilon[3] = { char(207),char(181 ), 0};
+	char Epsilon[2] = { 'e', 0};
 	char Dollar[2] = { '$',0 };
 	CRule* pRule;
 	CLexeme* pLexeme;
@@ -42,8 +43,7 @@ BOOL CLexer::Create(FILE* pIn)
 	m_EmptySymbol.SetNullable(TRUE);
 	m_EmptySymbol.SetTokenValue(UINT(Token::TERMINAL));
 	pLexeme = new CLexeme;
-	pLexeme->Create();
-	pLexeme->SetLexemeSymbol(&m_EmptySymbol);
+	pLexeme->Create(&m_EmptySymbol);
 	pSM = new CSetMember;
 	pSM->Create(&m_EmptySymbol);
 	pRule = new CRule;
@@ -61,8 +61,7 @@ BOOL CLexer::Create(FILE* pIn)
 	m_EndOfTokenStream.SetEndOfTokenStream();
 	m_EndOfTokenStream.SetNullable(FALSE);
 	pLexeme = new CLexeme;
-	pLexeme->Create();
-	pLexeme->SetLexemeSymbol(&m_EndOfTokenStream);
+	pLexeme->Create(&m_EndOfTokenStream);
 	pRule = new CRule;
 	pRule->Create(&m_EndOfTokenStream);
 	pRule->AddLexeme(pLexeme);
@@ -79,17 +78,15 @@ void CLexer::Error(FILE* pO, const char* pErrorString)
 {
 	fprintf(pO, "Line %d  Col %d Error:%s\n", m_Line, m_Col, pErrorString);
 	CloseAllFiles();
-	exit(9);
 }
 
 int CLexer::LexGet()
 {
 	int c = 0;
 
-	if (m_UngetBuffer)
+	if (m_nUngetStackPointer)
 	{
-		c = m_UngetBuffer;
-		m_UngetBuffer = 0;
+		c = m_aUngetStack[--m_nUngetStackPointer];
 	}
 	else
 	{
@@ -100,6 +97,18 @@ int CLexer::LexGet()
 	}
 	m_Col++;
 	return c;
+}
+
+void CLexer::LexUnGet(int Value)
+{
+
+	if (UNGET_STACK_DEPTH > m_nUngetStackPointer)
+		m_aUngetStack[m_nUngetStackPointer++] = Value;
+	else
+	{
+		Error(stderr, "Lexer Unget Stack Overflow");
+		exit(-2);
+	}
 }
 
 BOOL CLexer::IsValidNumber(int c)
@@ -132,6 +141,8 @@ BOOL CLexer::IsWhiteSpace(int c)
 	switch (c)
 	{
 	case '\n':
+		m_Line++;
+		m_Col = 0;
 	case '\r':
 	case '\t':
 	case ' ':
@@ -151,9 +162,13 @@ CLexer::Token CLexer::Lex()
 //	if (m_Line >= 285)
 //		printf("Boo-Boo Line:%d\n", m_Line);
 	m_LexBuffIndex = 0;
+	m_aLexBuff[1] = 0;
+	m_pLexSymbol = 0;
 	while (Loop)
 	{
 		c = LexGet();
+		m_aLexBuff[0] = c;
+
 		switch (c)
 		{
 		case EOF:
@@ -163,8 +178,10 @@ CLexer::Token CLexer::Lex()
 		case '\n':	//white space
 			m_Col = 0;
 			m_Line++;
-		case '\r':	//more white space
-		case '\t':
+			break;
+		case '\t':	//more white space
+			m_Col += 4;
+		case '\r':	
 		case ' ':
 			break;
 		case '/':
@@ -180,8 +197,8 @@ CLexer::Token CLexer::Lex()
 			}
 			else
 			{
+				LexUnGet('/');
 				LexUnGet(c);
-				printf("Fix Big Problem\n");
 			}
 			break;
 		case '0':case '1':case '2':case '3':case '4':
@@ -201,6 +218,8 @@ CLexer::Token CLexer::Lex()
 			c = LexGet();
 			if (c == '>')
 			{
+				m_aLexBuff[1] = c;
+				m_aLexBuff[2] = 0;
 				TokenValue = Token::REPLACED_BY;
 				Loop = 0;
 			}
@@ -211,7 +230,7 @@ CLexer::Token CLexer::Lex()
 				Loop = FALSE;
 			}
 			break;
-		case '"':	//Terminal Name
+		case '"':	//String
 			auxLoop = TRUE;
 			while (auxLoop)
 			{
@@ -241,13 +260,13 @@ CLexer::Token CLexer::Lex()
 			TokenValue = Token::ENDOFTOKENSTREAM;
 			Loop = FALSE;
 			break;
-		case '=':
+		case '=':	//misc tokens
 		case ';':
 		case ',':
 			TokenValue = Token(c);
 			Loop = FALSE;
 			break;
-		case '\'':	// Terminal Token
+		case '\'':	// Target Terminal Token
 			m_LexBuffIndex = 0;
 			auxLoop = TRUE;
 			while (auxLoop)
@@ -269,6 +288,10 @@ CLexer::Token CLexer::Lex()
 				TokenValue = Token(m_pLexSymbol->GetTokenValue());
 				if (TokenValue == Token::NONTERMINAL)
 				{
+					//------------------------------
+					// Sometbing wrong if this is
+					// actually a Non Terminal
+					//------------------------------
 					fprintf(stderr, "ERROR Line:%d Col:%d  Using %s as a Terminal\n",
 						m_Line,
 						m_Col,
@@ -280,15 +303,28 @@ CLexer::Token CLexer::Lex()
 			}
 			else
 			{
-				fprintf(stderr, "Line %d Col %d Undefined Token %s\n", 
-					m_Line,
-					m_Col,
-					m_aLexBuff
-				);
-				exit(7);
+				CSetMember* pSM;
+				//-----------------------------------------
+				// We have a new terminal for the target
+				// grammar, add it to the
+				// symbol table and terminal set
+				//-----------------------------------------
+				m_pLexSymbol = new CSymbol;
+				m_pLexSymbol->Create(m_aLexBuff);
+				m_pLexSymbol->SetTokenValue(UINT(CLexer::Token::TERMINAL));
+				m_pLexSymbol->SetTargetTokenValue(m_aLexBuff[0]);
+				GetSymTab()->AddSymbol(m_pLexSymbol);
+				pSM = new CSetMember;
+				pSM->Create(m_pLexSymbol);
+				m_pLexSymbol->GetFirstSet()->AddToSet(pSM);
+				pSM = new CSetMember;
+				pSM->Create(m_pLexSymbol);
+				GetSymTab()->GetTerminalSet()->AddToSet(pSM);
+				TokenValue = CLexer::Token::TERMINAL;
+				Loop = FALSE;
 			}
 			break;
-		default:	//Keywords and Identifiers
+		default:	//Keywords and Identifiers and non terminals
 			m_aLexBuff[m_LexBuffIndex++] = c;
 			auxLoop = TRUE;
 			while (auxLoop)
@@ -351,7 +387,7 @@ CLexer::Token CLexer::Lex()
 				}
 			}
 			break;	// end of default:
-		}	// ejd 0f switch(c)
+		}	// End of switch(c)
 	}
 	return TokenValue;
 }
@@ -385,7 +421,17 @@ CLexer::Token CLexer::Expect(CLexer::Token LookaHeadToken, CLexer::Token Expecte
 			if (pKY)
 				strcpy_s(pGot, 256, pKY->m_Name);
 			else
-				fprintf(stderr, "Unknown Token %d\n", LookaHeadToken);
+			{
+//				char* s = new char[256];
+//				sprintf_s(s, 256, "Unknown Token %d:%s\n", 
+//					LookaHeadToken,
+//					LookupTokenName(LookaHeadToken)
+//				);
+//				CLexer::Error(stderr, s);
+//				delete[] s;
+//				CloseAllFiles();
+				exit(-2);
+			}
 		}
 		else
 		{
@@ -498,6 +544,7 @@ const char* CLexer::LookupTokenName(Token TheToken)
 	int i;
 	BOOL Loop = TRUE;
 	const char* rV = 0;
+	static char AltString[16];
 
 	for (i = 0; Loop && TokenNames[i].m_TokenID != Token::ENDOFTOKENS; ++i)
 	{
@@ -506,6 +553,17 @@ const char* CLexer::LookupTokenName(Token TheToken)
 			Loop = FALSE;
 			rV = TokenNames[i].m_Name;
 		}
+	}
+	if (rV == 0)
+	{
+		if (isprint(int(TheToken)))
+		{
+			AltString[0] = int(TheToken);
+			AltString[1] = 0;
+			rV = (const char*)AltString;
+		}
+		else
+			rV = "?";
 	}
     return rV;
 }

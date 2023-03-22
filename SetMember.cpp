@@ -17,8 +17,7 @@ BOOL CSetMember::Create(CSymbol* pSym)
 	CLexeme* pLxme;
 
 	pLxme = new CLexeme;
-	pLxme->Create();
-	pLxme->SetLexemeSymbol(pSym);
+	pLxme->Create(pSym);
 	SetSetMemberLexem(pLxme);
 	return TRUE;
 }
@@ -26,8 +25,7 @@ BOOL CSetMember::Create(CSymbol* pSym)
 void CSetMember::Copy(CSetMember* pSetMemberSource)
 {
 	CLexeme* pLexeme = new CLexeme;
-	pLexeme->Create();
-	pLexeme->Copy(pSetMemberSource->GetSetMemberLexeme());
+	pLexeme->Create(pSetMemberSource->GetSetMemberLexeme()->GetLexemeSymbol());
 	SetSetMemberLexem(pLexeme);
 }
 
@@ -54,12 +52,14 @@ CRule* CSetMember::GetRule()
 int CSetMember::Print(FILE* pOut, int DelimiterChar, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 {
 	int NumCharsPrinted = 0;
+	char* pName;
 
 	if (pOut)
 	{
+		pName = GetSetMemberLexeme()->GetLexemeSymbol()->GetName();
 		fprintf(pOut, "%c\'%s\'", 
 			DelimiterChar, 
-			GetSetMemberLexeme()->GetLexemeSymbol()->GetName()
+			pName
 		);
 		NumCharsPrinted = strlen(GetSetMemberLexeme()->GetLexemeSymbol()->GetName());
 		NumCharsPrinted += nIndentSpaces + 3;

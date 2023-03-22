@@ -11,11 +11,10 @@ class CLexeme
 public:
 	CLexeme();
 	virtual ~CLexeme();
-	BOOL Create();
+	BOOL Create(CSymbol* pSym);
 	BOOL Compare(CLexeme* pLex);
 	char* GetName();
 	void Copy(CLexeme* pLexemeSource);
-	void SetLexemeSymbol(CSymbol* pS) { m_pLexemeSymbol = pS;}
 	CSymbol* GetLexemeSymbol() { return m_pLexemeSymbol; }
 	CSet* GetFollowSet(); 
 	CSet* GetFirstSet();
@@ -27,7 +26,10 @@ public:
 	//----------------------------
 	// Link Management
 	//----------------------------
-	void SetNext(CLexeme* pN) { m_pNext = pN; }
+	void SetNext(CLexeme* pN) 
+	{
+		m_pNext = pN; 
+	}
 	CLexeme* GetNext() { return m_pNext; }
 	void SetPrev(CLexeme* pP) { m_pPrev = pP; }
 	CLexeme* GetPrev() { return m_pPrev; }

@@ -35,8 +35,7 @@ BOOL CParseTable::Create(CSet* pTerm, CSet* pNon)
 	for (i = 0; i < GetTerminalSet()->GetNumberOfMembers(); ++i)
 	{
 		m_ppTerminalSymbols[i] = new CLexeme;
-		m_ppTerminalSymbols[i]->Create();
-		m_ppTerminalSymbols[i]->SetLexemeSymbol(pSM->GetSetMemberSymbol());
+		m_ppTerminalSymbols[i]->Create(pSM->GetSetMemberSymbol());
 		pSM = pSM->GetNext();
 	}
 	//---------------- Non Terminal Table ----------------------
@@ -45,8 +44,7 @@ BOOL CParseTable::Create(CSet* pTerm, CSet* pNon)
 	for (i = 0; i < GetNonTerminalSet()->GetNumberOfMembers(); ++i)
 	{
 		m_ppNonTerminalSymbols[i] = new CLexeme;
-		m_ppNonTerminalSymbols[i]->Create();
-		m_ppNonTerminalSymbols[i]->SetLexemeSymbol(pSM->GetSetMemberSymbol());
+		m_ppNonTerminalSymbols[i]->Create(pSM->GetSetMemberSymbol());
 		pSM = pSM->GetNext();
 	}
 	//----------------------------------------------

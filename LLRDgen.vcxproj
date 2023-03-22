@@ -147,8 +147,10 @@
     <ClCompile Include="Set.cpp" />
     <ClCompile Include="SetMember.cpp" />
     <ClCompile Include="Stack.cpp" />
+    <ClCompile Include="StackItem.cpp" />
     <ClCompile Include="Symbol.cpp" />
     <ClCompile Include="SymTab.cpp" />
+    <ClCompile Include="Value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bin.h" />
@@ -167,8 +169,10 @@
     <ClInclude Include="Set.h" />
     <ClInclude Include="SetMember.h" />
     <ClInclude Include="Stack.h" />
+    <ClInclude Include="StackItem.h" />
     <ClInclude Include="symbol.h" />
     <ClInclude Include="SymTab.h" />
+    <ClInclude Include="Value.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Action.gram" />

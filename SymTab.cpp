@@ -121,10 +121,12 @@ void CSymTab::AddSymbol(CBin* pSym)
 	
 	if (m_ppTab[Index] == NULL)	//there is NO bucket here
 	{
+		//------------------------------------
+		// Create a new bucket
+		//------------------------------------
 		m_ppTab[Index] = new CBucket;
 		m_ppTab[Index]->Create();
 	}
-
 	if (m_ppTab[Index]->GetHead() == NULL)	//nobody home
 	{
 		m_ppTab[Index]->SetHead(pSym);
