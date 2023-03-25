@@ -32,7 +32,8 @@ public:
 		BOOL bLHS = FALSE, 
 		BOOL bEOL = TRUE, 
 		int nIndentSpaces = 0,
-		BOOL bNumberLines = FALSE
+		BOOL bNumberLines = FALSE,
+		BOOL bLHSLineNumber = FALSE
 	);
 };
 

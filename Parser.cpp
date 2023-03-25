@@ -162,6 +162,7 @@ CToken::LLRD_Token CParser::GrammarStmt(CToken::LLRD_Token LookaHeadToken)
 	{
 	case CToken::LLRD_Token::IDENT:
 		pSym = GetLexer()->GetSymbol();
+		pSym->SetLineWhereDefined(GetLexer()->GetLineNumber());
 		GetLexer()->GetSymbol()->SetTokenValue(CToken::LLRD_Token::NONTERMINAL, CSymbol::TokenType::NOT_TOKEN);
 		if (m_FirstGrammarSymbol)
 		{
@@ -183,6 +184,7 @@ CToken::LLRD_Token CParser::GrammarStmt(CToken::LLRD_Token LookaHeadToken)
 		break;
 	case CToken::LLRD_Token::NONTERMINAL:
 		pSym = GetLexer()->GetSymbol();
+		pSym->SetLineWhereDefined(GetLexer()->GetLineNumber());
 		//--------------------------------------------
 		// Add To Non Terminal List (set)
 		//--------------------------------------------
@@ -396,6 +398,7 @@ CToken::LLRD_Token CParser::TokenIdent_1(CToken::LLRD_Token LookaHeadToken)
 	{
 	case CToken::LLRD_Token::IDENT:
 		pSym = GetLexer()->GetSymbol();
+		fprintf(LogFile(), "Token %s\n", GetLexer()->GetLexbuff());
 		pSym->SetTokenValue(
 			CToken::LLRD_Token::TERMINAL, 
 			CSymbol::TokenType::PREDEFINED

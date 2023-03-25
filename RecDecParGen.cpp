@@ -59,6 +59,7 @@ BOOL CRecDecParGen::Run()
 	//------------------------------------
 	// Check for Undefined Non Terminals
 	//------------------------------------
+	GetLexer()->GetSymTab()->PrintTable(LogFile());
 	UndefinedNonTerminals = GetLexer()->GetSymTab()->CheckForUnUsedNonTerminala(stderr);
 	fprintf(stderr, "Undefined Non Terminals:%d\n", UndefinedNonTerminals);
 	if (UndefinedNonTerminals)

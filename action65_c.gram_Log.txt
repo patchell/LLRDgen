@@ -1,0 +1,1195 @@
+???????? $ Nullable Set(0)
+Token IDENT
+Token NUMBER
+Token MODULE
+Token RETURN
+Token PROC
+Token FUNC
+Token FUNC_IDENT
+Token PROC_IDENT
+Token IF
+Token FOR
+Token WHILE
+Token DO
+Token OD
+Token EXIT
+Token THEN
+Token FI
+Token ELSEIF
+Token ELSE
+Token UNTILL
+Token TO
+Token STEP
+Token ASM
+Token ENDASM
+Token OR
+Token AND
+Token GTEQ
+Token LTEQ
+Token DEFINE
+Token TYPE
+Token RECORDTYPE
+Token BOOL
+Token CHAR
+Token BYTE
+Token CARD
+Token INT
+Token POINTER
+Token ARRAY
+Token BEGIN
+Token END
+Token MOD
+Token LSH
+Token RSH
+Token PLUS_EQ
+Token MINUS_EQ
+Token MULT_EQ
+Token DIV_EQ
+Token MOD_EQ
+Token AND_EQ
+Token XOR_EQ
+Token XOR_EQ
+Token OR_EQ
+Token LSH_EQ
+Token RSH_EQ
+*************  Print Out Grammar Structure************
+Action65
+ -> Modules
+Modules
+ -> PROCroutine Modules_1
+Modules_1
+ -> MODULE PROCroutine Modules_1
+ -> e
+PROCroutine
+ -> SysDecl PROCroutine_1
+PROCroutine_1
+ -> PROC ProcDef PROCroutine_1
+ -> e
+ProcDef
+ -> ProcDecl ProcBody
+FuncDef
+ -> FuncDecl ProcBody
+ProcDecl
+ -> IDENT OptInit ( ParamList )
+FuncDecl
+ -> IDENT OptInit ( ParamList )
+ProcBody
+ -> BEGIN ProcBody_1 END
+ProcBody_1
+ -> LocalDecls Statements
+Statements
+ -> ProcCall Begin
+Begin
+ -> BEGIN Statements END ProcCall Begin
+ -> e
+ProcCall
+ -> ForStmt ProcCall_1
+ProcCall_1
+ -> PROC_IDENT PROCstmt ; ForStmt ProcCall_1
+ -> FUNC_IDENT PROCstmt ; ForStmt ProcCall_1
+ -> e
+PROCstmt
+ -> ( MemCntentsList )
+ForStmt
+ -> IfStmt ForStmt_1
+ForStmt_1
+ -> FOR FORstmt OD IfStmt ForStmt_1
+ -> e
+FORstmt
+ -> IDENT = Start TO Finish STEPoption DO Statements
+Start
+ -> ArithExpr
+Finish
+ -> ArithExpr
+STEPoption
+ -> STEP ArithExpr
+ -> e
+IfStmt
+ -> WhileStmt IfStmt_1
+IfStmt_1
+ -> IF If FI WhileStmt IfStmt_1
+ -> e
+If
+ -> ArithExpr ThenPart
+ThenPart
+ -> THEN ThenPart_1
+ThenPart_1
+ -> Statements ElseIfPart
+ElseIfPart
+ -> ELSEIF ArithExpr ThenPart
+ -> ELSE Statements
+ -> e
+WhileStmt
+ -> DoStmt WhileStmt_1
+WhileStmt_1
+ -> WHILE ArithExpr DO Statements OD DoStmt WhileStmt_1
+ -> e
+DoStmt
+ -> EXITstmt DoStmt_1
+DoStmt_1
+ -> DO Statements OD EXITstmt DoStmt_1
+ -> e
+EXITstmt
+ -> RetStmt EXITstmt_1
+EXITstmt_1
+ -> EXIT ; RetStmt EXITstmt_1
+ -> e
+RetStmt
+ -> CodeBlock RetStmt_1
+RetStmt_1
+ -> RETURN RetStmt_2 ; CodeBlock RetStmt_1
+ -> e
+RetStmt_2
+ -> ( ArithExpr )
+ -> e
+CodeBlock
+ -> UntillStmt CodeBlock_1
+CodeBlock_1
+ -> [ ConstList ] UntillStmt CodeBlock_1
+ -> e
+ConstList
+ -> CompConst ConstList_1
+ConstList_1
+ -> , CompConst ConstList_1
+ -> e
+UntillStmt
+ -> Assignment UntillStmt_1
+UntillStmt_1
+ -> UNTILL ArithExpr ; Assignment UntillStmt_1
+ -> e
+Assignment
+ -> MemContents ASSIGNstmt
+ASSIGNstmt
+ -> = ArithExpr ; MemContents
+ -> ==+ ArithExpr ; MemContents
+ -> ==- ArithExpr ; MemContents
+ -> ==* ArithExpr ; MemContents
+ -> ==/ ArithExpr ; MemContents
+ -> ==MOD ArithExpr ; MemContents
+ -> ==& ArithExpr ; MemContents
+ -> ==! ArithExpr ; MemContents
+ -> ==% ArithExpr ; MemContents
+ -> ==LSH ArithExpr ; MemContents
+ -> ==RSH ArithExpr ; MemContents
+ -> e
+ArithExpr
+ -> LogicalAND LogicalOR_1
+LogicalOR_1
+ -> OR LogicalAND LogicalOR_1
+ -> e
+LogicalAND
+ -> RelOperation LogicalAND_1
+LogicalAND_1
+ -> AND RelOperation LogicalAND_1
+ -> e
+RelOperation
+ -> RelEquals RelOperation_1
+RelOperation_1
+ -> > RelEquals RelOperation_1
+ -> < RelEquals RelOperation_1
+ -> GTEQ RelEquals RelOperation_1
+ -> LTEQ RelEquals RelOperation_1
+ -> e
+RelEquals
+ -> BitwiseOR RelEquals_1
+RelEquals_1
+ -> = BitwiseOR RelEquals_1
+ -> # BitwiseOR RelEquals_1
+ -> e
+BitwiseOR
+ -> BitwiseAND BitwiseOR_1
+BitwiseOR_1
+ -> % BitwiseAND BitwiseOR_1
+ -> e
+BitwiseAND
+ -> BitwiseXOR BitwiseAND_1
+BitwiseAND_1
+ -> & BitwiseXOR BitwiseAND_1
+ -> e
+BitwiseXOR
+ -> AddExpr BitwiseXOR_1
+BitwiseXOR_1
+ -> ! AddExpr BitwiseXOR_1
+ -> e
+AddExpr
+ -> ShifExpr AddExpr_1
+AddExpr_1
+ -> + ShifExpr AddExpr_1
+ -> - ShifExpr AddExpr_1
+ -> e
+ShifExpr
+ -> MultExpr ShiftExpr_1
+ShiftExpr_1
+ -> LSH MultExpr ShiftExpr_1
+ -> RSH MultExpr ShiftExpr_1
+ -> e
+MultExpr
+ -> Unary MultExpr_1
+MultExpr_1
+ -> * Unary MultExpr_1
+ -> / Unary MultExpr_1
+ -> MOD Unary MultExpr_1
+ -> e
+Unary
+ -> - Unary
+ -> Factor
+Factor
+ -> FUNC_IDENT ( MemCntentsList )
+ -> ( ArithExpr )
+ -> NUMBER
+ -> *
+ -> @ MemContents
+ -> IDENT MemContentsType
+MemCntentsList
+ -> MemContents MemCntentsList_1
+MemCntentsList_1
+ -> , MemContents MemCntentsList_1
+ -> e
+SysDecl
+ -> TypeDecl Define
+Define
+ -> DEFINE DefList TypeDecl Define
+ -> e
+DefList
+ -> Def DefList_1
+DefList_1
+ -> , Def DefList_1
+ -> e
+Def
+ -> IDENT = CompConst
+TypeDecl
+ -> RecDecl TypeDecl_1
+TypeDecl_1
+ -> TYPE RecIdent RecDecl TypeDecl_1
+ -> e
+RecIdent
+ -> IDENT RecField
+RecField
+ -> = [ VarDecls ]
+VarDecls
+ -> CHAR Modifier VarList ; VarDecls
+ -> BYTE Modifier VarList ; VarDecls
+ -> INT Modifier VarList ; VarDecls
+ -> CARD Modifier VarList ; VarDecls
+ -> BOOL Modifier VarList ; VarDecls
+ -> e
+VarList
+ -> Ident VarList_1
+VarList_1
+ -> , Ident VarList_1
+ -> e
+Modifier
+ -> POINTER
+ -> ARRAY ArrayStuff
+ -> e
+ArrayStuff
+ -> ( ArithExpr ) OptArrayInit
+ -> e
+OptArrayInit
+ -> = [ ConstList ]
+ -> e
+RecDecl
+ -> FundDecl RecDecl_1
+RecDecl_1
+ -> RECORDTYPE Modifier DataDecl RecDecl_1
+ -> e
+FundDecl
+ -> BOOL Modifier FUNCDecl FundDecl
+ -> CHAR Modifier FUNCDecl FundDecl
+ -> BYTE Modifier FUNCDecl FundDecl
+ -> INT Modifier FUNCDecl FundDecl
+ -> CARD Modifier FUNCDecl FundDecl
+ -> e
+FUNCDecl
+ -> DataDecl FUNCDecl_1
+FUNCDecl_1
+ -> FUNC FuncDef DataDecl FUNCDecl_1
+ -> e
+DataDecl
+ -> IdentList DataCecl_1
+DataCecl_1
+ -> ; IdentList DataCecl_1
+ -> e
+IdentList
+ -> Ident IdentList_1
+IdentList_1
+ -> , Ident IdentList_1
+ -> e
+Ident
+ -> IDENT OptInit
+ -> e
+OptInit
+ -> = CompConst
+ -> e
+ParamList
+ -> Param ParamList_1
+ParamList_1
+ -> , Param ParamList_1
+ -> e
+Param
+ -> RECORDTYPE POINTER Ident
+ -> CHAR Modifier Ident
+ -> BYTE Modifier Ident
+ -> INT Modifier Ident
+ -> CARD Modifier Ident
+ -> BOOL Modifier Ident
+ -> e
+LocalDecls
+ -> CHAR Modifier VarList ; LocalDecls
+ -> BYTE Modifier VarList ; LocalDecls
+ -> INT Modifier VarList ; LocalDecls
+ -> CARD Modifier VarList ; LocalDecls
+ -> BOOL Modifier VarList ; LocalDecls
+ -> e
+CompConst
+ -> BaseCompConst CompConst_1
+CompConst_1
+ -> + BaseCompConst CompConst_1
+ -> - BaseCompConst CompConst_1
+ -> e
+BaseCompConst
+ -> NUMBER
+ -> *
+ -> @ MemContents
+ -> e
+MemContents
+ -> IDENT MemContentsType
+MemContentsType
+ -> ( ArithExpr )
+ -> ^
+ -> . MemContents
+ -> e
+**************** SymbolTable *****************
+FOR: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FOR'] { 'FOR' }
+     FOLLOW['FOR'] { }
+==/: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==/'] { '==/' }
+     FOLLOW['==/'] { }
+POINTER: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['POINTER'] { 'POINTER' }
+     FOLLOW['POINTER'] { }
+==+: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['PLUS_EQ'] { '==+' }
+     FOLLOW['PLUS_EQ'] { }
+ArithExpr: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ArithExpr'] { }
+     FOLLOW['ArithExpr'] { }
+Start: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Start'] { }
+     FOLLOW['Start'] { }
+RelOperation: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RelOperation'] { }
+     FOLLOW['RelOperation'] { }
+LTEQ: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['LTEQ'] { 'LTEQ' }
+     FOLLOW['LTEQ'] { }
+MemCntentsList: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MemCntentsList'] { }
+     FOLLOW['MemCntentsList'] { }
+IfStmt_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['IfStmt_1'] { }
+     FOLLOW['IfStmt_1'] { }
+==+: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==+'] { '==+' }
+     FOLLOW['==+'] { }
+WhileStmt_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['WhileStmt_1'] { }
+     FOLLOW['WhileStmt_1'] { }
+==*: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==*'] { '==*' }
+     FOLLOW['==*'] { }
+Factor: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Factor'] { }
+     FOLLOW['Factor'] { }
+LSH: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['LSH'] { 'LSH' }
+     FOLLOW['LSH'] { }
+WhileStmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['WhileStmt'] { }
+     FOLLOW['WhileStmt'] { }
+==%: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==%'] { '==%' }
+     FOLLOW['==%'] { }
+AddExpr_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['AddExpr_1'] { }
+     FOLLOW['AddExpr_1'] { }
+IdentList: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['IdentList'] { }
+     FOLLOW['IdentList'] { }
+PROCroutine_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['PROCroutine_1'] { }
+     FOLLOW['PROCroutine_1'] { }
+ConstList: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ConstList'] { }
+     FOLLOW['ConstList'] { }
+==&: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==&'] { '==&' }
+     FOLLOW['==&'] { }
+EXITstmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['EXITstmt'] { }
+     FOLLOW['EXITstmt'] { }
+==!: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==!'] { '==!' }
+     FOLLOW['==!'] { }
+FORstmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FORstmt'] { }
+     FOLLOW['FORstmt'] { }
+WHILE: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['WHILE'] { 'WHILE' }
+     FOLLOW['WHILE'] { }
+ENDASM: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ENDASM'] { 'ENDASM' }
+     FOLLOW['ENDASM'] { }
+==&: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['AND_EQ'] { '==&' }
+     FOLLOW['AND_EQ'] { }
+ASM: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ASM'] { 'ASM' }
+     FOLLOW['ASM'] { }
+BitwiseXOR_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BitwiseXOR_1'] { }
+     FOLLOW['BitwiseXOR_1'] { }
+ProcCall: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ProcCall'] { }
+     FOLLOW['ProcCall'] { }
+RecDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RecDecl'] { }
+     FOLLOW['RecDecl'] { }
+GTEQ: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['GTEQ'] { 'GTEQ' }
+     FOLLOW['GTEQ'] { }
+MultExpr_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MultExpr_1'] { }
+     FOLLOW['MultExpr_1'] { }
+IF: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['IF'] { 'IF' }
+     FOLLOW['IF'] { }
+RecField: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RecField'] { }
+     FOLLOW['RecField'] { }
+RecDecl_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RecDecl_1'] { }
+     FOLLOW['RecDecl_1'] { }
+RECORDTYPE: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RECORDTYPE'] { 'RECORDTYPE' }
+     FOLLOW['RECORDTYPE'] { }
+Define: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Define'] { }
+     FOLLOW['Define'] { }
+BitwiseOR_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BitwiseOR_1'] { }
+     FOLLOW['BitwiseOR_1'] { }
+MODULE: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MODULE'] { 'MODULE' }
+     FOLLOW['MODULE'] { }
+MultExpr: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MultExpr'] { }
+     FOLLOW['MultExpr'] { }
+LogicalAND_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['LogicalAND_1'] { }
+     FOLLOW['LogicalAND_1'] { }
+ParamList_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ParamList_1'] { }
+     FOLLOW['ParamList_1'] { }
+STEP: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['STEP'] { 'STEP' }
+     FOLLOW['STEP'] { }
+BOOL: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BOOL'] { 'BOOL' }
+     FOLLOW['BOOL'] { }
+ProcCall_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ProcCall_1'] { }
+     FOLLOW['ProcCall_1'] { }
+END: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['END'] { 'END' }
+     FOLLOW['END'] { }
+ARRAY: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ARRAY'] { 'ARRAY' }
+     FOLLOW['ARRAY'] { }
+RSH: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RSH'] { 'RSH' }
+     FOLLOW['RSH'] { }
+ELSE: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ELSE'] { 'ELSE' }
+     FOLLOW['ELSE'] { }
+UntillStmt_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['UntillStmt_1'] { }
+     FOLLOW['UntillStmt_1'] { }
+Unary: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Unary'] { }
+     FOLLOW['Unary'] { }
+AND: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['AND'] { 'AND' }
+     FOLLOW['AND'] { }
+EXITstmt_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['EXITstmt_1'] { }
+     FOLLOW['EXITstmt_1'] { }
+RecIdent: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RecIdent'] { }
+     FOLLOW['RecIdent'] { }
+!: Token:TERMINAL TargetValue:33 NULLABLE(0) START(0)
+     FIRST['!'] { '!' }
+     FOLLOW['!'] { }
+FUNC_IDENT: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FUNC_IDENT'] { 'FUNC_IDENT' }
+     FOLLOW['FUNC_IDENT'] { }
+Def: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Def'] { }
+     FOLLOW['Def'] { }
+ProcBody_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ProcBody_1'] { }
+     FOLLOW['ProcBody_1'] { }
+#: Token:TERMINAL TargetValue:35 NULLABLE(0) START(0)
+     FIRST['#'] { '#' }
+     FOLLOW['#'] { }
+BitwiseAND: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BitwiseAND'] { }
+     FOLLOW['BitwiseAND'] { }
+PROC: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['PROC'] { 'PROC' }
+     FOLLOW['PROC'] { }
+TO: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['TO'] { 'TO' }
+     FOLLOW['TO'] { }
+ShifExpr: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ShifExpr'] { }
+     FOLLOW['ShifExpr'] { }
+DataCecl_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DataCecl_1'] { }
+     FOLLOW['DataCecl_1'] { }
+CHAR: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['CHAR'] { 'CHAR' }
+     FOLLOW['CHAR'] { }
+%: Token:TERMINAL TargetValue:37 NULLABLE(0) START(0)
+     FIRST['%'] { '%' }
+     FOLLOW['%'] { }
+TypeDecl_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['TypeDecl_1'] { }
+     FOLLOW['TypeDecl_1'] { }
+FUNCDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FUNCDecl'] { }
+     FOLLOW['FUNCDecl'] { }
+==RSH: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==RSH'] { '==RSH' }
+     FOLLOW['==RSH'] { }
+&: Token:TERMINAL TargetValue:38 NULLABLE(0) START(0)
+     FIRST['&'] { '&' }
+     FOLLOW['&'] { }
+AddExpr: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['AddExpr'] { }
+     FOLLOW['AddExpr'] { }
+BEGIN: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BEGIN'] { 'BEGIN' }
+     FOLLOW['BEGIN'] { }
+==%: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['OR_EQ'] { '==%' }
+     FOLLOW['OR_EQ'] { }
+(: Token:TERMINAL TargetValue:40 NULLABLE(0) START(0)
+     FIRST['('] { '(' }
+     FOLLOW['('] { }
+Begin: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Begin'] { }
+     FOLLOW['Begin'] { }
+): Token:TERMINAL TargetValue:41 NULLABLE(0) START(0)
+     FIRST[')'] { ')' }
+     FOLLOW[')'] { }
+IDENT: Token:TERMINAL TargetValue:256 NULLABLE(0) START(0)
+     FIRST['IDENT'] { 'IDENT' }
+     FOLLOW['IDENT'] { }
+RetStmt_2: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RetStmt_2'] { }
+     FOLLOW['RetStmt_2'] { }
+ASSIGNstmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ASSIGNstmt'] { }
+     FOLLOW['ASSIGNstmt'] { }
+*: Token:TERMINAL TargetValue:42 NULLABLE(0) START(0)
+     FIRST['*'] { '*' }
+     FOLLOW['*'] { }
+Ident: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Ident'] { }
+     FOLLOW['Ident'] { }
+ForStmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ForStmt'] { }
+     FOLLOW['ForStmt'] { }
++: Token:TERMINAL TargetValue:43 NULLABLE(0) START(0)
+     FIRST['+'] { '+' }
+     FOLLOW['+'] { }
+UNTILL: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['UNTILL'] { 'UNTILL' }
+     FOLLOW['UNTILL'] { }
+,: Token:TERMINAL TargetValue:44 NULLABLE(0) START(0)
+     FIRST[','] { ',' }
+     FOLLOW[','] { }
+==!: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['XOR_EQ'] { '==!' }
+     FOLLOW['XOR_EQ'] { }
+==XOR: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['XOR_EQ'] { '==XOR' }
+     FOLLOW['XOR_EQ'] { }
+DoStmt_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DoStmt_1'] { }
+     FOLLOW['DoStmt_1'] { }
+RetStmt_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RetStmt_1'] { }
+     FOLLOW['RetStmt_1'] { }
+-: Token:TERMINAL TargetValue:45 NULLABLE(0) START(0)
+     FIRST['-'] { '-' }
+     FOLLOW['-'] { }
+ELSEIF: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ELSEIF'] { 'ELSEIF' }
+     FOLLOW['ELSEIF'] { }
+.: Token:TERMINAL TargetValue:46 NULLABLE(0) START(0)
+     FIRST['.'] { '.' }
+     FOLLOW['.'] { }
+/: Token:TERMINAL TargetValue:47 NULLABLE(0) START(0)
+     FIRST['/'] { '/' }
+     FOLLOW['/'] { }
+OD: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['OD'] { 'OD' }
+     FOLLOW['OD'] { }
+BYTE: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BYTE'] { 'BYTE' }
+     FOLLOW['BYTE'] { }
+CARD: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['CARD'] { 'CARD' }
+     FOLLOW['CARD'] { }
+STEPoption: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['STEPoption'] { }
+     FOLLOW['STEPoption'] { }
+ThenPart_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ThenPart_1'] { }
+     FOLLOW['ThenPart_1'] { }
+VarDecls: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['VarDecls'] { }
+     FOLLOW['VarDecls'] { }
+DO: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DO'] { 'DO' }
+     FOLLOW['DO'] { }
+THEN: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['THEN'] { 'THEN' }
+     FOLLOW['THEN'] { }
+Finish: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Finish'] { }
+     FOLLOW['Finish'] { }
+If: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['If'] { }
+     FOLLOW['If'] { }
+NUMBER: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['NUMBER'] { 'NUMBER' }
+     FOLLOW['NUMBER'] { }
+TYPE: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['TYPE'] { 'TYPE' }
+     FOLLOW['TYPE'] { }
+RETURN: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RETURN'] { 'RETURN' }
+     FOLLOW['RETURN'] { }
+SysDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['SysDecl'] { }
+     FOLLOW['SysDecl'] { }
+RelEquals: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RelEquals'] { }
+     FOLLOW['RelEquals'] { }
+DefList: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DefList'] { }
+     FOLLOW['DefList'] { }
+FI: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FI'] { 'FI' }
+     FOLLOW['FI'] { }
+INT: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['INT'] { 'INT' }
+     FOLLOW['INT'] { }
+ProcDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ProcDecl'] { }
+     FOLLOW['ProcDecl'] { }
+==LSH: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==LSH'] { '==LSH' }
+     FOLLOW['==LSH'] { }
+FundDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FundDecl'] { }
+     FOLLOW['FundDecl'] { }
+FUNCDecl_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FUNCDecl_1'] { }
+     FOLLOW['FUNCDecl_1'] { }
+Modifier: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Modifier'] { }
+     FOLLOW['Modifier'] { }
+BaseCompConst: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BaseCompConst'] { }
+     FOLLOW['BaseCompConst'] { }
+;: Token:TERMINAL TargetValue:59 NULLABLE(0) START(0)
+     FIRST[';'] { ';' }
+     FOLLOW[';'] { }
+==RSH: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RSH_EQ'] { '==RSH' }
+     FOLLOW['RSH_EQ'] { }
+<: Token:TERMINAL TargetValue:60 NULLABLE(0) START(0)
+     FIRST['<'] { '<' }
+     FOLLOW['<'] { }
+ProcDef: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ProcDef'] { }
+     FOLLOW['ProcDef'] { }
+=: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['='] { '=' }
+     FOLLOW['='] { }
+ShiftExpr_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ShiftExpr_1'] { }
+     FOLLOW['ShiftExpr_1'] { }
+OR: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['OR'] { 'OR' }
+     FOLLOW['OR'] { }
+>: Token:TERMINAL TargetValue:62 NULLABLE(0) START(0)
+     FIRST['>'] { '>' }
+     FOLLOW['>'] { }
+ArrayStuff: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ArrayStuff'] { }
+     FOLLOW['ArrayStuff'] { }
+FuncDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FuncDecl'] { }
+     FOLLOW['FuncDecl'] { }
+RelEquals_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RelEquals_1'] { }
+     FOLLOW['RelEquals_1'] { }
+@: Token:TERMINAL TargetValue:64 NULLABLE(0) START(0)
+     FIRST['@'] { '@' }
+     FOLLOW['@'] { }
+VarList_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['VarList_1'] { }
+     FOLLOW['VarList_1'] { }
+PROCroutine: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['PROCroutine'] { }
+     FOLLOW['PROCroutine'] { }
+FUNC: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FUNC'] { 'FUNC' }
+     FOLLOW['FUNC'] { }
+Action65: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(1)
+     FIRST['Action65'] { }
+     FOLLOW['Action65'] { '$' }
+OptInit: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['OptInit'] { }
+     FOLLOW['OptInit'] { }
+Assignment: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Assignment'] { }
+     FOLLOW['Assignment'] { }
+LogicalOR_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['LogicalOR_1'] { }
+     FOLLOW['LogicalOR_1'] { }
+VarList: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['VarList'] { }
+     FOLLOW['VarList'] { }
+CodeBlock_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['CodeBlock_1'] { }
+     FOLLOW['CodeBlock_1'] { }
+CompConst_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['CompConst_1'] { }
+     FOLLOW['CompConst_1'] { }
+PROCstmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['PROCstmt'] { }
+     FOLLOW['PROCstmt'] { }
+ThenPart: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ThenPart'] { }
+     FOLLOW['ThenPart'] { }
+MemContents: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MemContents'] { }
+     FOLLOW['MemContents'] { }
+==MOD: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==MOD'] { '==MOD' }
+     FOLLOW['==MOD'] { }
+BitwiseAND_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BitwiseAND_1'] { }
+     FOLLOW['BitwiseAND_1'] { }
+CodeBlock: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['CodeBlock'] { }
+     FOLLOW['CodeBlock'] { }
+ParamList: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ParamList'] { }
+     FOLLOW['ParamList'] { }
+DoStmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DoStmt'] { }
+     FOLLOW['DoStmt'] { }
+LogicalAND: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['LogicalAND'] { }
+     FOLLOW['LogicalAND'] { }
+PROC_IDENT: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['PROC_IDENT'] { 'PROC_IDENT' }
+     FOLLOW['PROC_IDENT'] { }
+OptArrayInit: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['OptArrayInit'] { }
+     FOLLOW['OptArrayInit'] { }
+EXIT: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['EXIT'] { 'EXIT' }
+     FOLLOW['EXIT'] { }
+ElseIfPart: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ElseIfPart'] { }
+     FOLLOW['ElseIfPart'] { }
+RelOperation_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RelOperation_1'] { }
+     FOLLOW['RelOperation_1'] { }
+==MOD: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MOD_EQ'] { '==MOD' }
+     FOLLOW['MOD_EQ'] { }
+Param: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Param'] { }
+     FOLLOW['Param'] { }
+Modules_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Modules_1'] { }
+     FOLLOW['Modules_1'] { }
+ForStmt_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ForStmt_1'] { }
+     FOLLOW['ForStmt_1'] { }
+==-: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MINUS_EQ'] { '==-' }
+     FOLLOW['MINUS_EQ'] { }
+UntillStmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['UntillStmt'] { }
+     FOLLOW['UntillStmt'] { }
+RetStmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['RetStmt'] { }
+     FOLLOW['RetStmt'] { }
+CompConst: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['CompConst'] { }
+     FOLLOW['CompConst'] { }
+DataDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DataDecl'] { }
+     FOLLOW['DataDecl'] { }
+==*: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MULT_EQ'] { '==*' }
+     FOLLOW['MULT_EQ'] { }
+DEFINE: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DEFINE'] { 'DEFINE' }
+     FOLLOW['DEFINE'] { }
+FuncDef: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['FuncDef'] { }
+     FOLLOW['FuncDef'] { }
+TypeDecl: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['TypeDecl'] { }
+     FOLLOW['TypeDecl'] { }
+BitwiseOR: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BitwiseOR'] { }
+     FOLLOW['BitwiseOR'] { }
+MemContentsType: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MemContentsType'] { }
+     FOLLOW['MemContentsType'] { }
+MOD: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MOD'] { 'MOD' }
+     FOLLOW['MOD'] { }
+BitwiseXOR: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['BitwiseXOR'] { }
+     FOLLOW['BitwiseXOR'] { }
+[: Token:TERMINAL TargetValue:91 NULLABLE(0) START(0)
+     FIRST['['] { '[' }
+     FOLLOW['['] { }
+ConstList_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ConstList_1'] { }
+     FOLLOW['ConstList_1'] { }
+MemCntentsList_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['MemCntentsList_1'] { }
+     FOLLOW['MemCntentsList_1'] { }
+DefList_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DefList_1'] { }
+     FOLLOW['DefList_1'] { }
+LocalDecls: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['LocalDecls'] { }
+     FOLLOW['LocalDecls'] { }
+Statements: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Statements'] { }
+     FOLLOW['Statements'] { }
+]: Token:TERMINAL TargetValue:93 NULLABLE(0) START(0)
+     FIRST[']'] { ']' }
+     FOLLOW[']'] { }
+IdentList_1: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['IdentList_1'] { }
+     FOLLOW['IdentList_1'] { }
+ProcBody: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['ProcBody'] { }
+     FOLLOW['ProcBody'] { }
+^: Token:TERMINAL TargetValue:94 NULLABLE(0) START(0)
+     FIRST['^'] { '^' }
+     FOLLOW['^'] { }
+==/: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['DIV_EQ'] { '==/' }
+     FOLLOW['DIV_EQ'] { }
+Modules: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['Modules'] { }
+     FOLLOW['Modules'] { }
+==LSH: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['LSH_EQ'] { '==LSH' }
+     FOLLOW['LSH_EQ'] { }
+==-: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+     FIRST['==-'] { '==-' }
+     FOLLOW['==-'] { }
+IfStmt: Token:NONTERMINAL TargetValue:0 NULLABLE(0) START(0)
+     FIRST['IfStmt'] { }
+     FOLLOW['IfStmt'] { }
+^^^^^^^^^^^^^^^ SymbolTable ^^^^^^^^^^^^^^^^^^^^^^
+TERMINALS['Terminals'] { 'IDENT','NUMBER','MODULE','RETURN','PROC','FUNC','FUNC_IDENT'
+,'PROC_IDENT','IF','FOR','WHILE','DO','OD','EXIT','THEN','FI','ELSEIF','ELSE','UNTILL'
+,'TO','STEP','ASM','ENDASM','OR','AND','GTEQ','LTEQ','DEFINE','TYPE','RECORDTYPE'
+,'BOOL','CHAR','BYTE','CARD','INT','POINTER','ARRAY','BEGIN','END','MOD','LSH','RSH'
+,'==+','==-','==*','==/','==MOD','==&','==!','==XOR','==%','==LSH','==RSH','(',')'
+,';','=','[',']',',','==+','==-','==*','==/','==MOD','==&','==!','==%','==LSH','==RSH'
+,'>','<','#','%','&','!','+','-','*','/','@','^','.','e','$' }
+NONTERMINALS['Non Terminals'] { 'Action65','Modules','Modules_1','PROCroutine','PROCroutine_1'
+,'ProcDef','FuncDef','ProcDecl','FuncDecl','ProcBody','ProcBody_1','Statements','Begin'
+,'ProcCall','ProcCall_1','PROCstmt','ForStmt','ForStmt_1','FORstmt','Start','Finish'
+,'STEPoption','IfStmt','IfStmt_1','If','ThenPart','ThenPart_1','ElseIfPart','WhileStmt'
+,'WhileStmt_1','DoStmt','DoStmt_1','EXITstmt','EXITstmt_1','RetStmt','RetStmt_1','RetStmt_2'
+,'CodeBlock','CodeBlock_1','ConstList','ConstList_1','UntillStmt','UntillStmt_1','Assignment'
+,'ASSIGNstmt','ArithExpr','LogicalOR_1','LogicalAND','LogicalAND_1','RelOperation'
+,'RelOperation_1','RelEquals','RelEquals_1','BitwiseOR','BitwiseOR_1','BitwiseAND'
+,'BitwiseAND_1','BitwiseXOR','BitwiseXOR_1','AddExpr','AddExpr_1','ShifExpr','ShiftExpr_1'
+,'MultExpr','MultExpr_1','Unary','Factor','MemCntentsList','MemCntentsList_1','SysDecl'
+,'Define','DefList','DefList_1','Def','TypeDecl','TypeDecl_1','RecIdent','RecField'
+,'VarDecls','VarList','VarList_1','Modifier','ArrayStuff','OptArrayInit','RecDecl'
+,'RecDecl_1','FundDecl','FUNCDecl','FUNCDecl_1','DataDecl','DataCecl_1','IdentList'
+,'IdentList_1','Ident','OptInit','ParamList','ParamList_1','Param','LocalDecls','CompConst'
+,'CompConst_1','BaseCompConst','MemContents','MemContentsType' }
+*********** Build Nullable Set **********
+****************Create NOT nullable set ************************
+----- Calc First Sets------
+FIRST['Action65'] { 'BOOL','CHAR','BYTE','INT','CARD' }
+FIRST['Modules'] { 'BOOL','CHAR','BYTE','INT','CARD' }
+FIRST['Modules_1'] { 'MODULE','e' }
+FIRST['PROCroutine'] { 'BOOL','CHAR','BYTE','INT','CARD' }
+FIRST['PROCroutine_1'] { 'PROC','e' }
+FIRST['ProcDef'] { 'IDENT' }
+FIRST['FuncDef'] { 'IDENT' }
+FIRST['ProcDecl'] { 'IDENT' }
+FIRST['FuncDecl'] { 'IDENT' }
+FIRST['ProcBody'] { 'BEGIN' }
+FIRST['ProcBody_1'] { 'CHAR','BYTE','INT','CARD','BOOL' }
+FIRST['Statements'] { 'IDENT' }
+FIRST['Begin'] { 'BEGIN','e' }
+FIRST['ProcCall'] { 'IDENT' }
+FIRST['ProcCall_1'] { 'PROC_IDENT','FUNC_IDENT','e' }
+FIRST['PROCstmt'] { '(' }
+FIRST['ForStmt'] { 'IDENT' }
+FIRST['ForStmt_1'] { 'FOR','e' }
+FIRST['FORstmt'] { 'IDENT' }
+FIRST['Start'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['Finish'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['STEPoption'] { 'STEP','e' }
+FIRST['IfStmt'] { 'IDENT' }
+FIRST['IfStmt_1'] { 'IF','e' }
+FIRST['If'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['ThenPart'] { 'THEN' }
+FIRST['ThenPart_1'] { 'IDENT' }
+FIRST['ElseIfPart'] { 'ELSEIF','ELSE','e' }
+FIRST['WhileStmt'] { 'IDENT' }
+FIRST['WhileStmt_1'] { 'WHILE','e' }
+FIRST['DoStmt'] { 'IDENT' }
+FIRST['DoStmt_1'] { 'DO','e' }
+FIRST['EXITstmt'] { 'IDENT' }
+FIRST['EXITstmt_1'] { 'EXIT','e' }
+FIRST['RetStmt'] { 'IDENT' }
+FIRST['RetStmt_1'] { 'RETURN','e' }
+FIRST['RetStmt_2'] { '(','e' }
+FIRST['CodeBlock'] { 'IDENT' }
+FIRST['CodeBlock_1'] { '[','e' }
+FIRST['ConstList'] { 'NUMBER','*','@' }
+FIRST['ConstList_1'] { ',','e' }
+FIRST['UntillStmt'] { 'IDENT' }
+FIRST['UntillStmt_1'] { 'UNTILL','e' }
+FIRST['Assignment'] { 'IDENT' }
+FIRST['ASSIGNstmt'] { '=','==+','==-','==*','==/','==MOD','==&','==!','==%','==LSH'
+,'==RSH','e' }
+FIRST['ArithExpr'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['LogicalOR_1'] { 'OR','e' }
+FIRST['LogicalAND'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['LogicalAND_1'] { 'AND','e' }
+FIRST['RelOperation'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['RelOperation_1'] { '>','<','GTEQ','LTEQ','e' }
+FIRST['RelEquals'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['RelEquals_1'] { '=','#','e' }
+FIRST['BitwiseOR'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['BitwiseOR_1'] { '%','e' }
+FIRST['BitwiseAND'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['BitwiseAND_1'] { '&','e' }
+FIRST['BitwiseXOR'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['BitwiseXOR_1'] { '!','e' }
+FIRST['AddExpr'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['AddExpr_1'] { '+','-','e' }
+FIRST['ShifExpr'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['ShiftExpr_1'] { 'LSH','RSH','e' }
+FIRST['MultExpr'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['MultExpr_1'] { '*','/','MOD','e' }
+FIRST['Unary'] { '-','FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['Factor'] { 'FUNC_IDENT','(','NUMBER','*','@','IDENT' }
+FIRST['MemCntentsList'] { 'IDENT' }
+FIRST['MemCntentsList_1'] { ',','e' }
+FIRST['SysDecl'] { 'BOOL','CHAR','BYTE','INT','CARD' }
+FIRST['Define'] { 'DEFINE','e' }
+FIRST['DefList'] { 'IDENT' }
+FIRST['DefList_1'] { ',','e' }
+FIRST['Def'] { 'IDENT' }
+FIRST['TypeDecl'] { 'BOOL','CHAR','BYTE','INT','CARD' }
+FIRST['TypeDecl_1'] { 'TYPE','e' }
+FIRST['RecIdent'] { 'IDENT' }
+FIRST['RecField'] { '=' }
+FIRST['VarDecls'] { 'CHAR','BYTE','INT','CARD','BOOL','e' }
+FIRST['VarList'] { 'e','IDENT' }
+FIRST['VarList_1'] { ',','e' }
+FIRST['Modifier'] { 'POINTER','ARRAY','e' }
+FIRST['ArrayStuff'] { '(','e' }
+FIRST['OptArrayInit'] { '=','e' }
+FIRST['RecDecl'] { 'e','BOOL','CHAR','BYTE','INT','CARD' }
+FIRST['RecDecl_1'] { 'RECORDTYPE','e' }
+FIRST['FundDecl'] { 'BOOL','CHAR','BYTE','INT','CARD','e' }
+FIRST['FUNCDecl'] { 'IDENT' }
+FIRST['FUNCDecl_1'] { 'FUNC','e' }
+FIRST['DataDecl'] { 'IDENT' }
+FIRST['DataCecl_1'] { ';','e' }
+FIRST['IdentList'] { 'e','IDENT' }
+FIRST['IdentList_1'] { ',','e' }
+FIRST['Ident'] { 'IDENT','e' }
+FIRST['OptInit'] { '=','e' }
+FIRST['ParamList'] { 'e','RECORDTYPE','CHAR','BYTE','INT','CARD','BOOL' }
+FIRST['ParamList_1'] { ',','e' }
+FIRST['Param'] { 'RECORDTYPE','CHAR','BYTE','INT','CARD','BOOL','e' }
+FIRST['LocalDecls'] { 'CHAR','BYTE','INT','CARD','BOOL','e' }
+FIRST['CompConst'] { 'e','NUMBER','*','@' }
+FIRST['CompConst_1'] { '+','-','e' }
+FIRST['BaseCompConst'] { 'NUMBER','*','@','e' }
+FIRST['MemContents'] { 'IDENT' }
+FIRST['MemContentsType'] { '(','^','.','e' }
+----- Calc Follow Sets------
+------------ Follow Sets ---------------
+FOLLOW['Action65'] { '$' }
+FOLLOW['Modules'] { '$' }
+FOLLOW['Modules_1'] { '$' }
+FOLLOW['PROCroutine'] { 'MODULE','$' }
+FOLLOW['PROCroutine_1'] { 'MODULE','$' }
+FOLLOW['ProcDef'] { 'PROC','MODULE','$' }
+FOLLOW['FuncDef'] { }
+FOLLOW['ProcDecl'] { 'BEGIN' }
+FOLLOW['FuncDecl'] { 'BEGIN' }
+FOLLOW['ProcBody'] { 'PROC','MODULE','$' }
+FOLLOW['ProcBody_1'] { 'END' }
+FOLLOW['Statements'] { 'ELSEIF','ELSE','END' }
+FOLLOW['Begin'] { 'ELSEIF','ELSE','END' }
+FOLLOW['ProcCall'] { 'BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['ProcCall_1'] { 'BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['PROCstmt'] { }
+FOLLOW['ForStmt'] { 'PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['ForStmt_1'] { 'PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['FORstmt'] { }
+FOLLOW['Start'] { }
+FOLLOW['Finish'] { }
+FOLLOW['STEPoption'] { }
+FOLLOW['IfStmt'] { 'FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['IfStmt_1'] { 'FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['If'] { }
+FOLLOW['ThenPart'] { }
+FOLLOW['ThenPart_1'] { }
+FOLLOW['ElseIfPart'] { }
+FOLLOW['WhileStmt'] { 'IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE','END'
+ }
+FOLLOW['WhileStmt_1'] { 'IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE'
+,'END' }
+FOLLOW['DoStmt'] { 'WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE'
+,'END' }
+FOLLOW['DoStmt_1'] { 'WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF','ELSE'
+,'END' }
+FOLLOW['EXITstmt'] { 'DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF'
+,'ELSE','END' }
+FOLLOW['EXITstmt_1'] { 'DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN','ELSEIF'
+,'ELSE','END' }
+FOLLOW['RetStmt'] { 'EXIT','DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN'
+,'ELSEIF','ELSE','END' }
+FOLLOW['RetStmt_1'] { 'EXIT','DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT','BEGIN'
+,'ELSEIF','ELSE','END' }
+FOLLOW['RetStmt_2'] { }
+FOLLOW['CodeBlock'] { 'RETURN','EXIT','DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT'
+,'BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['CodeBlock_1'] { 'RETURN','EXIT','DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT'
+,'BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['ConstList'] { ']' }
+FOLLOW['ConstList_1'] { ']' }
+FOLLOW['UntillStmt'] { '[','RETURN','EXIT','DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT'
+,'BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['UntillStmt_1'] { '[','RETURN','EXIT','DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT'
+,'BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['Assignment'] { 'UNTILL','[','RETURN','EXIT','DO','WHILE','IF','FOR','PROC_IDENT'
+,'FUNC_IDENT','BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['ASSIGNstmt'] { 'UNTILL','[','RETURN','EXIT','DO','WHILE','IF','FOR','PROC_IDENT'
+,'FUNC_IDENT','BEGIN','ELSEIF','ELSE','END' }
+FOLLOW['ArithExpr'] { 'THEN',')' }
+FOLLOW['LogicalOR_1'] { 'THEN',')' }
+FOLLOW['LogicalAND'] { 'OR','THEN',')' }
+FOLLOW['LogicalAND_1'] { 'OR','THEN',')' }
+FOLLOW['RelOperation'] { 'AND','OR','THEN',')' }
+FOLLOW['RelOperation_1'] { 'AND','OR','THEN',')' }
+FOLLOW['RelEquals'] { '>','<','GTEQ','LTEQ','AND','OR','THEN',')' }
+FOLLOW['RelEquals_1'] { '>','<','GTEQ','LTEQ','AND','OR','THEN',')' }
+FOLLOW['BitwiseOR'] { '=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')' }
+FOLLOW['BitwiseOR_1'] { '=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')' }
+FOLLOW['BitwiseAND'] { '%','=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')' }
+FOLLOW['BitwiseAND_1'] { '%','=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')' }
+FOLLOW['BitwiseXOR'] { '&','%','=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')' }
+FOLLOW['BitwiseXOR_1'] { '&','%','=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')'
+ }
+FOLLOW['AddExpr'] { '!','&','%','=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')'
+ }
+FOLLOW['AddExpr_1'] { '!','&','%','=','#','>','<','GTEQ','LTEQ','AND','OR','THEN',')'
+ }
+FOLLOW['ShifExpr'] { '+','-','!','&','%','=','#','>','<','GTEQ','LTEQ','AND','OR','THEN'
+,')' }
+FOLLOW['ShiftExpr_1'] { '+','-','!','&','%','=','#','>','<','GTEQ','LTEQ','AND','OR'
+,'THEN',')' }
+FOLLOW['MultExpr'] { 'LSH','RSH','+','-','!','&','%','=','#','>','<','GTEQ','LTEQ','AND'
+,'OR','THEN',')' }
+FOLLOW['MultExpr_1'] { 'LSH','RSH','+','-','!','&','%','=','#','>','<','GTEQ','LTEQ'
+,'AND','OR','THEN',')' }
+FOLLOW['Unary'] { '*','/','MOD','LSH','RSH','+','-','!','&','%','=','#','>','<','GTEQ'
+,'LTEQ','AND','OR','THEN',')' }
+FOLLOW['Factor'] { '*','/','MOD','LSH','RSH','+','-','!','&','%','=','#','>','<','GTEQ'
+,'LTEQ','AND','OR','THEN',')' }
+FOLLOW['MemCntentsList'] { ')' }
+FOLLOW['MemCntentsList_1'] { ')' }
+FOLLOW['SysDecl'] { 'PROC','MODULE','$' }
+FOLLOW['Define'] { 'PROC','MODULE','$' }
+FOLLOW['DefList'] { }
+FOLLOW['DefList_1'] { }
+FOLLOW['Def'] { ',' }
+FOLLOW['TypeDecl'] { 'DEFINE','PROC','MODULE','$' }
+FOLLOW['TypeDecl_1'] { 'DEFINE','PROC','MODULE','$' }
+FOLLOW['RecIdent'] { }
+FOLLOW['RecField'] { }
+FOLLOW['VarDecls'] { ']' }
+FOLLOW['VarList'] { }
+FOLLOW['VarList_1'] { }
+FOLLOW['Modifier'] { 'IDENT',',',')' }
+FOLLOW['ArrayStuff'] { }
+FOLLOW['OptArrayInit'] { }
+FOLLOW['RecDecl'] { 'TYPE','DEFINE','PROC','MODULE','$' }
+FOLLOW['RecDecl_1'] { 'TYPE','DEFINE','PROC','MODULE','$' }
+FOLLOW['FundDecl'] { 'RECORDTYPE','TYPE','DEFINE','PROC','MODULE','$' }
+FOLLOW['FUNCDecl'] { 'BOOL','CHAR','BYTE','INT','CARD','RECORDTYPE','TYPE','DEFINE'
+,'PROC','MODULE','$' }
+FOLLOW['FUNCDecl_1'] { 'BOOL','CHAR','BYTE','INT','CARD','RECORDTYPE','TYPE','DEFINE'
+,'PROC','MODULE','$' }
+FOLLOW['DataDecl'] { 'RECORDTYPE','TYPE','DEFINE','PROC','MODULE','$','FUNC','BOOL'
+,'CHAR','BYTE','INT','CARD' }
+FOLLOW['DataCecl_1'] { 'RECORDTYPE','TYPE','DEFINE','PROC','MODULE','$','FUNC','BOOL'
+,'CHAR','BYTE','INT','CARD' }
+FOLLOW['IdentList'] { ';','RECORDTYPE','TYPE','DEFINE','PROC','MODULE','$','FUNC','BOOL'
+,'CHAR','BYTE','INT','CARD' }
+FOLLOW['IdentList_1'] { ';','RECORDTYPE','TYPE','DEFINE','PROC','MODULE','$','FUNC'
+,'BOOL','CHAR','BYTE','INT','CARD' }
+FOLLOW['Ident'] { ',',';','RECORDTYPE','TYPE','DEFINE','PROC','MODULE','$','FUNC','BOOL'
+,'CHAR','BYTE','INT','CARD',')' }
+FOLLOW['OptInit'] { }
+FOLLOW['ParamList'] { ')' }
+FOLLOW['ParamList_1'] { ')' }
+FOLLOW['Param'] { ',',')' }
+FOLLOW['LocalDecls'] { 'IDENT' }
+FOLLOW['CompConst'] { ',',']' }
+FOLLOW['CompConst_1'] { ',',']' }
+FOLLOW['BaseCompConst'] { '+','-',',',']' }
+FOLLOW['MemContents'] { '=','==+','==-','==*','==/','==MOD','==&','==!','==%','==LSH'
+,'==RSH','UNTILL','[','RETURN','EXIT','DO','WHILE','IF','FOR','PROC_IDENT','FUNC_IDENT'
+,'BEGIN','ELSEIF','ELSE',',',')','END' }
+FOLLOW['MemContentsType'] { }
+---------------- Create Parse Table --------------
+Table Entries = 628
+------------ Check For Conflicts-------------

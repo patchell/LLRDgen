@@ -349,7 +349,7 @@ int CParseTable::CheckForConflicts(FILE* pOut)
 					m_ppNonTerminalSymbols[i]->GetName(),
 					m_ppTerminalSymbols[j]->GetName()
 				);
-				m_matParseTable(i, j)->Print(pOut, TRUE, TRUE, 10,TRUE);
+				m_matParseTable(i, j)->Print(pOut, TRUE, TRUE, 10,TRUE, TRUE);
 				TotalConflicts += pEntry->GetNumMembers();
 			}
 		}

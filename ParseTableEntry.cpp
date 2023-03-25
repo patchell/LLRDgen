@@ -58,13 +58,16 @@ void CParseTableEntry::Print(
 	BOOL bLHS, 
 	BOOL bEOL, 
 	int nIndentSpaces,
-	BOOL bNumberLines
+	BOOL bNumberLines,
+	BOOL bLHSLineNumber
 )
 {
+	BOOL bTempEOL;
 	int Item = 0;
 	CParseTableEntryMember* pPTEM;
 	char* s = 0;
 
+	bTempEOL = bEOL;
 	if (pO)
 	{
 		pPTEM = GetHead();
@@ -80,7 +83,17 @@ void CParseTableEntry::Print(
 				}
 				fprintf(pO, "%s%d. ", s, ++Item);
 			}
-			pPTEM->Print(pO, bLHS, bEOL, 1);
+			if (bLHSLineNumber)
+				bTempEOL = FALSE;
+			pPTEM->Print(pO, bLHS, bTempEOL, 1);
+			if (bLHSLineNumber)
+			{
+				fprintf(pO, "  Line:%d",
+					pPTEM->GetProduction()->GetLHS()->GetLineWhereDefined()
+				);
+				if (bEOL)
+					fprintf(pO, "\n");
+			}
 			pPTEM = pPTEM->GetNext();
 		}
 	}

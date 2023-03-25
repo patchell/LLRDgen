@@ -1,39 +1,31 @@
 ???????? $ Nullable Set(0)
-*************  Print Out Grammar Structure************
-grammar
- -> expr
-expr
- -> term expr_1
-expr_1
- -> + term expr_1
- -> e
-term
- -> factor term_1
-term_1
- -> * factor term_1
- -> e
-factor
- -> IDENT
- -> ( expr )
-TERMINALS['Terminals'] { 'IDENT','NUMBER','+','*','(',')','e','$' }
-NONTERMINALS['Non Terminals'] { 'grammar','expr','expr_1','term','term_1','factor' }
-*********** Build Nullable Set **********
-****************Create NOT nullable set ************************
------ Calc First Sets------
-FIRST['grammar'] { 'IDENT','(' }
-FIRST['expr'] { 'IDENT','(' }
-FIRST['expr_1'] { '+','e' }
-FIRST['term'] { 'IDENT','(' }
-FIRST['term_1'] { '*','e' }
-FIRST['factor'] { 'IDENT','(' }
------ Calc Follow Sets------
------------- Follow Sets ---------------
-FOLLOW['grammar'] { '$' }
-FOLLOW['expr'] { '$',')' }
-FOLLOW['expr_1'] { '$',')' }
-FOLLOW['term'] { '+','$',')' }
-FOLLOW['term_1'] { '+','$',')' }
-FOLLOW['factor'] { '*','+','$',')' }
----------------- Create Parse Table --------------
-Table Entries = 17
------------- Check For Conflicts-------------
+Token IDENT
+Token NUMBER
+Token MODULE
+Token RETURN
+Token PROC
+Token FUNC
+Token FUNC_IDENT
+Token PROC_IDENT
+Token IF
+Token FOR
+Token WHILE
+Token DO
+Token OD
+Token EXIT
+Token THEN
+Token FI
+Token ELSEIF
+Token ELSE
+Token UNTILL
+Token TO
+Token STEP
+Token ASM
+Token ENDASM
+Token OR
+Token AND
+Token GTEQ
+Token LTEQ
+Token DEFINE
+Token TYPE
+Token RECORDTYPE

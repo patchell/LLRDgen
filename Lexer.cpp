@@ -238,12 +238,19 @@ CToken::LLRD_Token CLexer::Lex()
 				if (c == '\\')	//is it the escape char?
 				{
 					c = LexGet();
+					m_aLexBuff[m_LexBuffIndex++] = c;
 				}
 				else if (c == '"')
 				{
 					auxLoop = FALSE;
 					m_aLexBuff[m_LexBuffIndex] = 0;
 					TokenValue = CToken::LLRD_Token::STRING;
+				}
+				else if (c == '\n')
+				{
+					Error(stderr, "ERROR: End of line inside STRING");
+					CloseFiles();
+					exit(-3);
 				}
 				else
 					m_aLexBuff[m_LexBuffIndex++] = c;
@@ -276,6 +283,11 @@ CToken::LLRD_Token CLexer::Lex()
 				{
 					m_aLexBuff[m_LexBuffIndex] = 0;
 					auxLoop = FALSE;
+				}
+				else if (c == '\n')
+				{
+					Error(stderr, "End of Line in Token");
+					exit(-3);
 				}
 				else
 				{
@@ -366,16 +378,6 @@ CToken::LLRD_Token CLexer::Lex()
 				{
 					TokenValue = m_pLexSymbol->GetTokenValue();
 					Loop = FALSE;
-					if (TokenValue == CToken::LLRD_Token::TERMINAL)
-					{
-						fprintf(stderr, "Line %d  Col %d\n", m_Line, m_Col);
-						fprintf(stderr, "Terminal %s Not used properly\n", m_aLexBuff);
-						fprintf(stderr, "Terminals Must be surrounded by \' marks'\n");
-						fprintf(stderr, "For Example:\'%s\' rather than just %s\n",
-							m_aLexBuff,m_aLexBuff
-						);
-						exit(6);
-					}
 				}
 				else
 				{
@@ -392,6 +394,7 @@ CToken::LLRD_Token CLexer::Lex()
 			break;	// end of default:
 		}	// End of switch(c)
 	}
+//	fprintf(LogFile(), "Lex::%s\n", m_aLexBuff);
 	return TokenValue;
 }
 
