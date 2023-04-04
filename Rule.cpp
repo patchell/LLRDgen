@@ -8,6 +8,7 @@ CRule::CRule()
 	m_pPrev = 0;
 	m_nLexemes = 0;
 	m_pLHS = 0;
+	m_LineWhereDefined = 0;
 }
 
 CRule::~CRule()
@@ -357,6 +358,15 @@ BOOL CRule::IsRuleEmpty()
 	
 	rV = GetHead()->IsEmpty();
 	return rV;
+}
+
+void CRule::Error(FILE* pOut, const char* pES)
+{
+	fprintf(pOut, "In Production %s Line%d : %s\n",
+		GetLHS()->GetName(),
+		GetLineWhereDefined(),
+		pES
+	);
 }
 
 void CRule::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces, BOOL bLineNumber)

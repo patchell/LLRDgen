@@ -19,11 +19,11 @@ FILE* LogFile()
 	return Parser.GetLogFile();
 }
 
-char* IndentString(char *s, int nSpaces)
+char* IndentString(char *s, int nSpaces, char FillChar)
 {
 	int i = 0;
 	while (nSpaces--)
-		s[i++] = ' ';
+		s[i++] = FillChar;
 	s[i] = 0;
 	return s;
 }

@@ -8,6 +8,7 @@ class CRule
 	CLexeme* m_pTail;
 	int m_nLexemes;
 	CSymbol* m_pLHS;
+	int m_LineWhereDefined;
 public:
 	CRule();
 	virtual ~CRule();
@@ -33,6 +34,13 @@ public:
 	BOOL IsRuleNotEmpty() {
 		return !IsRuleEmpty();
 	}
+	int GetLineWhereDefined() {
+		return m_LineWhereDefined;
+	}
+	void SetLineWhereDefined(int LineNumber) {
+		m_LineWhereDefined = LineNumber;
+	}
+	void Error(FILE* pOut, const char* pES);
 	//-----------------------------
 	// Debug
 	//-----------------------------

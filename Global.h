@@ -11,6 +11,8 @@
 #include <Windows.h>
 
 #include "Token.h"
+#include "KeywordField.h"
+#include "UserFieldList.h"
 #include "StackItem.h"
 #include "Stack.h"
 #include "Value.h"
@@ -33,7 +35,7 @@
 extern 	CRecDecParGen Parser;
 extern FILE* LogFile();
 extern const char* TrueFalse(BOOL b);
-extern char* IndentString(char* s, int nSpaces);
+extern char* IndentString(char* s, int nSpaces, char FillChar = ' ');
 extern void CloseAllFiles();
 extern CRecDecParGen* GetParser();
 

@@ -17,6 +17,9 @@ CRecDecParGen::CRecDecParGen():CParser()
 		m_aParserCppFile[i] = 0;
 		m_aParserHeaderFile[i] = 0;
 		m_aParserClassName[i] = 0;
+		m_aTokenClassName[i] = 0;
+		m_aTokenCppName[i] = 0;
+		m_aTokenHeaderName[i] = 0;
 	}
 }
 
@@ -40,6 +43,8 @@ void CRecDecParGen::CloseFiles()
 	if (m_pLexerHeaderFile) fclose(m_pLexerHeaderFile);
 	if (m_pParserCppFile) fclose(m_pParserCppFile);
 	if (m_pParserHeaderFile) fclose(m_pParserHeaderFile);
+	if (m_pParserHeaderFile) fclose(m_pParserHeaderFile);
+	if (m_pParserHeaderFile) fclose(m_pParserHeaderFile);
 	CParser::CloseFiles();
 }
 
@@ -59,7 +64,6 @@ BOOL CRecDecParGen::Run()
 	//------------------------------------
 	// Check for Undefined Non Terminals
 	//------------------------------------
-	GetLexer()->GetSymTab()->PrintTable(LogFile());
 	UndefinedNonTerminals = GetLexer()->GetSymTab()->CheckForUnUsedNonTerminala(stderr);
 	fprintf(stderr, "Undefined Non Terminals:%d\n", UndefinedNonTerminals);
 	if (UndefinedNonTerminals)
@@ -476,16 +480,34 @@ void CRecDecParGen::CodeGeneration(FILE* pLogFile)
 	// Open Up Output Files
 	//---------------------------------
 	pParserName = GetLexer()->GetSymTab()->GetNonTerminalSet()->GetHead()->GetSetMemberSymbol()->GetName();
+	//--------------------------------------------------
+	// Lexer Header and Source
+	//--------------------------------------------------
 	sprintf_s(m_aLexerCppFile, 256, "%s_Lexer.cpp", pParserName);
 	sprintf_s(m_aLexerHeaderFile, 256, "%s_Lexer.h", pParserName);
 	sprintf_s(m_aLexerClassName, 256, "C%sLexer", pParserName);
+	//--------------------------------------------------
+	// Parcer Header and Source
+	//--------------------------------------------------
 	sprintf_s(m_aParserCppFile, 256, "%s_Parser.cpp", pParserName);
 	sprintf_s(m_aParserHeaderFile, 256, "%s_Parser.h", pParserName);
 	sprintf_s(m_aParserClassName, 256, "C%s_Parser", pParserName);
+	//--------------------------------------------------
+	// Token Header and Source
+	//--------------------------------------------------
+	sprintf_s(m_aTokenCppName, 256, "%s_Token.cpp", pParserName);
+	sprintf_s(m_aTokenHeaderName, 256, "%s_Token.h", pParserName);
+	sprintf_s(m_aTokenClassName, 256, "C%s_Token", pParserName);
+	//---------------------------------------------------
+	// Open up files
+	//---------------------------------------------------
 	fopen_s(&m_pLexerCppFile, m_aLexerCppFile, "w");
 	fopen_s(&m_pLexerHeaderFile, m_aLexerHeaderFile, "w");
 	fopen_s(&m_pParserCppFile, m_aParserCppFile, "w");
 	fopen_s(&m_pParserHeaderFile, m_aParserHeaderFile, "w");
+	fopen_s(&m_pTokenCppFile, m_aParserCppFile, "w");
+	fopen_s(&m_pTokenHeaderFile, m_aParserHeaderFile, "w");
+	GenerateTokenFiles(LogFile());
 	GenerateLexerFiles(pLogFile);
 	GenerateParserFiles(pLogFile);
 }
@@ -493,6 +515,15 @@ void CRecDecParGen::CodeGeneration(FILE* pLogFile)
 void CRecDecParGen::GenerateLexerFiles(FILE* pLogFile)
 {
 	fprintf(stderr, "Generating Lexer Files\n");
+}
+
+void CRecDecParGen::GenerateTokenFiles(FILE* pLog)
+{
+	fprintf(stderr, "Generating Token Files: %s::\n\t%s\n\t%s\n",
+		m_aTokenClassName,
+		m_aTokenHeaderName,
+		m_aTokenCppName
+	);
 }
 
 void CRecDecParGen::GenerateParserFiles(FILE* pLogFile)
@@ -540,46 +571,188 @@ void CRecDecParGen::GenerateParserMethodBody(FILE* pLogFile, CRule* pRule, int K
 {
 	CRule* pRuleLoop;
 	CLexeme* pLexeme;
+	char* pS = new char[256];
+	int NumberOfNonTerminals;
 
 	switch (Kind)
 	{
 	case KINDOF_RULE_MIXED:
+		fprintf(m_pParserCppFile, "MIXED\n");
+		pRuleLoop = pRule;
+		NumberOfNonTerminals = 0;
+		while (pRuleLoop)
+		{
+			pLexeme = pRuleLoop->GetHead();
+			switch (pLexeme->GetLexemeSymbol()->GetTokenType())
+			{
+			case CSymbol::TokenType::POSTDEFINED:
+				GenCase(m_pParserCppFile, 1, pLexeme, TOKEN_TYPE_POSTDEFINED);
+				GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_POSTDEFINED);
+				break;
+			case CSymbol::TokenType::PREDEFINED:
+				GenCase(m_pParserCppFile, 1, pLexeme, TOKEN_TYPE_PREDEFINED);
+				GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_PREDEFINED);
+				break;
+			case CSymbol::TokenType::NOT_TOKEN:
+				if (NumberOfNonTerminals == 0)
+				{
+					++NumberOfNonTerminals;
+					GenDefault(m_pParserCppFile,1);
+					NonTerminalFunction(m_pParserCppFile, 2, pLexeme);
+//					fprintf(m_pParserCppFile, "\tLookaHeadToken = %s(LookaHeadToken);\n",
+//						pLexeme->GetName()
+//					);
+				}
+				else
+				{
+					pRuleLoop->Error(stderr, "Too Many Non Terminal Rules\n");
+				}
+				break;
+			}
+			pLexeme = pLexeme->GetNext();
+			while (pLexeme)
+			{
+				if (pLexeme->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::POSTDEFINED)
+					GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_POSTDEFINED);
+				else if(pLexeme->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::PREDEFINED)
+					GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_PREDEFINED);
+				else
+				{
+					NonTerminalFunction(m_pParserCppFile, 2, pLexeme);
+				}
+				pLexeme = pLexeme->GetNext();
+			}
+			GenBreak(m_pParserCppFile, 2);
+			pRuleLoop = pRuleLoop->GetNext();
+		}
 		break;
 	case KINDOF_RULE_ALL_TERMINALS:
-		fprintf(m_pParserCppFile, "\tswitch(LookaHeadToken)\n\t{\n");
+		GenSwitch(m_pParserCppFile, 1);
 		pRuleLoop = pRule;
 		while (pRuleLoop)
 		{
 			if (pRuleLoop->IsRuleNotEmpty())
 			{
 				pLexeme = pRuleLoop->GetHead();
-				if(pLexeme->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::POSTDEFINED)
-					fprintf(m_pParserCppFile, "\tcase %s(\'%s\'):\n", m_aLexerClassName, pLexeme->GetName());
+				if (pLexeme->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::POSTDEFINED)
+				{
+					GenCase(m_pParserCppFile, 1, pLexeme, TOKEN_TYPE_POSTDEFINED);
+					GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_POSTDEFINED);
+				}
 				else
-					fprintf(m_pParserCppFile, "\tcase %s::%s:\n", m_aLexerClassName, pLexeme->GetName());
-				TargetExpect(pLogFile, pLexeme);
+				{
+					GenCase(m_pParserCppFile, 1, pLexeme, TOKEN_TYPE_PREDEFINED);
+					GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_PREDEFINED);
+				}
 				pLexeme = pLexeme->GetNext();
 				while (pLexeme)
 				{
-					if (pLexeme->GetLexemeSymbol()->IsTerminal())
+					if (pLexeme->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::POSTDEFINED)
 					{
-						TargetExpect(pLogFile, pLexeme);
+						GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_POSTDEFINED);
+					}
+					else if (pLexeme->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::PREDEFINED)
+					{
+						GenExpect(m_pParserCppFile, 2, pLexeme, TOKEN_TYPE_PREDEFINED);
 					}
 					else
 					{
-						NonTerminalFunction(pLexeme);
+						NonTerminalFunction(m_pParserCppFile, 2, pLexeme);
 					}
 					pLexeme = pLexeme->GetNext();
 				}
-				fprintf(m_pParserCppFile, "\t\tbreak;\n");
+				GenBreak(m_pParserCppFile, 2);
 			}
 			pRuleLoop = pRuleLoop->GetNext();
 		}
 		fprintf(m_pParserCppFile, "\t}\n");
 		break;
 	case KINDOF_RULE_ALL_NONTERMINALS:
+		pLexeme = pRule->GetHead();
+		while (pLexeme)
+		{
+			fprintf(m_pParserCppFile, "\tLookaHeadToken = %s(LookaHeadToken);\n",
+				pLexeme->GetName()
+			);
+			pLexeme = pLexeme->GetNext();
+		}
 		break;
 	}
+	delete[] pS;
+}
+
+void CRecDecParGen::GenBreak(FILE* pO, int Tabs)
+{
+	char* s = new char[256];
+	fprintf(pO, "%sbreak;\n", IndentString(s, Tabs, '\t'));;
+	delete[]s;
+}
+
+void CRecDecParGen::GenExpect(
+	FILE* pO, 
+	int Tabs, 
+	CLexeme* pTokenLexeme, 
+	int Type
+)
+{
+	char* s = new char[256];
+
+	switch (Type)
+	{
+	case TOKEN_TYPE_POSTDEFINED:
+		fprintf(pO, "%sLookaHeadToke = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::(\'%s\');\n",
+			IndentString(s, Tabs, '\t'),
+			pTokenLexeme->GetName()
+		);
+		break;
+	case TOKEN_TYPE_PREDEFINED:
+		fprintf(pO, "%sLookaHeadToke = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::%s);\n",
+			IndentString(s, Tabs, '\t'),
+			pTokenLexeme->GetName()
+		);
+		break;
+	}
+	delete[]s;
+}
+
+void CRecDecParGen::GenDefault(FILE* pO, int Tabs)
+{
+	char* s = new char[256];
+	fprintf(pO, "%sdefault:\n", IndentString(s, Tabs, '\t'));;
+	delete[]s;
+}
+
+void CRecDecParGen::GenCase(FILE*, int Tabs, CLexeme* pLexeme, int Type)
+{
+	char* s = new char[256];
+
+	switch (Type)
+	{
+	case TOKEN_TYPE_POSTDEFINED:
+		fprintf(m_pParserCppFile, "%scase %s(\'%s\'):\n",
+			IndentString(s, Tabs, '\t'),
+			m_aLexerClassName,
+			pLexeme->GetName()
+		);
+		break;
+	case TOKEN_TYPE_PREDEFINED:
+		fprintf(m_pParserCppFile, "%scase %s::%s:\n",
+			IndentString(s, Tabs, '\t'),
+			m_aLexerClassName,
+			pLexeme->GetName()
+		);
+		break;
+	}
+	delete[] s;
+}
+
+void CRecDecParGen::GenSwitch(FILE* pOut, int Tabs)
+{
+	char* s = new char[256];
+	fprintf(m_pParserCppFile, "%sswitch(LookaHeadToken)\n\t{\n",
+		IndentString(s,Tabs,'\t')
+	);
+	delete[]s;
 }
 
 int CRecDecParGen::KindOfProduction(FILE* pLogFile, CSymbol* pSym)
@@ -643,30 +816,15 @@ int CRecDecParGen::KindOfProduction(FILE* pLogFile, CSymbol* pSym)
 		return Kind;
 }
 
-void CRecDecParGen::TargetExpect(FILE* pOut, CLexeme* pLex)
+void CRecDecParGen::NonTerminalFunction(FILE* pOut, int Tabs,CLexeme* pLex)
 {
-	if(pLex->GetLexemeSymbol()->GetTokenType() == CSymbol::TokenType::POSTDEFINED)
-		fprintf(
-			m_pParserCppFile,
-			"\t\tLookaHeadToken = GetLexer()->Expect(LookaHeadToken,%s(\'%s\'));\n",
-			m_aLexerClassName,
-			pLex->GetName()
-		);
-	else
-		fprintf(
-			m_pParserCppFile,
-			"\t\tLookaHeadToken = GetLexer()->Expect(LookaHeadToken,%s::%s);\n",
-			m_aLexerClassName,
-			pLex->GetName()
-		);
-}
-
-void CRecDecParGen::NonTerminalFunction(CLexeme* pLex)
-{
-	fprintf(m_pParserCppFile,
-		"\t\tLookaHeadToken = %s(LookaHeadToken);\n",
+	char* s = new char[256];
+	fprintf(pOut,
+		"%sLookaHeadToken = %s(LookaHeadToken);\n",
+		IndentString(s, Tabs, '\t'),
 		pLex->GetName()
 	);
+	delete[] s;
 }
 
 void CRecDecParGen::ParserHeaderCommon(FILE* pLogFile, char *pClassName)
@@ -680,6 +838,22 @@ void CRecDecParGen::ParserHeaderCommon(FILE* pLogFile, char *pClassName)
 	fprintf(m_pParserHeaderFile, "\t//------------------------------\n");
 	fprintf(m_pParserHeaderFile, "\t//      Parsing Methods\n");
 	fprintf(m_pParserHeaderFile, "\t//------------------------------\n");
+}
+
+void CRecDecParGen::GenMethodeDecl(FILE* pOut, int Tabs, CLexeme* pLexeme)
+{
+	char* s = new char[256];
+
+	//----------------------------------------------------------
+	// <Tabs><data Type> <method name>(<data type> LookaHeadToken );
+	//----------------------------------------------------------
+	fprintf(pOut, "%s% %s(%s LookaHeadToken)\n",
+		IndentString(s, Tabs, '\t'),
+		m_aTokenClassName,
+		pLexeme->GetName(),
+		m_aTokenClassName
+	);
+	delete[] s;
 }
 
 void CRecDecParGen::PrintGrammar(FILE* pOut)

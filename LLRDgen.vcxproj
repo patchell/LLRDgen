@@ -133,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="Bin.cpp" />
     <ClCompile Include="Bucket.cpp" />
+    <ClCompile Include="KeywordField.cpp" />
     <ClCompile Include="Lexeme.cpp" />
     <ClCompile Include="Lexer.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -151,12 +152,14 @@
     <ClCompile Include="Symbol.cpp" />
     <ClCompile Include="SymTab.cpp" />
     <ClCompile Include="Token.cpp" />
+    <ClCompile Include="UserFieldList.cpp" />
     <ClCompile Include="Value.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Bin.h" />
     <ClInclude Include="Bucket.h" />
     <ClInclude Include="Global.h" />
+    <ClInclude Include="KeywordField.h" />
     <ClInclude Include="Lexeme.h" />
     <ClInclude Include="Lexer.h" />
     <ClInclude Include="Matrix.h" />
@@ -174,6 +177,7 @@
     <ClInclude Include="symbol.h" />
     <ClInclude Include="SymTab.h" />
     <ClInclude Include="Token.h" />
+    <ClInclude Include="UserFieldList.h" />
     <ClInclude Include="Value.h" />
   </ItemGroup>
   <ItemGroup>

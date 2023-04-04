@@ -1,20 +1,50 @@
-TOKEN	IDENT = 256		"IDENT" ;
-TOKEN	STRING			"STRING";
-TOKEN	NUMBER			"NUMBER";
-TOKEN	NONTERMINAL		"NONTERMINAL";
-TOKEN	TERMINAL		"TERMINAL";
-TOKEN	GRAMMAR			"GRAMMAR";
-TOKEN	REPLACEDBY		"->";
+//---------------------------------------------
+// Grammar for LLRDgen Parser Generator
+//---------------------------------------------
+
+KEYWORD		IDENT = 256			"IDENT" ;
+KEYWORD		STRING				"STRING";
+KEYWORD		NUMBER				"NUMBER";
+KEYWORD		NONTERMINAL			"NONTERMINAL";
+KEYWORD		TERMINAL			"TERMINAL";
+KEYWORD		GRAMMAR				"GRAMMAR";
+KEYWORD		REPLACEDBY			"->";
+KEYWORD		KEYWORD				"KEYWORD"
+KEYWORD		FIELD				"FIELD"
+KEYWORD		FIELD_TYPE			"TYPE"
+KEYWORD		TOKEN				"TOKEN"
+KEYWORD		EMPTY				"e"
+KEYWORD		ENDOFTOKENSTREAM	"$"
+KEYWORD		ENDOFTOKENS			"ENDOFTOKENS"
 
 
 GRAMMAR
-LLRDgramer -> TokenDef;
+LLRDgramer -> ParserGrammar;
 
-TokenDef	-> GrammarSection TokenDef_1;
-TokenDef_1	-> TOKEN TokenIdent GrammarSection TokenDef_1
-			-> .
-			;
+ParserGrammar	-> FIELD FieldDef ParserGrammar
+				-> KEYWORD KeywordDef ParserGrammar
+				-> GRAMMAR GrammarDef ParserGrammar
+				-> .
+				;
 
+
+FieldToken	-> 
+
+KeyWordDef		-> GrammarSection KeyWordDef_1;
+KeyWordDef_1	-> KEYWORD TokenIdent GrammarSection KeyWordDef_1
+				-> .
+				;
+
+KewWordField	-> GrammarSection KewWordField_1;
+KewWordField_1	-> FIELD FieldDef GrammarSection KewWordField_1
+				-> .
+				;
+
+FieldDef		-> FieldValue FieldDef_1;
+FieldDef_1		-> IDENT FieldValue FieldDef_1
+				-> .
+				;
+FieldType		->  
 GrammarSection	-> GRAMMAR GrammarStmts
 				-> .
 				;

@@ -15,7 +15,14 @@ private:
 		{CToken::LLRD_Token::REPLACED_BY, "REPLACED_BY"},
 		{CToken::LLRD_Token::TOKEN,"TOKEN"},
 		{CToken::LLRD_Token::GRAMMAR, "GRAMMAR"},
-		{CToken::LLRD_Token::ENDOFTOKENS,"$"}
+		{CToken::LLRD_Token::KEYWORD,"KEYWORD"},
+		{CToken::LLRD_Token::FIELDDEF,"FIELDDEF"},
+		{CToken::LLRD_Token::FIELDS,"FIELDS"},
+		{CToken::LLRD_Token::FIELD_TYPE,"FIELD_TYPE"},
+		{CToken::LLRD_Token::FIELD_NUMBER,"FIELD_NUMBER"},
+		{CToken::LLRD_Token::FIELD_STRING,"FIELD_STRING"},
+		{CToken::LLRD_Token::FIELD_POINTER,"FIELD_POINTER"},
+		{CToken::LLRD_Token::ENDOFTOKENS,"$"},
 	};
 	CSymTab m_SymbolTable;
 	FILE* m_pInputFile;

@@ -3,6 +3,8 @@
 constexpr auto KINDOF_RULE_MIXED = 0;
 constexpr auto KINDOF_RULE_ALL_TERMINALS = 1;
 constexpr auto KINDOF_RULE_ALL_NONTERMINALS = 2;
+constexpr auto TOKEN_TYPE_POSTDEFINED = 1;
+constexpr auto TOKEN_TYPE_PREDEFINED = 2;
 
 class CRecDecParGen :public CParser
 {
@@ -14,12 +16,19 @@ class CRecDecParGen :public CParser
 	FILE* m_pParserHeaderFile;
 	FILE* m_pLexerCppFile;
 	FILE* m_pLexerHeaderFile;
+	FILE* m_pTokenCppFile;
+	FILE* m_pTokenHeaderFile;
+
 	char m_aParserCppFile[256];
 	char m_aParserHeaderFile[256];
 	char m_aLexerCppFile[256];
 	char m_aLexerHeaderFile[256];
+	char m_aTokenCppName[256];
+	char m_aTokenHeaderName[256];
+
 	char m_aLexerClassName[256];
 	char m_aParserClassName[256];
+	char m_aTokenClassName[256];
 public:
 	CRecDecParGen();
 	virtual ~CRecDecParGen();
@@ -35,21 +44,32 @@ public:
 	CSet* GetNotNullables() { return &m_NotNullables; }
 	CSet* GetNullableSet(){return &m_Nullables; }
 	CParseTable* GetParseTable() { return &m_PaarseTable; }
+	char* GetParserClassName() { return m_aParserClassName; }
+	char* GetLexerClassName() { return m_aLexerClassName; }
 	//------------------------------------------
 	// Code Generation Methods
 	//------------------------------------------
 	void CodeGeneration(FILE *pLogFile);
 	void GenerateLexerFiles(FILE* pLogFile);
+	void GenerateTokenFiles(FILE*pLog);
 	void GenerateParserFiles(FILE* pLogFile);
 	void GenerateParserMethodBody(
 		FILE* pLogFile, 
 		CRule* pRule, 
 		int Kind
 	);
+	void GenBreak(FILE* pO, int Tabs);
+	void GenExpect(FILE* pO, int Tabs, CLexeme* pTokenLexeme, int Type);
+	void GenDefault(FILE* pO, int Tabs = 1);
+	void GenCase(FILE *, int Tabs, CLexeme* pLexeme, int Type);
+	void GenSwitch(FILE* pOut, int Tabs);
 	int KindOfProduction(FILE* pLogFile, CSymbol* pSym);
-	void TargetExpect(FILE* pOut, CLexeme* pLex);
-	void NonTerminalFunction(CLexeme* pLex);
+	void NonTerminalFunction(FILE* pOut, int Tabs, CLexeme* pLex);
+	//---------------------------------
+	// Parser Header File Methodes
+	//---------------------------------
 	void ParserHeaderCommon(FILE* pLogFile, char* pClassName);
+	void GenMethodeDecl(FILE* pOut, int Tabs, CLexeme* pLexeme);
 	//-----------------------------
 	// Debug Methods
 	//-----------------------------
