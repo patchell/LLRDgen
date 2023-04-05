@@ -12,9 +12,21 @@ public:
 		POSTDEFINED
 	};
 private:
+	inline static const char* TokenTypeStrings[3] = {
+		"NOT TOKEN",
+		"PRE DEFINED",
+		"POST DEFINED"
+	};
+	//---------------------------------------
+	// Things That Define Tokens
+	//---------------------------------------
 	TokenType m_TokenType;
-	CToken::LLRD_Token m_TokenValue;
-	UINT m_TargetTokenValue;
+	CToken::LLRD_Token m_TokenValue;	//token value for this parser
+	UINT m_TargetTokenValue;	//token value for target parser
+	char m_aTokenName[256];
+	//---------------------------------------
+	// Symbol Flags
+	//---------------------------------------
 	BOOL m_IsEmpty;
 	BOOL m_IsNullable;
 	BOOL m_StartSymbol;
@@ -27,6 +39,7 @@ private:
 	int m_LineNumber;		//line where defined
 public:
 	CSymbol() {
+		int i;
 		m_TokenType = TokenType::NOT_TOKEN;
 		m_IsEmpty = FALSE;
 		m_IsNullable = FALSE;
@@ -38,6 +51,10 @@ public:
 		m_pTail = 0;
 		m_nTotalRules = 0;
 		m_LineNumber = 0;
+		for (i = 0; i < 256; ++i)
+		{
+			m_aTokenName[i] = 0;
+		}
 	}
 	virtual ~CSymbol() {}
 	BOOL Create(const char* pName, TokenType Toktype);
@@ -48,6 +65,12 @@ public:
 	CSymbol* GetNext() { return (CSymbol*)CBin::GetNext(); }
 	BOOL DoesThisProductionHaveEpsilon();
 	CSymbol::TokenType GetTokenType() { return m_TokenType; }
+	BOOL IsPredefinedToken() {
+		BOOL rV = FALSE;
+		if (m_TokenType == TokenType::PREDEFINED)
+			rV = TRUE;
+		return rV;
+	}
 	//----------------------------
 	// Debug Stuff
 	//----------------------------
@@ -89,6 +112,13 @@ public:
 	BOOL IsEndOfTokenSteam() {
 		return m_EndOfTokenStream;
 	}
+	static const char* GetTokenTypeString(TokenType tt) {
+		return TokenTypeStrings[int(tt)];
+	}
+	void SetTokenName(const char* pName) {
+		strcpy_s(m_aTokenName, 256, pName);
+	}
+	char* GetTokenName() { return m_aTokenName; }
 private:
 	void SetEmpty(BOOL IE) { m_IsEmpty = IE; }
 public:

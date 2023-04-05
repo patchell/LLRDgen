@@ -2,6 +2,14 @@
 
 CKeywordField::CKeywordField()
 {
+	m_pNext = 0;
+	m_pPrev = 0;
+
+	m_pFieldCppTypeString = 0;
+	m_pFieldName = 0;
+	m_pFieldStringValue = 0;
+	m_FieldNumberValue = 0;
+	m_FieldValueType = ValType::NUMBER;	//default
 }
 
 CKeywordField::~CKeywordField()
@@ -64,7 +72,7 @@ CKeywordField* CKeywordField::Duplicate(CKeywordField* pNewField)
 void CKeywordField::Print(FILE* pOut)
 {
 	const char* pValType;
-	const char* pFormat;
+
 	if (pOut)
 	{
 		switch (m_FieldValueType)
@@ -80,7 +88,7 @@ void CKeywordField::Print(FILE* pOut)
 			break;
 		case ValType::POINTER:
 			pValType = "POINTER";
-			fprintf(pOut, "%s:(%s)Type=%s Value=%P",
+			fprintf(pOut, "%s:(%s)Type=%s Value=%p",
 				m_pFieldName,
 				m_pFieldCppTypeString,
 				pValType,

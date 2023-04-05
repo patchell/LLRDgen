@@ -29,6 +29,7 @@ class CRecDecParGen :public CParser
 	char m_aLexerClassName[256];
 	char m_aParserClassName[256];
 	char m_aTokenClassName[256];
+	char m_aTokenEnumClassName[256];
 public:
 	CRecDecParGen();
 	virtual ~CRecDecParGen();
@@ -46,6 +47,9 @@ public:
 	CParseTable* GetParseTable() { return &m_PaarseTable; }
 	char* GetParserClassName() { return m_aParserClassName; }
 	char* GetLexerClassName() { return m_aLexerClassName; }
+	CSymTab* GetSymTab() {
+		return GetLexer()->GetSymTab();
+	}
 	//------------------------------------------
 	// Code Generation Methods
 	//------------------------------------------
@@ -70,6 +74,10 @@ public:
 	//---------------------------------
 	void ParserHeaderCommon(FILE* pLogFile, char* pClassName);
 	void GenMethodeDecl(FILE* pOut, int Tabs, CLexeme* pLexeme);
+	//----------------------------------------------------
+	// Token Files Methods
+	//----------------------------------------------------
+	void GenToken(CSymbol* pSym, int Tabs, int InitValue);
 	//-----------------------------
 	// Debug Methods
 	//-----------------------------

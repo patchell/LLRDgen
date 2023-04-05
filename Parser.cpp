@@ -403,6 +403,7 @@ CToken::LLRD_Token CParser::TokenIdent_1(CToken::LLRD_Token LookaHeadToken)
 			CToken::LLRD_Token::TERMINAL, 
 			CSymbol::TokenType::PREDEFINED
 		);
+		pSym->SetTokenName(GetLexer()->GetLexbuff());
 		pMember = new CSetMember;
 		pMember->Create(pSym);
 		pRule = new CRule;
@@ -459,16 +460,13 @@ CToken::LLRD_Token CParser::OptInit(CToken::LLRD_Token LookaHeadToken)
 		SetAutoIncTokenValue(NumberValue);
 		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::NUMBER);
 		break;
-	case CToken::LLRD_Token::EMPTY:
-		LookaHeadToken = GetLexer()->Expect(LookaHeadToken, CToken::LLRD_Token::EMPTY);
+	default:
 		pSI = GetValueStack()->Look(CStack::StackPosition::STACK_TOP);
 		CStackItem::CheckStackItem(pSI, CStackItem::ValueType::pSYMBOL);
 		pSym = (CSymbol*)pSI->GetPointerData();
 		NumberValue = GetAutoIncTokenValue();;
 		pSym->SetTargetTokenValue(NumberValue);
 		break;
-	default:
-			break;
 	}
 	return LookaHeadToken;
 }

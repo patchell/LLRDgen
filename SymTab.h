@@ -21,6 +21,8 @@ public:
 	BOOL Create(int TableDepth);
 	virtual CBin* FindSymbol(const char* name);
 	virtual CBin* FindStartSymbol();
+	virtual CSymbol* FindFirstPredefinedToken();
+	virtual CSymbol* FindNextPredefineToken(CToken::LLRD_Token Value);
 	virtual void AddSymbol(CBin* pSym);
 	virtual void DelSymbol(CBin* pSym);
 	int GetNumElements() { return m_nElements; }

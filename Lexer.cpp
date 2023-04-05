@@ -38,10 +38,10 @@ BOOL CLexer::Create(FILE* pIn)
 	// Create the empty (epsilon)
 	// symbol
 	//--------------------------------
-	m_EmptySymbol.Create(Epsilon, CSymbol::TokenType::PREDEFINED);
+	m_EmptySymbol.Create(Epsilon, CSymbol::TokenType::POSTDEFINED);
 	m_EmptySymbol.SetEmpty(TRUE);
 	m_EmptySymbol.SetNullable(TRUE);
-	m_EmptySymbol.SetTokenValue(CToken::LLRD_Token::TERMINAL, CSymbol::TokenType::PREDEFINED);
+	m_EmptySymbol.SetTokenValue(CToken::LLRD_Token::TERMINAL, CSymbol::TokenType::POSTDEFINED);
 	pLexeme = new CLexeme;
 	pLexeme->Create(&m_EmptySymbol);
 	pSM = new CSetMember;
@@ -51,13 +51,14 @@ BOOL CLexer::Create(FILE* pIn)
 	pRule->AddLexeme(pLexeme);
 	m_EmptySymbol.AddRule(pRule);
 	m_EmptySymbol.GetFirstSet()->AddToSet(pSM);
+
 	//----------------------------------
 	// Create the End of Token Stream
 	// symbol - $
 	//----------------------------------
-	m_EndOfTokenStream.Create(Dollar, CSymbol::TokenType::PREDEFINED);
+	m_EndOfTokenStream.Create(Dollar, CSymbol::TokenType::POSTDEFINED);
 	m_EndOfTokenStream.SetEmpty(FALSE);
-	m_EndOfTokenStream.SetTokenValue(CToken::LLRD_Token::TERMINAL, CSymbol::TokenType::PREDEFINED);
+	m_EndOfTokenStream.SetTokenValue(CToken::LLRD_Token::TERMINAL, CSymbol::TokenType::POSTDEFINED);
 	m_EndOfTokenStream.SetEndOfTokenStream();
 	m_EndOfTokenStream.SetNullable(FALSE);
 	pLexeme = new CLexeme;
@@ -428,14 +429,14 @@ CToken::LLRD_Token CLexer::Expect(CToken::LLRD_Token LookaHeadToken, CToken::LLR
 				strcpy_s(pGot, 256, pKY->m_Name);
 			else
 			{
-//				char* s = new char[256];
-//				sprintf_s(s, 256, "Unknown Token %d:%s\n", 
-//					LookaHeadToken,
-//					LookupTokenName(LookaHeadToken)
-//				);
-//				CLexer::Error(stderr, s);
-//				delete[] s;
-//				CloseAllFiles();
+				char* s = new char[256];
+				sprintf_s(s, 256, "Unknown Token %d:%s\n", 
+					LookaHeadToken,
+					CToken::LookupTokenName(LookaHeadToken)
+				);
+				CLexer::Error(stderr, s);
+				delete[] s;
+				CloseAllFiles();
 				exit(-2);
 			}
 		}

@@ -9,6 +9,8 @@ CRecDecParGen::CRecDecParGen():CParser()
 	m_pParserHeaderFile = 0;
 	m_pLexerCppFile = 0;
 	m_pLexerHeaderFile = 0;
+	m_pTokenCppFile = 0;
+	m_pTokenHeaderFile = 0;
 	for (i = 0; i < 256; ++i)
 	{
 		m_aLexerCppFile[i] = 0;
@@ -20,6 +22,7 @@ CRecDecParGen::CRecDecParGen():CParser()
 		m_aTokenClassName[i] = 0;
 		m_aTokenCppName[i] = 0;
 		m_aTokenHeaderName[i] = 0;
+		m_aTokenEnumClassName[i] = 0;
 	}
 }
 
@@ -498,6 +501,7 @@ void CRecDecParGen::CodeGeneration(FILE* pLogFile)
 	sprintf_s(m_aTokenCppName, 256, "%s_Token.cpp", pParserName);
 	sprintf_s(m_aTokenHeaderName, 256, "%s_Token.h", pParserName);
 	sprintf_s(m_aTokenClassName, 256, "C%s_Token", pParserName);
+	sprintf_s(m_aTokenEnumClassName, 256, "%s_TOKENS", pParserName);
 	//---------------------------------------------------
 	// Open up files
 	//---------------------------------------------------
@@ -505,8 +509,8 @@ void CRecDecParGen::CodeGeneration(FILE* pLogFile)
 	fopen_s(&m_pLexerHeaderFile, m_aLexerHeaderFile, "w");
 	fopen_s(&m_pParserCppFile, m_aParserCppFile, "w");
 	fopen_s(&m_pParserHeaderFile, m_aParserHeaderFile, "w");
-	fopen_s(&m_pTokenCppFile, m_aParserCppFile, "w");
-	fopen_s(&m_pTokenHeaderFile, m_aParserHeaderFile, "w");
+	fopen_s(&m_pTokenCppFile, m_aTokenCppName, "w");
+	fopen_s(&m_pTokenHeaderFile, m_aTokenHeaderName, "w");
 	GenerateTokenFiles(LogFile());
 	GenerateLexerFiles(pLogFile);
 	GenerateParserFiles(pLogFile);
@@ -519,11 +523,42 @@ void CRecDecParGen::GenerateLexerFiles(FILE* pLogFile)
 
 void CRecDecParGen::GenerateTokenFiles(FILE* pLog)
 {
+	CSymbol* pSymToken = NULL;
+	char* s = new char[256];
+	CToken::LLRD_Token TargetTokenValue;
+	BOOL bFirstToken = TRUE;
+	CToken::LLRD_Token PrevTokenValue;
+
 	fprintf(stderr, "Generating Token Files: %s::\n\t%s\n\t%s\n",
 		m_aTokenClassName,
 		m_aTokenHeaderName,
 		m_aTokenCppName
 	);
+
+	pSymToken = GetSymTab()->FindFirstPredefinedToken();
+	fprintf(m_pTokenHeaderFile, "%senum class %s{\n",
+		IndentString(s,1,'\t'),
+		m_aTokenEnumClassName
+	);
+	while (pSymToken)
+	{
+		pSymToken->Print(LogFile());
+		TargetTokenValue = CToken::LLRD_Token( pSymToken->GetTargetTokenValue());
+		if (bFirstToken || PrevTokenValue != (TargetTokenValue - 1))
+		{
+			GenToken(pSymToken, 2, TargetTokenValue);
+			bFirstToken = FALSE;
+			PrevTokenValue = TargetTokenValue;
+		}
+		else
+		{
+			GenToken(pSymToken, 2, 0);
+			PrevTokenValue = TargetTokenValue;
+		}
+		pSymToken = GetSymTab()->FindNextPredefineToken(PrevTokenValue);
+	}
+	fprintf(m_pTokenHeaderFile, "\n\t};\n");
+	delete[] s;
 }
 
 void CRecDecParGen::GenerateParserFiles(FILE* pLogFile)
@@ -847,12 +882,38 @@ void CRecDecParGen::GenMethodeDecl(FILE* pOut, int Tabs, CLexeme* pLexeme)
 	//----------------------------------------------------------
 	// <Tabs><data Type> <method name>(<data type> LookaHeadToken );
 	//----------------------------------------------------------
-	fprintf(pOut, "%s% %s(%s LookaHeadToken)\n",
+	fprintf(pOut, "%s%s %s(%s LookaHeadToken)\n",
 		IndentString(s, Tabs, '\t'),
 		m_aTokenClassName,
 		pLexeme->GetName(),
 		m_aTokenClassName
 	);
+	delete[] s;
+}
+
+void CRecDecParGen::GenToken(CSymbol* pSym, int Tabs, int InitValue)
+{
+	static BOOL bFirstEnum = TRUE;
+	char* s = new char[256];
+	if (bFirstEnum)
+	{
+		bFirstEnum = FALSE;
+		fprintf(m_pTokenHeaderFile, "%s%s",
+			IndentString(s, Tabs, '\t'),
+			pSym->GetTokenName()
+		);
+	}
+	else
+	{
+		fprintf(m_pTokenHeaderFile, ",\n%s%s",
+			IndentString(s, Tabs, '\t'),
+			pSym->GetTokenName()
+		);
+	}
+	if (InitValue > 0)
+	{
+		fprintf(m_pTokenHeaderFile, " = %d", InitValue);
+	}
 	delete[] s;
 }
 

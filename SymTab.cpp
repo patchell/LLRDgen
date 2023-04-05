@@ -107,6 +107,74 @@ CBin* CSymTab::FindStartSymbol()
     return pBin;
 }
 
+CSymbol* CSymTab::FindFirstPredefinedToken()
+{
+	CSymbol* pSymLowestValue = 0;
+	CSymbol* pSym;
+	CSetMember* pSetMem;
+
+	pSetMem = GetTerminalSet()->GetHead();
+	while (pSetMem)
+	{
+		pSetMem->GetSetMemberSymbol()->Print(LogFile());
+		if (pSymLowestValue)
+		{
+			pSym = pSetMem->GetSetMemberSymbol();
+			if (pSym->IsPredefinedToken())
+			{
+				if (pSym->GetTargetTokenValue() < UINT(pSymLowestValue->GetTargetTokenValue()))
+					pSymLowestValue = pSym;
+			}
+		}
+		else
+		{
+			if (pSetMem->GetSetMemberSymbol()->IsPredefinedToken())
+				pSymLowestValue = pSetMem->GetSetMemberSymbol();
+		}
+		pSetMem = pSetMem->GetNext();
+	}
+    return pSymLowestValue;
+}
+
+CSymbol* CSymTab::FindNextPredefineToken(CToken::LLRD_Token Value)
+{
+	CSymbol* pSymLowestValue = 0;
+	CSymbol* pSym;
+	CSetMember* pSetMem;
+
+	pSetMem = GetTerminalSet()->GetHead();
+	while (pSetMem)
+	{
+		if (pSetMem->GetSetMemberSymbol()->IsPredefinedToken())
+		{
+			if (pSymLowestValue)
+			{
+				if (pSetMem->GetSetMemberSymbol()->GetTargetTokenValue() > UINT(Value))
+				{
+					pSym = pSetMem->GetSetMemberSymbol();
+					if (pSym->IsPredefinedToken())
+					{
+						if (pSym->GetTargetTokenValue() < pSymLowestValue->GetTargetTokenValue())
+							pSymLowestValue = pSym;
+					}
+				}
+			}
+			else
+			{
+				if (pSetMem->GetSetMemberSymbol()->IsPredefinedToken())
+				{
+					if (pSetMem->GetSetMemberSymbol()->GetTargetTokenValue() > UINT(Value))
+					{
+						pSymLowestValue = pSetMem->GetSetMemberSymbol();
+					}
+				}
+			}
+		}
+		pSetMem = pSetMem->GetNext();
+	}
+	return pSymLowestValue;
+}
+
 //***********************************************************
 // AddSym
 //

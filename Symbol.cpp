@@ -74,6 +74,9 @@ void CSymbol::Print(FILE* pOut, BOOL bLHS, BOOL bEOL, int nIndentSpaces)
 			IsNullable(),
 			IsStartSymbol()
 		);
+		if(strlen(m_aTokenName) > 0)
+			fprintf(pOut, "\tToken Name:%s\n", m_aTokenName);
+		fprintf(pOut, "\tToken Type:%s\n", GetTokenTypeString(GetTokenType()));
 		GetFirstSet()->Print(pOut, FALSE, TRUE, nIndentSpaces + 5);
 		GetFollowSet()->Print(pOut, FALSE, TRUE, nIndentSpaces + 5);
 	}

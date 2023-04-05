@@ -630,3 +630,662 @@ FOLLOW['MemContentsType'] { }
 ---------------- Create Parse Table --------------
 Table Entries = 628
 ------------ Check For Conflicts-------------
+IDENT: Token:TERMINAL TargetValue:256 NULLABLE(0) START(0)
+	Token Name:IDENT
+	Token Type:PRE DEFINED
+     FIRST['IDENT'] { 'IDENT' }
+     FOLLOW['IDENT'] { }
+NUMBER: Token:TERMINAL TargetValue:257 NULLABLE(0) START(0)
+	Token Name:NUMBER
+	Token Type:PRE DEFINED
+     FIRST['NUMBER'] { 'NUMBER' }
+     FOLLOW['NUMBER'] { }
+MODULE: Token:TERMINAL TargetValue:258 NULLABLE(0) START(0)
+	Token Name:MODULE
+	Token Type:PRE DEFINED
+     FIRST['MODULE'] { 'MODULE' }
+     FOLLOW['MODULE'] { }
+RETURN: Token:TERMINAL TargetValue:259 NULLABLE(0) START(0)
+	Token Name:RETURN
+	Token Type:PRE DEFINED
+     FIRST['RETURN'] { 'RETURN' }
+     FOLLOW['RETURN'] { }
+PROC: Token:TERMINAL TargetValue:260 NULLABLE(0) START(0)
+	Token Name:PROC
+	Token Type:PRE DEFINED
+     FIRST['PROC'] { 'PROC' }
+     FOLLOW['PROC'] { }
+FUNC: Token:TERMINAL TargetValue:261 NULLABLE(0) START(0)
+	Token Name:FUNC
+	Token Type:PRE DEFINED
+     FIRST['FUNC'] { 'FUNC' }
+     FOLLOW['FUNC'] { }
+FUNC_IDENT: Token:TERMINAL TargetValue:262 NULLABLE(0) START(0)
+	Token Name:FUNC_IDENT
+	Token Type:PRE DEFINED
+     FIRST['FUNC_IDENT'] { 'FUNC_IDENT' }
+     FOLLOW['FUNC_IDENT'] { }
+PROC_IDENT: Token:TERMINAL TargetValue:263 NULLABLE(0) START(0)
+	Token Name:PROC_IDENT
+	Token Type:PRE DEFINED
+     FIRST['PROC_IDENT'] { 'PROC_IDENT' }
+     FOLLOW['PROC_IDENT'] { }
+IF: Token:TERMINAL TargetValue:264 NULLABLE(0) START(0)
+	Token Name:IF
+	Token Type:PRE DEFINED
+     FIRST['IF'] { 'IF' }
+     FOLLOW['IF'] { }
+FOR: Token:TERMINAL TargetValue:265 NULLABLE(0) START(0)
+	Token Name:FOR
+	Token Type:PRE DEFINED
+     FIRST['FOR'] { 'FOR' }
+     FOLLOW['FOR'] { }
+WHILE: Token:TERMINAL TargetValue:266 NULLABLE(0) START(0)
+	Token Name:WHILE
+	Token Type:PRE DEFINED
+     FIRST['WHILE'] { 'WHILE' }
+     FOLLOW['WHILE'] { }
+DO: Token:TERMINAL TargetValue:267 NULLABLE(0) START(0)
+	Token Name:DO
+	Token Type:PRE DEFINED
+     FIRST['DO'] { 'DO' }
+     FOLLOW['DO'] { }
+OD: Token:TERMINAL TargetValue:268 NULLABLE(0) START(0)
+	Token Name:OD
+	Token Type:PRE DEFINED
+     FIRST['OD'] { 'OD' }
+     FOLLOW['OD'] { }
+EXIT: Token:TERMINAL TargetValue:269 NULLABLE(0) START(0)
+	Token Name:EXIT
+	Token Type:PRE DEFINED
+     FIRST['EXIT'] { 'EXIT' }
+     FOLLOW['EXIT'] { }
+THEN: Token:TERMINAL TargetValue:270 NULLABLE(0) START(0)
+	Token Name:THEN
+	Token Type:PRE DEFINED
+     FIRST['THEN'] { 'THEN' }
+     FOLLOW['THEN'] { }
+FI: Token:TERMINAL TargetValue:271 NULLABLE(0) START(0)
+	Token Name:FI
+	Token Type:PRE DEFINED
+     FIRST['FI'] { 'FI' }
+     FOLLOW['FI'] { }
+ELSEIF: Token:TERMINAL TargetValue:272 NULLABLE(0) START(0)
+	Token Name:ELSEIF
+	Token Type:PRE DEFINED
+     FIRST['ELSEIF'] { 'ELSEIF' }
+     FOLLOW['ELSEIF'] { }
+ELSE: Token:TERMINAL TargetValue:273 NULLABLE(0) START(0)
+	Token Name:ELSE
+	Token Type:PRE DEFINED
+     FIRST['ELSE'] { 'ELSE' }
+     FOLLOW['ELSE'] { }
+UNTILL: Token:TERMINAL TargetValue:274 NULLABLE(0) START(0)
+	Token Name:UNTILL
+	Token Type:PRE DEFINED
+     FIRST['UNTILL'] { 'UNTILL' }
+     FOLLOW['UNTILL'] { }
+TO: Token:TERMINAL TargetValue:275 NULLABLE(0) START(0)
+	Token Name:TO
+	Token Type:PRE DEFINED
+     FIRST['TO'] { 'TO' }
+     FOLLOW['TO'] { }
+STEP: Token:TERMINAL TargetValue:276 NULLABLE(0) START(0)
+	Token Name:STEP
+	Token Type:PRE DEFINED
+     FIRST['STEP'] { 'STEP' }
+     FOLLOW['STEP'] { }
+ASM: Token:TERMINAL TargetValue:277 NULLABLE(0) START(0)
+	Token Name:ASM
+	Token Type:PRE DEFINED
+     FIRST['ASM'] { 'ASM' }
+     FOLLOW['ASM'] { }
+ENDASM: Token:TERMINAL TargetValue:278 NULLABLE(0) START(0)
+	Token Name:ENDASM
+	Token Type:PRE DEFINED
+     FIRST['ENDASM'] { 'ENDASM' }
+     FOLLOW['ENDASM'] { }
+OR: Token:TERMINAL TargetValue:279 NULLABLE(0) START(0)
+	Token Name:OR
+	Token Type:PRE DEFINED
+     FIRST['OR'] { 'OR' }
+     FOLLOW['OR'] { }
+AND: Token:TERMINAL TargetValue:280 NULLABLE(0) START(0)
+	Token Name:AND
+	Token Type:PRE DEFINED
+     FIRST['AND'] { 'AND' }
+     FOLLOW['AND'] { }
+GTEQ: Token:TERMINAL TargetValue:281 NULLABLE(0) START(0)
+	Token Name:GTEQ
+	Token Type:PRE DEFINED
+     FIRST['GTEQ'] { 'GTEQ' }
+     FOLLOW['GTEQ'] { }
+LTEQ: Token:TERMINAL TargetValue:282 NULLABLE(0) START(0)
+	Token Name:LTEQ
+	Token Type:PRE DEFINED
+     FIRST['LTEQ'] { 'LTEQ' }
+     FOLLOW['LTEQ'] { }
+DEFINE: Token:TERMINAL TargetValue:283 NULLABLE(0) START(0)
+	Token Name:DEFINE
+	Token Type:PRE DEFINED
+     FIRST['DEFINE'] { 'DEFINE' }
+     FOLLOW['DEFINE'] { }
+TYPE: Token:TERMINAL TargetValue:284 NULLABLE(0) START(0)
+	Token Name:TYPE
+	Token Type:PRE DEFINED
+     FIRST['TYPE'] { 'TYPE' }
+     FOLLOW['TYPE'] { }
+RECORDTYPE: Token:TERMINAL TargetValue:285 NULLABLE(0) START(0)
+	Token Name:RECORDTYPE
+	Token Type:PRE DEFINED
+     FIRST['RECORDTYPE'] { 'RECORDTYPE' }
+     FOLLOW['RECORDTYPE'] { }
+BOOL: Token:TERMINAL TargetValue:286 NULLABLE(0) START(0)
+	Token Name:BOOL
+	Token Type:PRE DEFINED
+     FIRST['BOOL'] { 'BOOL' }
+     FOLLOW['BOOL'] { }
+CHAR: Token:TERMINAL TargetValue:287 NULLABLE(0) START(0)
+	Token Name:CHAR
+	Token Type:PRE DEFINED
+     FIRST['CHAR'] { 'CHAR' }
+     FOLLOW['CHAR'] { }
+BYTE: Token:TERMINAL TargetValue:288 NULLABLE(0) START(0)
+	Token Name:BYTE
+	Token Type:PRE DEFINED
+     FIRST['BYTE'] { 'BYTE' }
+     FOLLOW['BYTE'] { }
+CARD: Token:TERMINAL TargetValue:289 NULLABLE(0) START(0)
+	Token Name:CARD
+	Token Type:PRE DEFINED
+     FIRST['CARD'] { 'CARD' }
+     FOLLOW['CARD'] { }
+INT: Token:TERMINAL TargetValue:290 NULLABLE(0) START(0)
+	Token Name:INT
+	Token Type:PRE DEFINED
+     FIRST['INT'] { 'INT' }
+     FOLLOW['INT'] { }
+POINTER: Token:TERMINAL TargetValue:291 NULLABLE(0) START(0)
+	Token Name:POINTER
+	Token Type:PRE DEFINED
+     FIRST['POINTER'] { 'POINTER' }
+     FOLLOW['POINTER'] { }
+ARRAY: Token:TERMINAL TargetValue:292 NULLABLE(0) START(0)
+	Token Name:ARRAY
+	Token Type:PRE DEFINED
+     FIRST['ARRAY'] { 'ARRAY' }
+     FOLLOW['ARRAY'] { }
+BEGIN: Token:TERMINAL TargetValue:293 NULLABLE(0) START(0)
+	Token Name:BEGIN
+	Token Type:PRE DEFINED
+     FIRST['BEGIN'] { 'BEGIN' }
+     FOLLOW['BEGIN'] { }
+END: Token:TERMINAL TargetValue:294 NULLABLE(0) START(0)
+	Token Name:END
+	Token Type:PRE DEFINED
+     FIRST['END'] { 'END' }
+     FOLLOW['END'] { 'PROC','MODULE','$' }
+MOD: Token:TERMINAL TargetValue:295 NULLABLE(0) START(0)
+	Token Name:MOD
+	Token Type:PRE DEFINED
+     FIRST['MOD'] { 'MOD' }
+     FOLLOW['MOD'] { }
+LSH: Token:TERMINAL TargetValue:296 NULLABLE(0) START(0)
+	Token Name:LSH
+	Token Type:PRE DEFINED
+     FIRST['LSH'] { 'LSH' }
+     FOLLOW['LSH'] { }
+RSH: Token:TERMINAL TargetValue:297 NULLABLE(0) START(0)
+	Token Name:RSH
+	Token Type:PRE DEFINED
+     FIRST['RSH'] { 'RSH' }
+     FOLLOW['RSH'] { }
+==+: Token:TERMINAL TargetValue:298 NULLABLE(0) START(0)
+	Token Name:PLUS_EQ
+	Token Type:PRE DEFINED
+     FIRST['PLUS_EQ'] { '==+' }
+     FOLLOW['PLUS_EQ'] { }
+==-: Token:TERMINAL TargetValue:299 NULLABLE(0) START(0)
+	Token Name:MINUS_EQ
+	Token Type:PRE DEFINED
+     FIRST['MINUS_EQ'] { '==-' }
+     FOLLOW['MINUS_EQ'] { }
+==*: Token:TERMINAL TargetValue:300 NULLABLE(0) START(0)
+	Token Name:MULT_EQ
+	Token Type:PRE DEFINED
+     FIRST['MULT_EQ'] { '==*' }
+     FOLLOW['MULT_EQ'] { }
+==/: Token:TERMINAL TargetValue:301 NULLABLE(0) START(0)
+	Token Name:DIV_EQ
+	Token Type:PRE DEFINED
+     FIRST['DIV_EQ'] { '==/' }
+     FOLLOW['DIV_EQ'] { }
+==MOD: Token:TERMINAL TargetValue:302 NULLABLE(0) START(0)
+	Token Name:MOD_EQ
+	Token Type:PRE DEFINED
+     FIRST['MOD_EQ'] { '==MOD' }
+     FOLLOW['MOD_EQ'] { }
+==&: Token:TERMINAL TargetValue:303 NULLABLE(0) START(0)
+	Token Name:AND_EQ
+	Token Type:PRE DEFINED
+     FIRST['AND_EQ'] { '==&' }
+     FOLLOW['AND_EQ'] { }
+==!: Token:TERMINAL TargetValue:304 NULLABLE(0) START(0)
+	Token Name:XOR_EQ
+	Token Type:PRE DEFINED
+     FIRST['XOR_EQ'] { '==!' }
+     FOLLOW['XOR_EQ'] { }
+==XOR: Token:TERMINAL TargetValue:305 NULLABLE(0) START(0)
+	Token Name:XOR_EQ
+	Token Type:PRE DEFINED
+     FIRST['XOR_EQ'] { '==XOR' }
+     FOLLOW['XOR_EQ'] { }
+==%: Token:TERMINAL TargetValue:306 NULLABLE(0) START(0)
+	Token Name:OR_EQ
+	Token Type:PRE DEFINED
+     FIRST['OR_EQ'] { '==%' }
+     FOLLOW['OR_EQ'] { }
+==LSH: Token:TERMINAL TargetValue:307 NULLABLE(0) START(0)
+	Token Name:LSH_EQ
+	Token Type:PRE DEFINED
+     FIRST['LSH_EQ'] { '==LSH' }
+     FOLLOW['LSH_EQ'] { }
+==RSH: Token:TERMINAL TargetValue:308 NULLABLE(0) START(0)
+	Token Name:RSH_EQ
+	Token Type:PRE DEFINED
+     FIRST['RSH_EQ'] { '==RSH' }
+     FOLLOW['RSH_EQ'] { }
+(: Token:TERMINAL TargetValue:40 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['('] { '(' }
+     FOLLOW['('] { }
+): Token:TERMINAL TargetValue:41 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST[')'] { ')' }
+     FOLLOW[')'] { '*','/','MOD','LSH','RSH','+','-','!','&','%','=','#','>','<','GTEQ'
+,'LTEQ','AND','OR','THEN',')','BEGIN' }
+;: Token:TERMINAL TargetValue:59 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST[';'] { ';' }
+     FOLLOW[';'] { }
+=: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['='] { '=' }
+     FOLLOW['='] { }
+[: Token:TERMINAL TargetValue:91 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['['] { '[' }
+     FOLLOW['['] { }
+]: Token:TERMINAL TargetValue:93 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST[']'] { ']' }
+     FOLLOW[']'] { }
+,: Token:TERMINAL TargetValue:44 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST[','] { ',' }
+     FOLLOW[','] { }
+==+: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==+'] { '==+' }
+     FOLLOW['==+'] { }
+==-: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==-'] { '==-' }
+     FOLLOW['==-'] { }
+==*: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==*'] { '==*' }
+     FOLLOW['==*'] { }
+==/: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==/'] { '==/' }
+     FOLLOW['==/'] { }
+==MOD: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==MOD'] { '==MOD' }
+     FOLLOW['==MOD'] { }
+==&: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==&'] { '==&' }
+     FOLLOW['==&'] { }
+==!: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==!'] { '==!' }
+     FOLLOW['==!'] { }
+==%: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==%'] { '==%' }
+     FOLLOW['==%'] { }
+==LSH: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==LSH'] { '==LSH' }
+     FOLLOW['==LSH'] { }
+==RSH: Token:TERMINAL TargetValue:61 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['==RSH'] { '==RSH' }
+     FOLLOW['==RSH'] { }
+>: Token:TERMINAL TargetValue:62 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['>'] { '>' }
+     FOLLOW['>'] { }
+<: Token:TERMINAL TargetValue:60 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['<'] { '<' }
+     FOLLOW['<'] { }
+#: Token:TERMINAL TargetValue:35 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['#'] { '#' }
+     FOLLOW['#'] { }
+%: Token:TERMINAL TargetValue:37 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['%'] { '%' }
+     FOLLOW['%'] { }
+&: Token:TERMINAL TargetValue:38 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['&'] { '&' }
+     FOLLOW['&'] { }
+!: Token:TERMINAL TargetValue:33 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['!'] { '!' }
+     FOLLOW['!'] { }
++: Token:TERMINAL TargetValue:43 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['+'] { '+' }
+     FOLLOW['+'] { }
+-: Token:TERMINAL TargetValue:45 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['-'] { '-' }
+     FOLLOW['-'] { }
+*: Token:TERMINAL TargetValue:42 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['*'] { '*' }
+     FOLLOW['*'] { }
+/: Token:TERMINAL TargetValue:47 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['/'] { '/' }
+     FOLLOW['/'] { }
+@: Token:TERMINAL TargetValue:64 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['@'] { '@' }
+     FOLLOW['@'] { }
+^: Token:TERMINAL TargetValue:94 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['^'] { '^' }
+     FOLLOW['^'] { }
+.: Token:TERMINAL TargetValue:46 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['.'] { '.' }
+     FOLLOW['.'] { }
+e: Token:TERMINAL TargetValue:0 NULLABLE(1) START(0)
+	Token Type:POST DEFINED
+     FIRST['e'] { 'e' }
+     FOLLOW['e'] { }
+$: Token:TERMINAL TargetValue:0 NULLABLE(0) START(0)
+	Token Type:POST DEFINED
+     FIRST['$'] { }
+     FOLLOW['$'] { }
+IDENT: Token:TERMINAL TargetValue:256 NULLABLE(0) START(0)
+	Token Name:IDENT
+	Token Type:PRE DEFINED
+     FIRST['IDENT'] { 'IDENT' }
+     FOLLOW['IDENT'] { }
+NUMBER: Token:TERMINAL TargetValue:257 NULLABLE(0) START(0)
+	Token Name:NUMBER
+	Token Type:PRE DEFINED
+     FIRST['NUMBER'] { 'NUMBER' }
+     FOLLOW['NUMBER'] { }
+MODULE: Token:TERMINAL TargetValue:258 NULLABLE(0) START(0)
+	Token Name:MODULE
+	Token Type:PRE DEFINED
+     FIRST['MODULE'] { 'MODULE' }
+     FOLLOW['MODULE'] { }
+RETURN: Token:TERMINAL TargetValue:259 NULLABLE(0) START(0)
+	Token Name:RETURN
+	Token Type:PRE DEFINED
+     FIRST['RETURN'] { 'RETURN' }
+     FOLLOW['RETURN'] { }
+PROC: Token:TERMINAL TargetValue:260 NULLABLE(0) START(0)
+	Token Name:PROC
+	Token Type:PRE DEFINED
+     FIRST['PROC'] { 'PROC' }
+     FOLLOW['PROC'] { }
+FUNC: Token:TERMINAL TargetValue:261 NULLABLE(0) START(0)
+	Token Name:FUNC
+	Token Type:PRE DEFINED
+     FIRST['FUNC'] { 'FUNC' }
+     FOLLOW['FUNC'] { }
+FUNC_IDENT: Token:TERMINAL TargetValue:262 NULLABLE(0) START(0)
+	Token Name:FUNC_IDENT
+	Token Type:PRE DEFINED
+     FIRST['FUNC_IDENT'] { 'FUNC_IDENT' }
+     FOLLOW['FUNC_IDENT'] { }
+PROC_IDENT: Token:TERMINAL TargetValue:263 NULLABLE(0) START(0)
+	Token Name:PROC_IDENT
+	Token Type:PRE DEFINED
+     FIRST['PROC_IDENT'] { 'PROC_IDENT' }
+     FOLLOW['PROC_IDENT'] { }
+IF: Token:TERMINAL TargetValue:264 NULLABLE(0) START(0)
+	Token Name:IF
+	Token Type:PRE DEFINED
+     FIRST['IF'] { 'IF' }
+     FOLLOW['IF'] { }
+FOR: Token:TERMINAL TargetValue:265 NULLABLE(0) START(0)
+	Token Name:FOR
+	Token Type:PRE DEFINED
+     FIRST['FOR'] { 'FOR' }
+     FOLLOW['FOR'] { }
+WHILE: Token:TERMINAL TargetValue:266 NULLABLE(0) START(0)
+	Token Name:WHILE
+	Token Type:PRE DEFINED
+     FIRST['WHILE'] { 'WHILE' }
+     FOLLOW['WHILE'] { }
+DO: Token:TERMINAL TargetValue:267 NULLABLE(0) START(0)
+	Token Name:DO
+	Token Type:PRE DEFINED
+     FIRST['DO'] { 'DO' }
+     FOLLOW['DO'] { }
+OD: Token:TERMINAL TargetValue:268 NULLABLE(0) START(0)
+	Token Name:OD
+	Token Type:PRE DEFINED
+     FIRST['OD'] { 'OD' }
+     FOLLOW['OD'] { }
+EXIT: Token:TERMINAL TargetValue:269 NULLABLE(0) START(0)
+	Token Name:EXIT
+	Token Type:PRE DEFINED
+     FIRST['EXIT'] { 'EXIT' }
+     FOLLOW['EXIT'] { }
+THEN: Token:TERMINAL TargetValue:270 NULLABLE(0) START(0)
+	Token Name:THEN
+	Token Type:PRE DEFINED
+     FIRST['THEN'] { 'THEN' }
+     FOLLOW['THEN'] { }
+FI: Token:TERMINAL TargetValue:271 NULLABLE(0) START(0)
+	Token Name:FI
+	Token Type:PRE DEFINED
+     FIRST['FI'] { 'FI' }
+     FOLLOW['FI'] { }
+ELSEIF: Token:TERMINAL TargetValue:272 NULLABLE(0) START(0)
+	Token Name:ELSEIF
+	Token Type:PRE DEFINED
+     FIRST['ELSEIF'] { 'ELSEIF' }
+     FOLLOW['ELSEIF'] { }
+ELSE: Token:TERMINAL TargetValue:273 NULLABLE(0) START(0)
+	Token Name:ELSE
+	Token Type:PRE DEFINED
+     FIRST['ELSE'] { 'ELSE' }
+     FOLLOW['ELSE'] { }
+UNTILL: Token:TERMINAL TargetValue:274 NULLABLE(0) START(0)
+	Token Name:UNTILL
+	Token Type:PRE DEFINED
+     FIRST['UNTILL'] { 'UNTILL' }
+     FOLLOW['UNTILL'] { }
+TO: Token:TERMINAL TargetValue:275 NULLABLE(0) START(0)
+	Token Name:TO
+	Token Type:PRE DEFINED
+     FIRST['TO'] { 'TO' }
+     FOLLOW['TO'] { }
+STEP: Token:TERMINAL TargetValue:276 NULLABLE(0) START(0)
+	Token Name:STEP
+	Token Type:PRE DEFINED
+     FIRST['STEP'] { 'STEP' }
+     FOLLOW['STEP'] { }
+ASM: Token:TERMINAL TargetValue:277 NULLABLE(0) START(0)
+	Token Name:ASM
+	Token Type:PRE DEFINED
+     FIRST['ASM'] { 'ASM' }
+     FOLLOW['ASM'] { }
+ENDASM: Token:TERMINAL TargetValue:278 NULLABLE(0) START(0)
+	Token Name:ENDASM
+	Token Type:PRE DEFINED
+     FIRST['ENDASM'] { 'ENDASM' }
+     FOLLOW['ENDASM'] { }
+OR: Token:TERMINAL TargetValue:279 NULLABLE(0) START(0)
+	Token Name:OR
+	Token Type:PRE DEFINED
+     FIRST['OR'] { 'OR' }
+     FOLLOW['OR'] { }
+AND: Token:TERMINAL TargetValue:280 NULLABLE(0) START(0)
+	Token Name:AND
+	Token Type:PRE DEFINED
+     FIRST['AND'] { 'AND' }
+     FOLLOW['AND'] { }
+GTEQ: Token:TERMINAL TargetValue:281 NULLABLE(0) START(0)
+	Token Name:GTEQ
+	Token Type:PRE DEFINED
+     FIRST['GTEQ'] { 'GTEQ' }
+     FOLLOW['GTEQ'] { }
+LTEQ: Token:TERMINAL TargetValue:282 NULLABLE(0) START(0)
+	Token Name:LTEQ
+	Token Type:PRE DEFINED
+     FIRST['LTEQ'] { 'LTEQ' }
+     FOLLOW['LTEQ'] { }
+DEFINE: Token:TERMINAL TargetValue:283 NULLABLE(0) START(0)
+	Token Name:DEFINE
+	Token Type:PRE DEFINED
+     FIRST['DEFINE'] { 'DEFINE' }
+     FOLLOW['DEFINE'] { }
+TYPE: Token:TERMINAL TargetValue:284 NULLABLE(0) START(0)
+	Token Name:TYPE
+	Token Type:PRE DEFINED
+     FIRST['TYPE'] { 'TYPE' }
+     FOLLOW['TYPE'] { }
+RECORDTYPE: Token:TERMINAL TargetValue:285 NULLABLE(0) START(0)
+	Token Name:RECORDTYPE
+	Token Type:PRE DEFINED
+     FIRST['RECORDTYPE'] { 'RECORDTYPE' }
+     FOLLOW['RECORDTYPE'] { }
+BOOL: Token:TERMINAL TargetValue:286 NULLABLE(0) START(0)
+	Token Name:BOOL
+	Token Type:PRE DEFINED
+     FIRST['BOOL'] { 'BOOL' }
+     FOLLOW['BOOL'] { }
+CHAR: Token:TERMINAL TargetValue:287 NULLABLE(0) START(0)
+	Token Name:CHAR
+	Token Type:PRE DEFINED
+     FIRST['CHAR'] { 'CHAR' }
+     FOLLOW['CHAR'] { }
+BYTE: Token:TERMINAL TargetValue:288 NULLABLE(0) START(0)
+	Token Name:BYTE
+	Token Type:PRE DEFINED
+     FIRST['BYTE'] { 'BYTE' }
+     FOLLOW['BYTE'] { }
+CARD: Token:TERMINAL TargetValue:289 NULLABLE(0) START(0)
+	Token Name:CARD
+	Token Type:PRE DEFINED
+     FIRST['CARD'] { 'CARD' }
+     FOLLOW['CARD'] { }
+INT: Token:TERMINAL TargetValue:290 NULLABLE(0) START(0)
+	Token Name:INT
+	Token Type:PRE DEFINED
+     FIRST['INT'] { 'INT' }
+     FOLLOW['INT'] { }
+POINTER: Token:TERMINAL TargetValue:291 NULLABLE(0) START(0)
+	Token Name:POINTER
+	Token Type:PRE DEFINED
+     FIRST['POINTER'] { 'POINTER' }
+     FOLLOW['POINTER'] { }
+ARRAY: Token:TERMINAL TargetValue:292 NULLABLE(0) START(0)
+	Token Name:ARRAY
+	Token Type:PRE DEFINED
+     FIRST['ARRAY'] { 'ARRAY' }
+     FOLLOW['ARRAY'] { }
+BEGIN: Token:TERMINAL TargetValue:293 NULLABLE(0) START(0)
+	Token Name:BEGIN
+	Token Type:PRE DEFINED
+     FIRST['BEGIN'] { 'BEGIN' }
+     FOLLOW['BEGIN'] { }
+END: Token:TERMINAL TargetValue:294 NULLABLE(0) START(0)
+	Token Name:END
+	Token Type:PRE DEFINED
+     FIRST['END'] { 'END' }
+     FOLLOW['END'] { 'PROC','MODULE','$' }
+MOD: Token:TERMINAL TargetValue:295 NULLABLE(0) START(0)
+	Token Name:MOD
+	Token Type:PRE DEFINED
+     FIRST['MOD'] { 'MOD' }
+     FOLLOW['MOD'] { }
+LSH: Token:TERMINAL TargetValue:296 NULLABLE(0) START(0)
+	Token Name:LSH
+	Token Type:PRE DEFINED
+     FIRST['LSH'] { 'LSH' }
+     FOLLOW['LSH'] { }
+RSH: Token:TERMINAL TargetValue:297 NULLABLE(0) START(0)
+	Token Name:RSH
+	Token Type:PRE DEFINED
+     FIRST['RSH'] { 'RSH' }
+     FOLLOW['RSH'] { }
+==+: Token:TERMINAL TargetValue:298 NULLABLE(0) START(0)
+	Token Name:PLUS_EQ
+	Token Type:PRE DEFINED
+     FIRST['PLUS_EQ'] { '==+' }
+     FOLLOW['PLUS_EQ'] { }
+==-: Token:TERMINAL TargetValue:299 NULLABLE(0) START(0)
+	Token Name:MINUS_EQ
+	Token Type:PRE DEFINED
+     FIRST['MINUS_EQ'] { '==-' }
+     FOLLOW['MINUS_EQ'] { }
+==*: Token:TERMINAL TargetValue:300 NULLABLE(0) START(0)
+	Token Name:MULT_EQ
+	Token Type:PRE DEFINED
+     FIRST['MULT_EQ'] { '==*' }
+     FOLLOW['MULT_EQ'] { }
+==/: Token:TERMINAL TargetValue:301 NULLABLE(0) START(0)
+	Token Name:DIV_EQ
+	Token Type:PRE DEFINED
+     FIRST['DIV_EQ'] { '==/' }
+     FOLLOW['DIV_EQ'] { }
+==MOD: Token:TERMINAL TargetValue:302 NULLABLE(0) START(0)
+	Token Name:MOD_EQ
+	Token Type:PRE DEFINED
+     FIRST['MOD_EQ'] { '==MOD' }
+     FOLLOW['MOD_EQ'] { }
+==&: Token:TERMINAL TargetValue:303 NULLABLE(0) START(0)
+	Token Name:AND_EQ
+	Token Type:PRE DEFINED
+     FIRST['AND_EQ'] { '==&' }
+     FOLLOW['AND_EQ'] { }
+==!: Token:TERMINAL TargetValue:304 NULLABLE(0) START(0)
+	Token Name:XOR_EQ
+	Token Type:PRE DEFINED
+     FIRST['XOR_EQ'] { '==!' }
+     FOLLOW['XOR_EQ'] { }
+==XOR: Token:TERMINAL TargetValue:305 NULLABLE(0) START(0)
+	Token Name:XOR_EQ
+	Token Type:PRE DEFINED
+     FIRST['XOR_EQ'] { '==XOR' }
+     FOLLOW['XOR_EQ'] { }
+==%: Token:TERMINAL TargetValue:306 NULLABLE(0) START(0)
+	Token Name:OR_EQ
+	Token Type:PRE DEFINED
+     FIRST['OR_EQ'] { '==%' }
+     FOLLOW['OR_EQ'] { }
+==LSH: Token:TERMINAL TargetValue:307 NULLABLE(0) START(0)
+	Token Name:LSH_EQ
+	Token Type:PRE DEFINED
+     FIRST['LSH_EQ'] { '==LSH' }
+     FOLLOW['LSH_EQ'] { }
+==RSH: Token:TERMINAL TargetValue:308 NULLABLE(0) START(0)
+	Token Name:RSH_EQ
+	Token Type:PRE DEFINED
+     FIRST['RSH_EQ'] { '==RSH' }
+     FOLLOW['RSH_EQ'] { }
