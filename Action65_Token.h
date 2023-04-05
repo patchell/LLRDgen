@@ -1,3 +1,9 @@
+#pragma once
+
+constexpr auto TOKEN_NUMBER_OF = 53;
+
+class CAction65_Token
+{
 	enum class Action65_TOKENS{
 		IDENT = 256,
 		NUMBER,
@@ -46,10 +52,71 @@
 		MULT_EQ,
 		DIV_EQ,
 		MOD_EQ,
-		AND_EQ,
+		AND_EQ = 500,
 		XOR_EQ,
 		XOR_EQ,
 		OR_EQ,
 		LSH_EQ,
 		RSH_EQ
 	};
+	struct STokenStrings {
+		LLRD_Token m_Token;
+		const char* m_pName;
+	};
+	static inline STokenStrings TokenNamesLUT[TOKEN_NUMBER_OF] = {
+		{IDENT, "IDENT"},
+		{NUMBER, "NUMBER"},
+		{MODULE, "MODULE"},
+		{RETURN, "RETURN"},
+		{PROC, "PROC"},
+		{FUNC, "FUNC"},
+		{FUNC_IDENT, "FUNC_IDENT"},
+		{PROC_IDENT, "PROC_IDENT"},
+		{IF, "IF"},
+		{FOR, "FOR"},
+		{WHILE, "WHILE"},
+		{DO, "DO"},
+		{OD, "OD"},
+		{EXIT, "EXIT"},
+		{THEN, "THEN"},
+		{FI, "FI"},
+		{ELSEIF, "ELSEIF"},
+		{ELSE, "ELSE"},
+		{UNTILL, "UNTILL"},
+		{TO, "TO"},
+		{STEP, "STEP"},
+		{ASM, "ASM"},
+		{ENDASM, "ENDASM"},
+		{OR, "OR"},
+		{AND, "AND"},
+		{GTEQ, "GTEQ"},
+		{LTEQ, "LTEQ"},
+		{DEFINE, "DEFINE"},
+		{TYPE, "TYPE"},
+		{RECORDTYPE, "RECORDTYPE"},
+		{BOOL, "BOOL"},
+		{CHAR, "CHAR"},
+		{BYTE, "BYTE"},
+		{CARD, "CARD"},
+		{INT, "INT"},
+		{POINTER, "POINTER"},
+		{ARRAY, "ARRAY"},
+		{BEGIN, "BEGIN"},
+		{END, "END"},
+		{MOD, "MOD"},
+		{LSH, "LSH"},
+		{RSH, "RSH"},
+		{PLUS_EQ, "==+"},
+		{MINUS_EQ, "==-"},
+		{MULT_EQ, "==*"},
+		{DIV_EQ, "==/"},
+		{MOD_EQ, "==MOD"},
+		{AND_EQ, "==&"},
+		{XOR_EQ, "==!"},
+		{XOR_EQ, "==XOR"},
+		{OR_EQ, "==%"},
+		{LSH_EQ, "==LSH"},
+		{RSH_EQ, "==RSH"}
+	};
+	static const char* LookupTokenName(CToken::LLRD_Token Token);
+};

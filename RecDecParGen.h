@@ -78,6 +78,10 @@ public:
 	// Token Files Methods
 	//----------------------------------------------------
 	void GenToken(CSymbol* pSym, int Tabs, int InitValue);
+	int CountPredefinedTokens();
+	void GenTokenNameItem(CSymbol* pSym, int Tabs, BOOL bComma);
+	void GenTokenEnums();
+	void GenTokenNames();
 	//-----------------------------
 	// Debug Methods
 	//-----------------------------
